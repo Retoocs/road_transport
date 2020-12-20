@@ -2,21 +2,13 @@
 <document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://modeler.netgrif.com/petriflow_schema.xsd">
 	<id>auto</id>
 	<version>1.0.0</version>
-	<initials>NEW</initials>
+	<initials>auto</initials>
 	<title>Auto</title>
 	<icon>home</icon>
 	<defaultRole>true</defaultRole>
 	<transitionRole>false</transitionRole>
 	<!-- TRANSACTIONS -->
 	<!-- ROLES -->
-	<role>
-		<id>mechanic</id>
-		<title>Mechanik</title>
-	</role>
-	<role>
-		<id>admin</id>
-		<title>Administrator</title>
-	</role>
 	<!-- DATA -->
 	<data type="text">
 		<id>brand</id>
@@ -89,6 +81,10 @@
 		<id>is_active</id>
 		<title>Je záznam aktívny?</title>
 	</data>
+	<data type="taskRef">
+		<id>servis_creation</id>
+		<title>Vytvorenie servisného záznamu</title>
+	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
@@ -100,20 +96,6 @@
 			<offset>0</offset>
 		</layout>
 		<label>vytvor auto do evidencie</label>
-		<roleRef>
-			<id>admin</id>
-			<logic>
-				<perform>true</perform>
-				<delegate>true</delegate>
-				<view>true</view>
-			</logic>
-		</roleRef>
-		<roleRef>
-			<id>mechanic</id>
-			<logic>
-				<perform>true</perform>
-			</logic>
-		</roleRef>
 		<dataGroup>
 			<id>DataGroup_1</id>
 			<dataRef>
@@ -297,21 +279,6 @@
 			<offset>0</offset>
 		</layout>
 		<label>zobraz info o aute</label>
-		<roleRef>
-			<id>mechanic</id>
-			<logic>
-				<perform>true</perform>
-				<view>true</view>
-			</logic>
-		</roleRef>
-		<roleRef>
-			<id>admin</id>
-			<logic>
-				<perform>true</perform>
-				<delegate>true</delegate>
-				<view>true</view>
-			</logic>
-		</roleRef>
 		<dataGroup>
 			<id>DataGroup_2</id>
 			<dataRef>
@@ -702,6 +669,78 @@
 			<offset>0</offset>
 		</layout>
 		<label>zaznamenanie potrebneho servisneho ukonu</label>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>servis_creation</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>10</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>20_assign</id>
+			<actions phase="pre">
+				<action>
+					taskref: f.servis_creation;
+					
+					def groupId = findCase( { it.processIdentifier.eq("org_group").and(it.author.id.eq(loggedUser().id)) } )?.stringId;
+					def refedCase = createCase("${groupId}_servis" as String);
+					
+					def refedTask = assignTask("9", refedCase);						
+					
+					change taskref value {
+						[refedTask.stringId]
+					}	
+
+					//todo set data
+					
+				</action>
+			</actions>
+		</event>
+		<event type="cancel">
+			<id>20_cancel</id>
+			<actions phase="pre">
+				<action>
+					taskref: f.servis_creation;
+
+					def toCancel = findTask({it._id.eq(new org.bson.types.ObjectId(taskref.value[0] as String))});		
+					
+					cancelTask(toCancel);
+
+					def toRemove = findCase( { it._id.eq(toCancel.caseId) } );
+					async.run{
+						workflowService.deleteCase(toRemove._id.toString());
+					}
+					
+				</action>
+			</actions>		
+		</event>
+		<event type="finish">
+			<id>20_finish</id>
+			<actions phase="pre">
+				<action>
+					taskref: f.servis_creation;
+
+					def toFinish = findTask({it._id.eq(new org.bson.types.ObjectId(taskref.value[0] as String))});		
+					
+					finishTask(toFinish);
+
+					change taskref value{
+						null;
+					}
+				</action>
+			</actions>		
+		</event>		
 	</transition>
 	<transition>
 		<id>29</id>
@@ -732,12 +771,24 @@
 	</transition>
 	<transition>
 		<id>46</id>
-		<x>540</x>
-		<y>849</y>
+		<x>567</x>
+		<y>814</y>
 		<layout>
 			<offset>0</offset>
 		</layout>
 		<label>vymaz zaznam auta</label>
+		<event type="finish">
+			<id>46_finish</id>
+			<actions phase="post">
+				<action>				
+					def toRemove = findCase( { it._id.eq(useCase._id) } );
+			
+					async.run{
+						workflowService.deleteCase(toRemove._id.toString());
+					}				
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>51</id>
@@ -820,6 +871,14 @@
 		<x>1501</x>
 		<y>250</y>
 		<label>nevykonane servisne ukony</label>
+		<tokens>0</tokens>
+		<static>false</static>
+	</place>
+	<place>
+		<id>60</id>
+		<x>565</x>
+		<y>955</y>
+		<label></label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
@@ -930,20 +989,6 @@
 		<multiplicity>1</multiplicity>
 	</arc>
 	<arc>
-		<id>48</id>
-		<type>reset</type>
-		<sourceId>22</sourceId>
-		<destinationId>46</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>49</id>
-		<type>reset</type>
-		<sourceId>34</sourceId>
-		<destinationId>46</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
 		<id>52</id>
 		<type>regular</type>
 		<sourceId>27</sourceId>
@@ -983,6 +1028,13 @@
 		<type>regular</type>
 		<sourceId>55</sourceId>
 		<destinationId>27</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>61</id>
+		<type>regular</type>
+		<sourceId>46</sourceId>
+		<destinationId>60</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 </document>

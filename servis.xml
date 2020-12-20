@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://modeler.netgrif.com/petriflow_schema.xsd">
 	<id>servis</id>
-	<initials>NEW</initials>
+	<initials>servis</initials>
 	<title>Servis</title>
 	<defaultRole>true</defaultRole>
 	<transitionRole>false</transitionRole>
@@ -48,6 +48,30 @@
 	<data type="text">
 		<id>car_vin</id>
 		<title>VIN číslo auta</title>
+	</data>
+	<data type="button">
+		<id>btn_remove</id>
+		<title></title>
+		<placeholder>Áno</placeholder>
+		<action id="1" trigger="set">
+			//Task toFinish = findTask( { it.caseId.eq(useCase.stringId).and(it.transitionId.eq("12")) } );
+			finishTask("12");
+		</action>
+	</data>
+	<data type="button">
+		<id>btn_noremove</id>
+		<title></title>
+		<placeholder>Nie</placeholder>
+		<action id="1" trigger="set">
+			//Task toFinish = findTask( { it.caseId.eq(useCase.stringId).and(it.transitionId.eq("12")) } );
+			cancelTask("12");
+		</action>
+	</data>
+	<data type="text">
+		<id>text_3</id>
+		<title></title>
+		<desc>vymazanie treba potvrdiť</desc>
+		<init>Naozaj vymazať?</init>
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
@@ -170,6 +194,17 @@
 				</layout>
 			</dataRef>
 		</dataGroup>
+		<event type="finish">
+			<id>9_finish</id>
+			<actions phase="pre">
+				<action>				
+					changeCaseProperty "title" about {
+						useCase.visualId;
+					}	
+					
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>10</id>
@@ -413,6 +448,69 @@
 			<offset>0</offset>
 		</layout>
 		<label>vymaz zaznam</label>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>text_3</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<dataGroup>
+			<id>DataGroup_1</id>
+			<dataRef>
+				<id>btn_remove</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>standard</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>btn_noremove</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="finish">
+			<id>12_finish</id>
+			<actions phase="post">
+				<action>				
+					def toRemove = findCase( { it._id.eq(useCase._id) } );
+			
+					async.run{
+						workflowService.deleteCase(toRemove._id.toString());
+					}				
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>13</id>
