@@ -77,13 +77,13 @@
 		<id>repairs_notPerformed</id>
 		<title>Nevykonané</title>
 	</data>
-	<data type="boolean">
-		<id>is_active</id>
-		<title>Je záznam aktívny?</title>
-	</data>
 	<data type="taskRef">
 		<id>servis_creation</id>
 		<title>Vytvorenie servisného záznamu</title>
+	</data>
+	<data type="text">
+		<id>status</id>
+		<title>Stav</title>
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
@@ -270,6 +270,18 @@
 				</layout>
 			</dataRef>
 		</dataGroup>
+		<event type="finish">
+			<id>7_finish</id>
+			<actions phase="post">
+				<action>
+					status: f.status;
+
+					change status value{
+						"Aktívny"
+					}
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>13</id>
@@ -280,11 +292,11 @@
 		</layout>
 		<label>zobraz info o aute</label>
 		<dataGroup>
-			<id>DataGroup_2</id>
+			<id>DataGroup_1</id>
 			<dataRef>
 				<id>carinfo_date_change</id>
 				<logic>
-					<behavior>editable</behavior>
+					<behavior>visible</behavior>
 				</logic>
 				<layout>
 					<x>0</x>
@@ -296,13 +308,28 @@
 					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
+			<dataRef>
+				<id>status</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>9</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
 		</dataGroup>
 		<dataGroup>
-			<id>DataGroup_1</id>
+			<id>DataGroup_0</id>
 			<dataRef>
 				<id>car_photo</id>
 				<logic>
-					<behavior>editable</behavior>
+					<behavior>visible</behavior>
 				</logic>
 				<layout>
 					<x>0</x>
@@ -311,13 +338,12 @@
 					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
-					<appearance></appearance>
 				</layout>
 			</dataRef>
 			<dataRef>
 				<id>model</id>
 				<logic>
-					<behavior>editable</behavior>
+					<behavior>visible</behavior>
 				</logic>
 				<layout>
 					<x>1</x>
@@ -332,7 +358,7 @@
 			<dataRef>
 				<id>year_of_production</id>
 				<logic>
-					<behavior>editable</behavior>
+					<behavior>visible</behavior>
 				</logic>
 				<layout>
 					<x>1</x>
@@ -347,7 +373,7 @@
 			<dataRef>
 				<id>engine</id>
 				<logic>
-					<behavior>editable</behavior>
+					<behavior>visible</behavior>
 				</logic>
 				<layout>
 					<x>1</x>
@@ -362,7 +388,7 @@
 			<dataRef>
 				<id>vin</id>
 				<logic>
-					<behavior>editable</behavior>
+					<behavior>visible</behavior>
 				</logic>
 				<layout>
 					<x>1</x>
@@ -377,7 +403,7 @@
 			<dataRef>
 				<id>mileage</id>
 				<logic>
-					<behavior>editable</behavior>
+					<behavior>visible</behavior>
 				</logic>
 				<layout>
 					<x>1</x>
@@ -392,7 +418,7 @@
 			<dataRef>
 				<id>mileage_date_change</id>
 				<logic>
-					<behavior>editable</behavior>
+					<behavior>visible</behavior>
 				</logic>
 				<layout>
 					<x>1</x>
@@ -407,7 +433,7 @@
 			<dataRef>
 				<id>plate_number</id>
 				<logic>
-					<behavior>editable</behavior>
+					<behavior>visible</behavior>
 				</logic>
 				<layout>
 					<x>1</x>
@@ -422,7 +448,7 @@
 			<dataRef>
 				<id>car_owner</id>
 				<logic>
-					<behavior>editable</behavior>
+					<behavior>visible</behavior>
 				</logic>
 				<layout>
 					<x>3</x>
@@ -437,7 +463,7 @@
 			<dataRef>
 				<id>owner_category</id>
 				<logic>
-					<behavior>editable</behavior>
+					<behavior>visible</behavior>
 				</logic>
 				<layout>
 					<x>3</x>
@@ -452,7 +478,7 @@
 			<dataRef>
 				<id>car_name</id>
 				<logic>
-					<behavior>editable</behavior>
+					<behavior>visible</behavior>
 				</logic>
 				<layout>
 					<x>0</x>
@@ -464,9 +490,6 @@
 					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
-		</dataGroup>
-		<dataGroup>
-			<id>DataGroup_0</id>
 			<dataRef>
 				<id>brand</id>
 				<logic>
@@ -723,7 +746,7 @@
 					}
 					
 				</action>
-			</actions>		
+			</actions>
 		</event>
 		<event type="finish">
 			<id>20_finish</id>
@@ -739,8 +762,8 @@
 						null;
 					}
 				</action>
-			</actions>		
-		</event>		
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>29</id>
@@ -759,6 +782,17 @@
 			<offset>0</offset>
 		</layout>
 		<label>deaktivuj zaznam auta</label>
+		<event type="finish">
+			<id>33_finish</id>
+			<actions phase="post">
+				<action>
+					status: f.status;
+					change status value {
+						"Neaktívny"
+					}
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>35</id>
@@ -768,6 +802,17 @@
 			<offset>0</offset>
 		</layout>
 		<label>aktivuj zaznam auta </label>
+		<event type="finish">
+			<id>35_finish</id>
+			<actions phase="post">
+				<action>
+					status: f.status;
+					change status value {
+						"Aktívny"
+					}
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>46</id>

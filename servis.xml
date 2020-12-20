@@ -53,7 +53,7 @@
 		<id>btn_remove</id>
 		<title></title>
 		<placeholder>Áno</placeholder>
-		<action id="1" trigger="set">
+		<action trigger="set">
 			//Task toFinish = findTask( { it.caseId.eq(useCase.stringId).and(it.transitionId.eq("12")) } );
 			finishTask("12");
 		</action>
@@ -62,7 +62,7 @@
 		<id>btn_noremove</id>
 		<title></title>
 		<placeholder>Nie</placeholder>
-		<action id="1" trigger="set">
+		<action trigger="set">
 			//Task toFinish = findTask( { it.caseId.eq(useCase.stringId).and(it.transitionId.eq("12")) } );
 			cancelTask("12");
 		</action>
@@ -203,6 +203,13 @@
 					}	
 					
 				</action>
+			</actions>
+			<actions phase="post">
+				<action>status: f.status;
+
+change status value{
+    "V očakávaní"
+}</action>
 			</actions>
 		</event>
 	</transition>
@@ -520,6 +527,16 @@
 			<offset>0</offset>
 		</layout>
 		<label>obhliadka vozidla</label>
+		<event type="finish">
+			<id>13_finish</id>
+			<actions phase="post">
+				<action>status: f.status;
+
+change status value{
+    "Prebieha obhliadka vozidla"
+}</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>14</id>
@@ -529,6 +546,16 @@
 			<offset>0</offset>
 		</layout>
 		<label>chyby nenajdene</label>
+		<event type="finish">
+			<id>14_finish</id>
+			<actions phase="post">
+				<action>status: f.status;
+
+change status value {
+    "V očakávaní"
+}</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>15</id>
@@ -538,6 +565,16 @@
 			<offset>0</offset>
 		</layout>
 		<label>nevykonat opravu</label>
+		<event type="finish">
+			<id>15_finish</id>
+			<actions phase="post">
+				<action>status: f.status;
+
+change status value{
+    "Úkon nevykonaný"
+}</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>16</id>
@@ -547,6 +584,16 @@
 			<offset>0</offset>
 		</layout>
 		<label>netreba diely</label>
+		<event type="finish">
+			<id>16_finish</id>
+			<actions phase="post">
+				<action>status: f.status;
+
+change status value{
+    "Pripravené vykonať úkon"
+}</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>17</id>
@@ -574,6 +621,16 @@
 			<offset>0</offset>
 		</layout>
 		<label>zacat opravu</label>
+		<event type="finish">
+			<id>19_finish</id>
+			<actions phase="post">
+				<action>status: f.status;
+
+change status value{
+    "Úkon sa vykonáva"
+}</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>20</id>
@@ -583,6 +640,16 @@
 			<offset>0</offset>
 		</layout>
 		<label>dokoncit opravu</label>
+		<event type="finish">
+			<id>20_finish</id>
+			<actions phase="post">
+				<action>status: f.status;
+
+change status value{
+    "Úkon dokončený"
+}</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>47</id>
@@ -592,6 +659,16 @@
 			<offset>0</offset>
 		</layout>
 		<label>znovuotvorenie zaznamu</label>
+		<event type="finish">
+			<id>47_finish</id>
+			<actions phase="post">
+				<action>status: f.status;
+
+change status value{
+    "V očakávaní"
+}</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>56</id>
@@ -601,6 +678,16 @@
 			<offset>0</offset>
 		</layout>
 		<label>diely pripravene</label>
+		<event type="finish">
+			<id>56_finish</id>
+			<actions phase="post">
+				<action>status: f.status;
+
+change status value{
+    "Pripravené vykonať úkon"
+}</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>72</id>
