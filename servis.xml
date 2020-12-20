@@ -49,29 +49,15 @@
 		<id>car_vin</id>
 		<title>VIN číslo auta</title>
 	</data>
-	<data type="button">
-		<id>btn_remove</id>
-		<title></title>
-		<placeholder>Áno</placeholder>
-		<action trigger="set">
-			//Task toFinish = findTask( { it.caseId.eq(useCase.stringId).and(it.transitionId.eq("12")) } );
-			finishTask("12");
-		</action>
-	</data>
-	<data type="button">
-		<id>btn_noremove</id>
-		<title></title>
-		<placeholder>Nie</placeholder>
-		<action trigger="set">
-			//Task toFinish = findTask( { it.caseId.eq(useCase.stringId).and(it.transitionId.eq("12")) } );
-			cancelTask("12");
-		</action>
-	</data>
 	<data type="text">
 		<id>text_3</id>
 		<title></title>
 		<desc>vymazanie treba potvrdiť</desc>
 		<init>Naozaj vymazať?</init>
+	</data>
+	<data type="text">
+		<id>parent_id</id>
+		<title>Car id</title>
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
@@ -83,6 +69,44 @@
 			<offset>0</offset>
 		</layout>
 		<label>Vytvor zaznam</label>
+		<dataGroup>
+			<id>DataGroup_2</id>
+			<layout>grid</layout>
+			<dataRef>
+				<id>car_vin</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>3</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<dataGroup>
+			<id>DataGroup_1</id>
+			<layout>grid</layout>
+			<dataRef>
+				<id>parent_id</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>8</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -169,22 +193,6 @@
 				</logic>
 				<layout>
 					<x>0</x>
-					<y>3</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>car_vin</id>
-				<logic>
-					<behavior>editable</behavior>
-					<behavior>required</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
 					<y>3</y>
 					<rows>1</rows>
 					<cols>2</cols>
@@ -418,7 +426,7 @@ change status value{
 			<dataRef>
 				<id>car_vin</id>
 				<logic>
-					<behavior>editable</behavior>
+					<behavior>visible</behavior>
 				</logic>
 				<layout>
 					<x>2</x>
@@ -473,41 +481,9 @@ change status value{
 				</layout>
 			</dataRef>
 		</dataGroup>
-		<dataGroup>
-			<id>DataGroup_1</id>
-			<dataRef>
-				<id>btn_remove</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>1</y>
-					<rows>1</rows>
-					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>standard</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>btn_noremove</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
-					<y>1</y>
-					<rows>1</rows>
-					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>fill</appearance>
-				</layout>
-			</dataRef>
-		</dataGroup>
 		<event type="finish">
 			<id>12_finish</id>
+			<title>Potvrdiť</title>
 			<actions phase="post">
 				<action>				
 					def toRemove = findCase( { it._id.eq(useCase._id) } );

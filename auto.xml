@@ -85,6 +85,11 @@
 		<id>status</id>
 		<title>Stav</title>
 	</data>
+	<data type="text">
+		<id>accept_removal</id>
+		<title>Stav</title>
+		<init>Potvrď vymazanie</init>
+	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
@@ -95,7 +100,7 @@
 			<cols>4</cols>
 			<offset>0</offset>
 		</layout>
-		<label>vytvor auto do evidencie</label>
+		<label>Vytvor auto do evidencie</label>
 		<dataGroup>
 			<id>DataGroup_1</id>
 			<dataRef>
@@ -285,8 +290,8 @@
 	</transition>
 	<transition>
 		<id>13</id>
-		<x>700</x>
-		<y>340</y>
+		<x>433</x>
+		<y>421</y>
 		<layout>
 			<offset>0</offset>
 		</layout>
@@ -338,6 +343,7 @@
 					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
+					<appearance></appearance>
 				</layout>
 			</dataRef>
 			<dataRef>
@@ -509,8 +515,8 @@
 	</transition>
 	<transition>
 		<id>18</id>
-		<x>820</x>
-		<y>340</y>
+		<x>789</x>
+		<y>400</y>
 		<layout>
 			<offset>0</offset>
 		</layout>
@@ -691,7 +697,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>zaznamenanie potrebneho servisneho ukonu</label>
+		<label>Zaznamenanie potrebného servisného ukonu</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -724,9 +730,22 @@
 					change taskref value {
 						[refedTask.stringId]
 					}	
+					
+					def disCase = findCase( {it._id.eq(useCase._id)} );
+					def data = getData("13", disCase);
 
 					//todo set data
-					
+					setData(refedTask, [
+						"parent_id": [
+							"value": useCase.stringId,
+							"type" : "text"
+						],
+						"car_vin": [
+							"value": data["vin"].value,
+							"type" : "text"
+						],
+					])
+				
 				</action>
 			</actions>
 		</event>
@@ -764,15 +783,6 @@
 				</action>
 			</actions>
 		</event>
-	</transition>
-	<transition>
-		<id>29</id>
-		<x>1286</x>
-		<y>477</y>
-		<layout>
-			<offset>0</offset>
-		</layout>
-		<label>vykonanie servisneho ukonu</label>
 	</transition>
 	<transition>
 		<id>33</id>
@@ -816,13 +826,32 @@
 	</transition>
 	<transition>
 		<id>46</id>
-		<x>567</x>
-		<y>814</y>
+		<x>579</x>
+		<y>307</y>
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>vymaz zaznam auta</label>
+		<label>Vymaz zaznam auta</label>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>accept_removal</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
 		<event type="finish">
+			<title>Potvrdiť</title>
 			<id>46_finish</id>
 			<actions phase="post">
 				<action>				
@@ -835,38 +864,11 @@
 			</actions>
 		</event>
 	</transition>
-	<transition>
-		<id>51</id>
-		<x>1527</x>
-		<y>473</y>
-		<layout>
-			<offset>0</offset>
-		</layout>
-		<label>nevykonanie servisneho ukonu</label>
-	</transition>
-	<transition>
-		<id>54</id>
-		<x>1157</x>
-		<y>419</y>
-		<layout>
-			<offset>0</offset>
-		</layout>
-		<label>znovuotvorenie</label>
-	</transition>
-	<transition>
-		<id>55</id>
-		<x>1443</x>
-		<y>406</y>
-		<layout>
-			<offset>0</offset>
-		</layout>
-		<label>znovuotvorenie</label>
-	</transition>
 	<!-- PLACES -->
 	<place>
 		<id>3</id>
-		<x>340</x>
-		<y>500</y>
+		<x>348</x>
+		<y>543</y>
 		<label>start</label>
 		<tokens>1</tokens>
 		<static>false</static>
@@ -888,14 +890,6 @@
 		<static>false</static>
 	</place>
 	<place>
-		<id>30</id>
-		<x>1280</x>
-		<y>245</y>
-		<label>vykonane servisne ukony</label>
-		<tokens>0</tokens>
-		<static>false</static>
-	</place>
-	<place>
 		<id>34</id>
 		<x>746</x>
 		<y>825</y>
@@ -905,24 +899,16 @@
 	</place>
 	<place>
 		<id>44</id>
-		<x>570</x>
-		<y>668</y>
+		<x>583</x>
+		<y>416</y>
 		<label>zaznam auta existuje</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
 	<place>
-		<id>50</id>
-		<x>1501</x>
-		<y>250</y>
-		<label>nevykonane servisne ukony</label>
-		<tokens>0</tokens>
-		<static>false</static>
-	</place>
-	<place>
 		<id>60</id>
-		<x>565</x>
-		<y>955</y>
+		<x>580</x>
+		<y>188</y>
 		<label></label>
 		<tokens>0</tokens>
 		<static>false</static>
@@ -933,13 +919,6 @@
 		<type>regular</type>
 		<sourceId>3</sourceId>
 		<destinationId>7</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>23</id>
-		<type>read</type>
-		<sourceId>22</sourceId>
-		<destinationId>13</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 	<arc>
@@ -968,20 +947,6 @@
 		<type>regular</type>
 		<sourceId>20</sourceId>
 		<destinationId>27</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>31</id>
-		<type>regular</type>
-		<sourceId>27</sourceId>
-		<destinationId>29</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>32</id>
-		<type>regular</type>
-		<sourceId>29</sourceId>
-		<destinationId>30</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 	<arc>
@@ -1034,52 +999,17 @@
 		<multiplicity>1</multiplicity>
 	</arc>
 	<arc>
-		<id>52</id>
-		<type>regular</type>
-		<sourceId>27</sourceId>
-		<destinationId>51</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>53</id>
-		<type>regular</type>
-		<sourceId>51</sourceId>
-		<destinationId>50</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>56</id>
-		<type>regular</type>
-		<sourceId>30</sourceId>
-		<destinationId>54</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>57</id>
-		<type>regular</type>
-		<sourceId>54</sourceId>
-		<destinationId>27</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>58</id>
-		<type>regular</type>
-		<sourceId>50</sourceId>
-		<destinationId>55</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>59</id>
-		<type>regular</type>
-		<sourceId>55</sourceId>
-		<destinationId>27</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
 		<id>61</id>
 		<type>regular</type>
 		<sourceId>46</sourceId>
 		<destinationId>60</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>62</id>
+		<type>read</type>
+		<sourceId>44</sourceId>
+		<destinationId>13</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 </document>
