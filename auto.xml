@@ -697,7 +697,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>Zaznamenanie potrebného servisného ukonu</label>
+		<label>Zaznamenanie potrebného servisného úkonu</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -734,7 +734,6 @@
 					def disCase = findCase( {it._id.eq(useCase._id)} );
 					def data = getData("13", disCase);
 
-					//todo set data
 					setData(refedTask, [
 						"parent_id": [
 							"value": useCase.stringId,
@@ -772,14 +771,12 @@
 			<actions phase="pre">
 				<action>
 					taskref: f.servis_creation;
-
+					
 					def toFinish = findTask({it._id.eq(new org.bson.types.ObjectId(taskref.value[0] as String))});		
 					
-					finishTask(toFinish);
+					finishTask(toFinish);	
 
-					change taskref value{
-						null;
-					}
+					//todo: reset taskref to show no value
 				</action>
 			</actions>
 		</event>
@@ -850,16 +847,48 @@
 				</layout>
 			</dataRef>
 		</dataGroup>
+		<dataGroup>
+			<id>DataGroup_1</id>
+			<dataRef>
+				<id>servis_creation</id>
+				<logic>
+					<behavior>forbidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>10</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
 		<event type="finish">
-			<title>Potvrdiť</title>
 			<id>46_finish</id>
 			<actions phase="post">
-				<action>				
-					def toRemove = findCase( { it._id.eq(useCase._id) } );
-			
-					async.run{
-						workflowService.deleteCase(toRemove._id.toString());
-					}				
+				<action>
+					taskref: f.servis_creation;					
+					
+					if(taskref.value != null){
+						def tmpTask = findTask({it._id.eq(new org.bson.types.ObjectId(taskref.value[0] as String))});
+						if(tmpTask != null){
+							def toRemoveService = findCase( { it._id.eq(tmpTask.caseId) } );
+							if(toRemoveService != null){
+								async.run{
+									workflowService.deleteCase(toRemoveService._id.toString());
+								}
+							}							
+						}						
+					}
+										
+					def toRemoveCar = findCase( { it._id.eq(useCase._id) } );	
+					if(toRemoveCar != null){
+						async.run{
+							workflowService.deleteCase(toRemoveCar._id.toString());
+						}
+					}									
 				</action>
 			</actions>
 		</event>

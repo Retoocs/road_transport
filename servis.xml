@@ -8,11 +8,6 @@
 	<!-- TRANSACTIONS -->
 	<!-- ROLES -->
 	<!-- DATA -->
-	<data type="number">
-		<id>num_of_delivered_orders</id>
-		<title></title>
-		<init>1</init>
-	</data>
 	<data type="text">
 		<id>car_vin</id>
 		<title>VIN číslo auta</title>
@@ -46,10 +41,6 @@
 		<title>Zákazník</title>
 	</data>
 	<data type="text">
-		<id>car_vin</id>
-		<title>VIN číslo auta</title>
-	</data>
-	<data type="text">
 		<id>text_3</id>
 		<title></title>
 		<desc>vymazanie treba potvrdiť</desc>
@@ -58,6 +49,16 @@
 	<data type="text">
 		<id>parent_id</id>
 		<title>Car id</title>
+	</data>
+	<data type="text">
+		<id>status_desc</id>
+		<title>Popis</title>
+	</data>
+	<data type="enumeration">
+		<id>act_success</id>
+		<title>Úspešnosť úkonu</title>
+		<values>Úkon úspešný</values>
+		<values>Úkon neúspešný</values>
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
@@ -68,29 +69,9 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>Vytvor zaznam</label>
-		<dataGroup>
-			<id>DataGroup_2</id>
-			<layout>grid</layout>
-			<dataRef>
-				<id>car_vin</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
-					<y>3</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-		</dataGroup>
+		<label>Vytvor záznam</label>
 		<dataGroup>
 			<id>DataGroup_1</id>
-			<layout>grid</layout>
 			<dataRef>
 				<id>parent_id</id>
 				<logic>
@@ -112,7 +93,7 @@
 			<dataRef>
 				<id>start_date</id>
 				<logic>
-					<behavior>editable</behavior>
+					<behavior>visible</behavior>
 				</logic>
 				<layout>
 					<x>0</x>
@@ -141,21 +122,6 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>status</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
 				<id>task</id>
 				<logic>
 					<behavior>editable</behavior>
@@ -201,23 +167,49 @@
 					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
+			<dataRef>
+				<id>car_vin</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>3</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
 		</dataGroup>
+		<event type="assign">
+			<id>9_assign</id>
+			<actions phase="pre">
+				<action>
+					start_date: f.start_date;
+					
+					//change start_date value{ LocalDate.now() }
+				</action>
+			</actions>
+		</event>
 		<event type="finish">
 			<id>9_finish</id>
 			<actions phase="pre">
 				<action>				
 					changeCaseProperty "title" about {
 						useCase.visualId;
-					}	
-					
+					}						
 				</action>
 			</actions>
 			<actions phase="post">
-				<action>status: f.status;
+				<action>
+					status: f.status;
 
-change status value{
-    "V očakávaní"
-}</action>
+					change status value{
+						"V očakávaní"
+					}
+				</action>
 			</actions>
 		</event>
 	</transition>
@@ -230,7 +222,22 @@ change status value{
 		</layout>
 		<label>zobraz info</label>
 		<dataGroup>
-			<id>DataGroup_0</id>
+			<id>DataGroup_1</id>
+			<dataRef>
+				<id>status_desc</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
 			<dataRef>
 				<id>status</id>
 				<logic>
@@ -241,6 +248,39 @@ change status value{
 					<y>0</y>
 					<rows>1</rows>
 					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>act_success</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>parent_id</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>8</y>
+					<rows>1</rows>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -268,7 +308,7 @@ change status value{
 				</logic>
 				<layout>
 					<x>0</x>
-					<y>1</y>
+					<y>2</y>
 					<rows>2</rows>
 					<cols>4</cols>
 					<offset>0</offset>
@@ -283,7 +323,7 @@ change status value{
 				</logic>
 				<layout>
 					<x>0</x>
-					<y>3</y>
+					<y>4</y>
 					<rows>1</rows>
 					<cols>2</cols>
 					<offset>0</offset>
@@ -298,7 +338,7 @@ change status value{
 				</logic>
 				<layout>
 					<x>2</x>
-					<y>3</y>
+					<y>4</y>
 					<rows>1</rows>
 					<cols>2</cols>
 					<offset>0</offset>
@@ -379,21 +419,6 @@ change status value{
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>status</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
 				<id>task</id>
 				<logic>
 					<behavior>editable</behavior>
@@ -415,21 +440,6 @@ change status value{
 				</logic>
 				<layout>
 					<x>0</x>
-					<y>3</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>car_vin</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
 					<y>3</y>
 					<rows>1</rows>
 					<cols>2</cols>
@@ -483,14 +493,15 @@ change status value{
 		</dataGroup>
 		<event type="finish">
 			<id>12_finish</id>
-			<title>Potvrdiť</title>
 			<actions phase="post">
 				<action>				
 					def toRemove = findCase( { it._id.eq(useCase._id) } );
 			
-					async.run{
-						workflowService.deleteCase(toRemove._id.toString());
-					}				
+					if(toRemove != null){
+						async.run{
+							workflowService.deleteCase(toRemove._id.toString());
+						}
+					}									
 				</action>
 			</actions>
 		</event>
@@ -503,14 +514,44 @@ change status value{
 			<offset>0</offset>
 		</layout>
 		<label>obhliadka vozidla</label>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>status_desc</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>13_assign</id>
+			<actions phase="pre">
+				<action>
+					desc: f.status_desc;
+					
+					change desc value{ "" }
+				</action>
+			</actions>
+		</event>
 		<event type="finish">
 			<id>13_finish</id>
 			<actions phase="post">
-				<action>status: f.status;
+				<action>
+					status: f.status;					
 
-change status value{
-    "Prebieha obhliadka vozidla"
-}</action>
+					change status value{
+						"Prebieha obhliadka vozidla"
+					}
+				</action>
 			</actions>
 		</event>
 	</transition>
@@ -522,25 +563,83 @@ change status value{
 			<offset>0</offset>
 		</layout>
 		<label>chyby nenajdene</label>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>status_desc</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>14_assign</id>
+			<actions phase="pre">
+				<action>
+					desc: f.status_desc;
+					
+					change desc value{ "" }
+				</action>
+			</actions>
+		</event>
 		<event type="finish">
 			<id>14_finish</id>
 			<actions phase="post">
-				<action>status: f.status;
+				<action>
+					status: f.status;
 
-change status value {
-    "V očakávaní"
-}</action>
+					change status value {
+						"V očakávaní"
+					}
+				</action>
 			</actions>
 		</event>
 	</transition>
 	<transition>
 		<id>15</id>
-		<x>122</x>
-		<y>486</y>
+		<x>115</x>
+		<y>476</y>
 		<layout>
 			<offset>0</offset>
 		</layout>
 		<label>nevykonat opravu</label>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>status_desc</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>15_assign</id>
+			<actions phase="pre">
+				<action>
+					desc: f.status_desc;
+					
+					change desc value{ "" }
+				</action>
+			</actions>
+		</event>
 		<event type="finish">
 			<id>15_finish</id>
 			<actions phase="post">
@@ -560,6 +659,34 @@ change status value{
 			<offset>0</offset>
 		</layout>
 		<label>netreba diely</label>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>status_desc</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>16_assign</id>
+			<actions phase="pre">
+				<action>
+					desc: f.status_desc;
+					
+					change desc value{ "" }
+				</action>
+			</actions>
+		</event>
 		<event type="finish">
 			<id>16_finish</id>
 			<actions phase="post">
@@ -582,8 +709,8 @@ change status value{
 	</transition>
 	<transition>
 		<id>18</id>
-		<x>1212</x>
-		<y>574</y>
+		<x>1198</x>
+		<y>577</y>
 		<layout>
 			<offset>0</offset>
 		</layout>
@@ -597,6 +724,34 @@ change status value{
 			<offset>0</offset>
 		</layout>
 		<label>zacat opravu</label>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>status_desc</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>19_assign</id>
+			<actions phase="pre">
+				<action>
+					desc: f.status_desc;
+					
+					change desc value{ "" }
+				</action>
+			</actions>
+		</event>
 		<event type="finish">
 			<id>19_finish</id>
 			<actions phase="post">
@@ -610,12 +765,56 @@ change status value{
 	</transition>
 	<transition>
 		<id>20</id>
-		<x>300</x>
-		<y>700</y>
+		<x>111</x>
+		<y>704</y>
 		<layout>
 			<offset>0</offset>
 		</layout>
 		<label>dokoncit opravu</label>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>act_success</id>
+				<logic>
+					<behavior>editable</behavior>
+					<behavior>required</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>2</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>status_desc</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>2</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>20_assign</id>
+			<actions phase="pre">
+				<action>
+					desc: f.status_desc;
+					
+					change desc value{ "" }
+				</action>
+			</actions>
+		</event>
 		<event type="finish">
 			<id>20_finish</id>
 			<actions phase="post">
@@ -629,12 +828,40 @@ change status value{
 	</transition>
 	<transition>
 		<id>47</id>
-		<x>444</x>
-		<y>491</y>
+		<x>427</x>
+		<y>538</y>
 		<layout>
 			<offset>0</offset>
 		</layout>
 		<label>znovuotvorenie zaznamu</label>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>status_desc</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>47_assign</id>
+			<actions phase="pre">
+				<action>
+					desc: f.status_desc;
+					
+					change desc value{ "" }
+				</action>
+			</actions>
+		</event>
 		<event type="finish">
 			<id>47_finish</id>
 			<actions phase="post">
@@ -654,6 +881,34 @@ change status value{
 			<offset>0</offset>
 		</layout>
 		<label>diely pripravene</label>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>status_desc</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>56_assign</id>
+			<actions phase="pre">
+				<action>
+					desc: f.status_desc;
+					
+					change desc value{ "" }
+				</action>
+			</actions>
+		</event>
 		<event type="finish">
 			<id>56_finish</id>
 			<actions phase="post">
@@ -718,8 +973,8 @@ change status value{
 	</place>
 	<place>
 		<id>5</id>
-		<x>1018</x>
-		<y>575</y>
+		<x>1057</x>
+		<y>578</y>
 		<label>objednane</label>
 		<tokens>0</tokens>
 		<static>false</static>
@@ -742,8 +997,8 @@ change status value{
 	</place>
 	<place>
 		<id>44</id>
-		<x>301</x>
-		<y>606</y>
+		<x>115</x>
+		<y>597</y>
 		<label>spracovanie zaznamu dokoncene</label>
 		<tokens>0</tokens>
 		<static>false</static>
@@ -920,21 +1175,6 @@ change status value{
 		<multiplicity>1</multiplicity>
 	</arc>
 	<arc>
-		<id>55</id>
-		<type>regular</type>
-		<sourceId>5</sourceId>
-		<destinationId>18</destinationId>
-		<multiplicity>1</multiplicity>
-		<reference>num_of_delivered_orders</reference>
-	</arc>
-	<arc>
-		<id>57</id>
-		<type>inhibitor</type>
-		<sourceId>5</sourceId>
-		<destinationId>56</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
 		<id>60</id>
 		<type>inhibitor</type>
 		<sourceId>5</sourceId>
@@ -947,11 +1187,11 @@ change status value{
 		<sourceId>52</sourceId>
 		<destinationId>20</destinationId>
 		<multiplicity>1</multiplicity>
-		<breakPoint><x>1260</x><y>340</y></breakPoint>
+		<breakPoint><x>1270</x><y>338</y></breakPoint>
 		<breakPoint><x>1273</x><y>620</y></breakPoint>
-		<breakPoint><x>1260</x><y>900</y></breakPoint>
+		<breakPoint><x>1271</x><y>903</y></breakPoint>
 		<breakPoint><x>940</x><y>900</y></breakPoint>
-		<breakPoint><x>299</x><y>892</y></breakPoint>
+		<breakPoint><x>106</x><y>906</y></breakPoint>
 	</arc>
 	<arc>
 		<id>63</id>
@@ -966,6 +1206,7 @@ change status value{
 		<sourceId>62</sourceId>
 		<destinationId>56</destinationId>
 		<multiplicity>1</multiplicity>
+		<breakPoint><x>1116</x><y>708</y></breakPoint>
 		<breakPoint><x>1083</x><y>705</y></breakPoint>
 	</arc>
 	<arc>
@@ -1083,6 +1324,13 @@ change status value{
 		<id>95</id>
 		<type>reset</type>
 		<sourceId>4</sourceId>
+		<destinationId>18</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>96</id>
+		<type>regular</type>
+		<sourceId>5</sourceId>
 		<destinationId>18</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
