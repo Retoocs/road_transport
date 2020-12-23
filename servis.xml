@@ -28,6 +28,10 @@
 		<id>end_date</id>
 		<title>Dátum ukončenia</title>
 	</data>
+	<data type="date">
+		<id>change_date</id>
+		<title>Dátum poslednej zmeny</title>
+	</data>
 	<data type="text">
 		<id>status</id>
 		<title>Stav</title>

@@ -44,6 +44,10 @@
 		<title>Dátum uzavretia</title>
 	</data>
 	<data type="date">
+		<id>change_date</id>
+		<title>Dátum poslednej zmeny</title>
+	</data>
+	<data type="date">
 		<id>deadline</id>
 		<title>Konečný termín</title>
 	</data>
@@ -71,7 +75,6 @@
 		<label>Vytvoriť úlohu</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
-			<layout>grid</layout>
 			<dataRef>
 				<id>creation_date</id>
 				<logic>
@@ -163,18 +166,81 @@
 				</layout>
 			</dataRef>
 		</dataGroup>
+		<event type="assign">
+			<id>2_assign</id>
+			<actions phase="pre">
+				<action>
+					uzer: f.creator;					
+
+					def tmp = userService.getLoggedOrSystem();
+					
+					//todo: how to load logged user into f.creator?
+					//change uzer value {
+					//	tmp
+					//}
+				</action>
+			</actions>
+		</event>
+		<event type="finish">
+			<id>2_finish</id>
+			<actions phase="post">
+				<action>
+					status: f.status;					
+
+					change status value{
+						"Úloha bola zadaná"
+					}
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>8</id>
-		<x>420</x>
+		<x>460</x>
 		<y>100</y>
 		<layout>
 			<offset>0</offset>
 		</layout>
 		<label>Zobraziť info</label>
 		<dataGroup>
-			<id>DataGroup_0</id>
+			<id>DataGroup_2</id>
 			<layout>grid</layout>
+			<dataRef>
+				<id>change_date</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>5</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<dataGroup>
+			<id>DataGroup_1</id>
+			<dataRef>
+				<id>closure_state</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>7</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<dataGroup>
+			<id>DataGroup_0</id>
 			<dataRef>
 				<id>title</id>
 				<logic>
@@ -289,7 +355,7 @@
 					<x>0</x>
 					<y>7</y>
 					<rows>1</rows>
-					<cols>4</cols>
+					<cols>2</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -329,15 +395,14 @@
 	</transition>
 	<transition>
 		<id>9</id>
-		<x>540</x>
-		<y>60</y>
+		<x>700</x>
+		<y>180</y>
 		<layout>
 			<offset>0</offset>
 		</layout>
 		<label>Upraviť info</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
-			<layout>grid</layout>
 			<dataRef>
 				<id>title</id>
 				<logic>
@@ -402,7 +467,7 @@
 	</transition>
 	<transition>
 		<id>10</id>
-		<x>660</x>
+		<x>620</x>
 		<y>100</y>
 		<layout>
 			<offset>0</offset>
@@ -410,7 +475,6 @@
 		<label>Vymazať úlohu</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
-			<layout>grid</layout>
 			<dataRef>
 				<id>accept_removal</id>
 				<logic>
@@ -427,18 +491,31 @@
 				</layout>
 			</dataRef>
 		</dataGroup>
+		<event type="finish">
+			<id>10_finish</id>
+			<actions phase="post">
+				<action>				
+					def toRemove = findCase( { it._id.eq(useCase._id) } );
+			
+					if(toRemove != null){
+						async.run{
+							workflowService.deleteCase(toRemove._id.toString());
+						}
+					}									
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>17</id>
-		<x>876</x>
-		<y>213</y>
+		<x>860</x>
+		<y>220</y>
 		<layout>
 			<offset>0</offset>
 		</layout>
 		<label>Uzavrieť úlohu</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
-			<layout>grid</layout>
 			<dataRef>
 				<id>closure_state</id>
 				<logic>
@@ -516,15 +593,115 @@
 				</layout>
 			</dataRef>
 		</dataGroup>
+		<event type="finish">
+			<id>17_finish</id>
+			<actions phase="post">
+				<action>
+					status: f.status;					
+
+					change status value{
+						"Úloha bola uzavretá"
+					}
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>18</id>
-		<x>873</x>
-		<y>417</y>
+		<x>860</x>
+		<y>420</y>
 		<layout>
 			<offset>0</offset>
 		</layout>
 		<label>Znovuotvoriť úlohu</label>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>closure_state</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>close_date</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>closure_desc</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>closed_by</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="finish">
+			<id>18_finish</id>
+			<actions phase="pre">
+				<action>
+					closureState: f.closure_state;	
+					// wtf? len raz mozem pouzit f.xxx......ptm pise f is null whaaaaaaaat
+					//closeDate: f.close_date;
+					//closureDesc: f.closure_desc;
+					//closedBy: f.closed_by;
+					
+					
+					change closureState value {	null }					
+					//so on
+				</action>
+			</actions>
+			<actions phase="post">
+				<action>
+					status: f.status;	
+
+					change status value{
+						"Úloha bola znovuotvorená"
+					}
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<!-- PLACES -->
 	<place>
@@ -547,13 +724,13 @@
 		<id>4</id>
 		<x>700</x>
 		<y>300</y>
-		<label>Úloha vytvorená</label>
+		<label>Úloha aktívna</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
 	<place>
 		<id>11</id>
-		<x>780</x>
+		<x>740</x>
 		<y>100</y>
 		<label></label>
 		<tokens>0</tokens>
@@ -604,13 +781,6 @@
 		<multiplicity>1</multiplicity>
 	</arc>
 	<arc>
-		<id>14</id>
-		<type>read</type>
-		<sourceId>3</sourceId>
-		<destinationId>9</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
 		<id>15</id>
 		<type>read</type>
 		<sourceId>3</sourceId>
@@ -643,6 +813,13 @@
 		<type>regular</type>
 		<sourceId>18</sourceId>
 		<destinationId>4</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>23</id>
+		<type>read</type>
+		<sourceId>4</sourceId>
+		<destinationId>9</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 </document>
