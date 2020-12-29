@@ -11,6 +11,26 @@
 	<data type="text">
 		<id>car_vin</id>
 		<title>VIN číslo auta</title>
+		<action trigger="get">
+			parentId: f.parent_id,
+			vinToCheck: f.this;
+			
+			if(parentId != null){
+				def carInstance = findCase( {it._id.eq(parentId.value)} )
+				if( carInstance != null ){
+					def newVin = carInstance.getFieldValue("vin")
+					
+					change vinToCheck value {
+						newVin
+					}
+				}
+				else {
+					change vinToCheck value {
+						"System neeviduje dané auto."
+					}
+				}				
+			}			
+		</action>
 	</data>
 	<data type="text">
 		<id>task</id>
@@ -95,21 +115,6 @@
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
-				<id>start_date</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>9</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
 				<id>deadline</id>
 				<logic>
 					<behavior>editable</behavior>
@@ -136,21 +141,6 @@
 					<y>1</y>
 					<rows>2</rows>
 					<cols>4</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>mechanic</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>2</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -187,16 +177,6 @@
 				</layout>
 			</dataRef>
 		</dataGroup>
-		<event type="assign">
-			<id>9_assign</id>
-			<actions phase="pre">
-				<action>
-					start_date: f.start_date;
-					
-					//change start_date value{ LocalDate.now() }
-				</action>
-			</actions>
-		</event>
 		<event type="finish">
 			<id>9_finish</id>
 			<actions phase="pre">
@@ -208,7 +188,10 @@
 			</actions>
 			<actions phase="post">
 				<action>
-					status: f.status;
+					status: f.status,
+					start_date: f.start_date;
+					
+					change start_date value{ java.time.LocalDate.now() }
 
 					change status value{
 						"V očakávaní"
@@ -395,6 +378,21 @@
 					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
+			<dataRef>
+				<id>change_date</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>8</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
 		</dataGroup>
 	</transition>
 	<transition>
@@ -404,7 +402,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>uprav info</label>
+		<label>Upraviť info</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -468,6 +466,18 @@
 				</layout>
 			</dataRef>
 		</dataGroup>
+		<event type="finish">
+			<id>11_finish</id>
+			<actions phase="post">
+				<action>				
+					changeDate: f.change_date;
+					
+					change changeDate value {
+						java.time.LocalDate.now()
+					}									
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>12</id>
@@ -815,18 +825,25 @@ change status value{
 				<action>
 					desc: f.status_desc;
 					
-					change desc value{ "" }
+					change desc value{ null }
 				</action>
 			</actions>
 		</event>
 		<event type="finish">
 			<id>20_finish</id>
 			<actions phase="post">
-				<action>status: f.status;
+				<action>
+					status: f.status,
+					endDate: f.end_date;
+					
+					change endDate value {
+						java.time.LocalDate.now()
+					}						
 
-change status value{
-    "Úkon dokončený"
-}</action>
+					change status value {
+						"Úkon dokončený"
+					}
+				</action>
 			</actions>
 		</event>
 	</transition>
@@ -862,18 +879,23 @@ change status value{
 				<action>
 					desc: f.status_desc;
 					
-					change desc value{ "" }
+					change desc value { null }
 				</action>
 			</actions>
 		</event>
 		<event type="finish">
 			<id>47_finish</id>
 			<actions phase="post">
-				<action>status: f.status;
+				<action>
+					status: f.status,
+					stateList: f.act_success;
 
-change status value{
-    "V očakávaní"
-}</action>
+					change stateList value { null }
+			
+					change status value{
+						"V očakávaní"
+					}
+				</action>
 			</actions>
 		</event>
 	</transition>

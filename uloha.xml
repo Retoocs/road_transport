@@ -76,36 +76,6 @@
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
-				<id>creation_date</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>creator</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
 				<id>title</id>
 				<logic>
 					<behavior>editable</behavior>
@@ -170,14 +140,14 @@
 			<id>2_assign</id>
 			<actions phase="pre">
 				<action>
-					uzer: f.creator;					
+					uzer: f.creator;
 
-					def tmp = userService.getLoggedOrSystem();
-					
+					def disUser = userService.getLoggedOrSystem();					
 					//todo: how to load logged user into f.creator?
 					//change uzer value {
-					//	tmp
-					//}
+					//	disUser
+					//}				
+					
 				</action>
 			</actions>
 		</event>
@@ -185,7 +155,12 @@
 			<id>2_finish</id>
 			<actions phase="post">
 				<action>
-					status: f.status;					
+					status: f.status,
+					creationDate: f.creation_date;
+
+					change creationDate value {
+						java.time.LocalDate.now()
+					}
 
 					change status value{
 						"Úloha bola zadaná"
@@ -203,8 +178,22 @@
 		</layout>
 		<label>Zobraziť info</label>
 		<dataGroup>
-			<id>DataGroup_2</id>
-			<layout>grid</layout>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>closure_state</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>7</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
 			<dataRef>
 				<id>change_date</id>
 				<logic>
@@ -220,27 +209,6 @@
 					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
-		</dataGroup>
-		<dataGroup>
-			<id>DataGroup_1</id>
-			<dataRef>
-				<id>closure_state</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
-					<y>7</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-		</dataGroup>
-		<dataGroup>
-			<id>DataGroup_0</id>
 			<dataRef>
 				<id>title</id>
 				<logic>
@@ -464,6 +432,18 @@
 				</layout>
 			</dataRef>
 		</dataGroup>
+		<event type="finish">
+			<id>9_finish</id>
+			<actions phase="post">
+				<action>				
+					changeDate: f.change_date;
+					
+					change changeDate value {
+						java.time.LocalDate.now()
+					}									
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>10</id>
@@ -577,27 +557,17 @@
 					<appearance>fill</appearance>
 				</layout>
 			</dataRef>
-			<dataRef>
-				<id>assignee</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>9</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
 		</dataGroup>
 		<event type="finish">
 			<id>17_finish</id>
 			<actions phase="post">
 				<action>
-					status: f.status;					
+					status: f.status,
+					closeDate: f.close_date;
+					
+					change closeDate value {
+						java.time.LocalDate.now()
+					}
 
 					change status value{
 						"Úloha bola uzavretá"
@@ -614,82 +584,19 @@
 			<offset>0</offset>
 		</layout>
 		<label>Znovuotvoriť úlohu</label>
-		<dataGroup>
-			<id>DataGroup_0</id>
-			<dataRef>
-				<id>closure_state</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>close_date</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>closure_desc</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>1</y>
-					<rows>1</rows>
-					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>closed_by</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>1</y>
-					<rows>1</rows>
-					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-		</dataGroup>
 		<event type="finish">
 			<id>18_finish</id>
 			<actions phase="pre">
 				<action>
-					closureState: f.closure_state;	
-					// wtf? len raz mozem pouzit f.xxx......ptm pise f is null whaaaaaaaat
-					//closeDate: f.close_date;
-					//closureDesc: f.closure_desc;
-					//closedBy: f.closed_by;
+					closureState: f.closure_state,	
+					closeDate: f.close_date,
+					closureDesc: f.closure_desc,
+					closedBy: f.closed_by;					
 					
-					
-					change closureState value {	null }					
-					//so on
+					change closureState value {	null }	
+					change closeDate value { null }
+					change closureDesc value { null }		
+					change closedBy value {	null }				
 				</action>
 			</actions>
 			<actions phase="post">

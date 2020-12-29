@@ -46,12 +46,21 @@
 	<data type="number">
 		<id>mileage</id>
 		<title>Počet kilometrov</title>
+		<action trigger="set">
+			mileageDateChange: f.mileage_date_change;
+			
+			change mileageDateChange value{ java.time.LocalDate.now() }			
+		</action>
+	</data>
+	<data type="date">
+		<id>creation_date</id>
+		<title>Dátum vytvorenia auta</title>
 	</data>
 	<data type="date">
 		<id>mileage_date_change</id>
 		<title>Dátum zmeny počtu kilometrov</title>
 	</data>
-	<data type="text">
+	<data type="date">
 		<id>carinfo_date_change</id>
 		<title>Dátum zmeny informácií</title>
 	</data>
@@ -279,7 +288,13 @@
 			<id>7_finish</id>
 			<actions phase="post">
 				<action>
-					status: f.status;
+					status: f.status,
+					creationDate: f.creation_date,
+					mileageDateChange: f.mileage_date_change;
+			
+					change mileageDateChange value{ null }	
+					
+					change creationDate value{ java.time.LocalDate.now() }	
 
 					change status value{
 						"Aktívny"
@@ -298,6 +313,21 @@
 		<label>zobraz info o aute</label>
 		<dataGroup>
 			<id>DataGroup_1</id>
+			<dataRef>
+				<id>creation_date</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>9</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
 			<dataRef>
 				<id>carinfo_date_change</id>
 				<logic>
@@ -520,7 +550,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>uprav info o aute</label>
+		<label>Upraviť info o aute</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -689,6 +719,16 @@
 				</layout>
 			</dataRef>
 		</dataGroup>
+		<event type="finish">
+			<id>18_finish</id>
+			<actions phase="post">
+				<action>
+					changeDate: f.carinfo_date_change;
+					
+					change changeDate value{ java.time.LocalDate.now() }	
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>20</id>
@@ -720,7 +760,8 @@
 			<id>20_assign</id>
 			<actions phase="pre">
 				<action>
-					taskref: f.servis_creation;
+					taskref: f.servis_creation,
+					disVin: f.vin;
 					
 					def groupId = findCase( { it.processIdentifier.eq("org_group").and(it.author.id.eq(loggedUser().id)) } )?.stringId;
 					def refedCase = createCase("${groupId}_servis" as String);
@@ -730,9 +771,6 @@
 					change taskref value {
 						[refedTask.stringId]
 					}	
-					
-					def disCase = findCase( {it._id.eq(useCase._id)} );
-					def data = getData("13", disCase);
 
 					setData(refedTask, [
 						"parent_id": [
@@ -740,7 +778,7 @@
 							"type" : "text"
 						],
 						"car_vin": [
-							"value": data["vin"].value,
+							"value": disVin.value,
 							"type" : "text"
 						],
 					])
@@ -752,17 +790,20 @@
 			<id>20_cancel</id>
 			<actions phase="pre">
 				<action>
-					taskref: f.servis_creation;
+					taskRef: f.servis_creation;
 
-					def toCancel = findTask({it._id.eq(new org.bson.types.ObjectId(taskref.value[0] as String))});		
+					def toCancel = findTask({it._id.eq(new org.bson.types.ObjectId(taskRef.value[0] as String))});		
 					
 					cancelTask(toCancel);
+					
+					change taskRef value {
+						[]
+					}
 
 					def toRemove = findCase( { it._id.eq(toCancel.caseId) } );
 					async.run{
 						workflowService.deleteCase(toRemove._id.toString());
-					}
-					
+					}								
 				</action>
 			</actions>
 		</event>
@@ -770,13 +811,16 @@
 			<id>20_finish</id>
 			<actions phase="pre">
 				<action>
-					taskref: f.servis_creation;
+					taskRef: f.servis_creation;
 					
-					def toFinish = findTask({it._id.eq(new org.bson.types.ObjectId(taskref.value[0] as String))});		
+					def toFinish = findTask({it._id.eq(new org.bson.types.ObjectId(taskRef.value[0] as String))});							
 					
 					finishTask(toFinish);	
-
-					//todo: reset taskref to show no value
+					
+					change taskRef value {
+						[]
+					}
+					
 				</action>
 			</actions>
 		</event>
@@ -871,16 +915,18 @@
 				<action>
 					taskref: f.servis_creation;					
 					
-					if(taskref.value != null){
-						def tmpTask = findTask({it._id.eq(new org.bson.types.ObjectId(taskref.value[0] as String))});
-						if(tmpTask != null){
-							def toRemoveService = findCase( { it._id.eq(tmpTask.caseId) } );
-							if(toRemoveService != null){
-								async.run{
-									workflowService.deleteCase(toRemoveService._id.toString());
-								}
-							}							
-						}						
+					if(taskref.value != null){ //mb this if is redundant
+						if(taskref.value != []){
+							def tmpTask = findTask({it._id.eq(new org.bson.types.ObjectId(taskref.value[0] as String))});
+							if(tmpTask != null){
+								def toRemoveService = findCase( { it._id.eq(tmpTask.caseId) } );
+								if(toRemoveService != null){
+									async.run{
+										workflowService.deleteCase(toRemoveService._id.toString());
+									}
+								}							
+							}
+						}												
 					}
 										
 					def toRemoveCar = findCase( { it._id.eq(useCase._id) } );	
