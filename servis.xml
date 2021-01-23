@@ -15,7 +15,7 @@
 			parentId: f.parent_id,
 			vinToCheck: f.this;
 			
-			if(parentId != null){
+			if(parentId.value != null){
 				def carInstance = findCase( {it._id.eq(parentId.value)} )
 				if( carInstance != null ){
 					def newVin = carInstance.getFieldValue("vin")
@@ -672,7 +672,7 @@ change status value{
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>netreba diely</label>
+		<label>Chyby nájdené</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -711,24 +711,6 @@ change status value{
 }</action>
 			</actions>
 		</event>
-	</transition>
-	<transition>
-		<id>17</id>
-		<x>1060</x>
-		<y>460</y>
-		<layout>
-			<offset>0</offset>
-		</layout>
-		<label>objednat diely</label>
-	</transition>
-	<transition>
-		<id>18</id>
-		<x>1198</x>
-		<y>577</y>
-		<layout>
-			<offset>0</offset>
-		</layout>
-		<label>prevzatie dielov</label>
 	</transition>
 	<transition>
 		<id>19</id>
@@ -899,71 +881,6 @@ change status value{
 			</actions>
 		</event>
 	</transition>
-	<transition>
-		<id>56</id>
-		<x>995</x>
-		<y>695</y>
-		<layout>
-			<offset>0</offset>
-		</layout>
-		<label>diely pripravene</label>
-		<dataGroup>
-			<id>DataGroup_0</id>
-			<dataRef>
-				<id>status_desc</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-		</dataGroup>
-		<event type="assign">
-			<id>56_assign</id>
-			<actions phase="pre">
-				<action>
-					desc: f.status_desc;
-					
-					change desc value{ "" }
-				</action>
-			</actions>
-		</event>
-		<event type="finish">
-			<id>56_finish</id>
-			<actions phase="post">
-				<action>status: f.status;
-
-change status value{
-    "Pripravené vykonať úkon"
-}</action>
-			</actions>
-		</event>
-	</transition>
-	<transition>
-		<id>72</id>
-		<x>1198</x>
-		<y>849</y>
-		<layout>
-			<offset>0</offset>
-		</layout>
-		<label>pouzitie dielov</label>
-	</transition>
-	<transition>
-		<id>82</id>
-		<x>1191</x>
-		<y>459</y>
-		<layout>
-			<offset>0</offset>
-		</layout>
-		<label>zrusit objednavku</label>
-	</transition>
 	<!-- PLACES -->
 	<place>
 		<id>1</id>
@@ -998,18 +915,10 @@ change status value{
 		<static>false</static>
 	</place>
 	<place>
-		<id>5</id>
-		<x>1057</x>
-		<y>578</y>
-		<label>objednane</label>
-		<tokens>0</tokens>
-		<static>false</static>
-	</place>
-	<place>
 		<id>6</id>
 		<x>780</x>
 		<y>700</y>
-		<label>pripravene opravit</label>
+		<label>Pripravené</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
@@ -1026,22 +935,6 @@ change status value{
 		<x>115</x>
 		<y>597</y>
 		<label>spracovanie zaznamu dokoncene</label>
-		<tokens>0</tokens>
-		<static>false</static>
-	</place>
-	<place>
-		<id>52</id>
-		<x>1060</x>
-		<y>340</y>
-		<label>mozu sa objednavat diely</label>
-		<tokens>0</tokens>
-		<static>false</static>
-	</place>
-	<place>
-		<id>62</id>
-		<x>1200</x>
-		<y>716</y>
-		<label>prevzate diely</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
@@ -1093,13 +986,6 @@ change status value{
 		<type>regular</type>
 		<sourceId>14</sourceId>
 		<destinationId>2</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>29</id>
-		<type>regular</type>
-		<sourceId>17</sourceId>
-		<destinationId>5</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 	<arc>
@@ -1187,177 +1073,10 @@ change status value{
 		<multiplicity>1</multiplicity>
 	</arc>
 	<arc>
-		<id>53</id>
+		<id>71</id>
 		<type>regular</type>
-		<sourceId>13</sourceId>
-		<destinationId>52</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>54</id>
-		<type>read</type>
-		<sourceId>52</sourceId>
-		<destinationId>17</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>60</id>
-		<type>inhibitor</type>
-		<sourceId>5</sourceId>
-		<destinationId>16</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>61</id>
-		<type>reset</type>
-		<sourceId>52</sourceId>
-		<destinationId>20</destinationId>
-		<multiplicity>1</multiplicity>
-		<breakPoint><x>1270</x><y>338</y></breakPoint>
-		<breakPoint><x>1273</x><y>620</y></breakPoint>
-		<breakPoint><x>1271</x><y>903</y></breakPoint>
-		<breakPoint><x>940</x><y>900</y></breakPoint>
-		<breakPoint><x>106</x><y>906</y></breakPoint>
-	</arc>
-	<arc>
-		<id>63</id>
-		<type>regular</type>
-		<sourceId>18</sourceId>
-		<destinationId>62</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>64</id>
-		<type>read</type>
-		<sourceId>62</sourceId>
-		<destinationId>56</destinationId>
-		<multiplicity>1</multiplicity>
-		<breakPoint><x>1116</x><y>708</y></breakPoint>
-		<breakPoint><x>1083</x><y>705</y></breakPoint>
-	</arc>
-	<arc>
-		<id>66</id>
-		<type>reset</type>
-		<sourceId>62</sourceId>
-		<destinationId>56</destinationId>
-		<multiplicity>1</multiplicity>
-		<breakPoint><x>1092</x><y>739</y></breakPoint>
-	</arc>
-	<arc>
-		<id>67</id>
-		<type>regular</type>
-		<sourceId>56</sourceId>
-		<destinationId>6</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>68</id>
-		<type>inhibitor</type>
-		<sourceId>7</sourceId>
-		<destinationId>56</destinationId>
-		<multiplicity>1</multiplicity>
-		<breakPoint><x>580</x><y>820</y></breakPoint>
-		<breakPoint><x>860</x><y>820</y></breakPoint>
-	</arc>
-	<arc>
-		<id>69</id>
-		<type>reset</type>
 		<sourceId>6</sourceId>
 		<destinationId>19</destinationId>
-		<multiplicity>1</multiplicity>
-		<breakPoint><x>700</x><y>726</y></breakPoint>
-	</arc>
-	<arc>
-		<id>70</id>
-		<type>read</type>
-		<sourceId>6</sourceId>
-		<destinationId>19</destinationId>
-		<multiplicity>1</multiplicity>
-		<breakPoint><x>702</x><y>671</y></breakPoint>
-	</arc>
-	<arc>
-		<id>76</id>
-		<type>read</type>
-		<sourceId>7</sourceId>
-		<destinationId>72</destinationId>
-		<multiplicity>1</multiplicity>
-		<breakPoint><x>460</x><y>848</y></breakPoint>
-	</arc>
-	<arc>
-		<id>81</id>
-		<type>reset</type>
-		<sourceId>52</sourceId>
-		<destinationId>15</destinationId>
-		<multiplicity>1</multiplicity>
-		<breakPoint><x>1058</x><y>20</y></breakPoint>
-		<breakPoint><x>127</x><y>21</y></breakPoint>
-	</arc>
-	<arc>
-		<id>83</id>
-		<type>regular</type>
-		<sourceId>5</sourceId>
-		<destinationId>82</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>84</id>
-		<type>inhibitor</type>
-		<sourceId>5</sourceId>
-		<destinationId>20</destinationId>
-		<multiplicity>1</multiplicity>
-		<breakPoint><x>928</x><y>641</y></breakPoint>
-		<breakPoint><x>500</x><y>638</y></breakPoint>
-	</arc>
-	<arc>
-		<id>85</id>
-		<type>reset</type>
-		<sourceId>52</sourceId>
-		<destinationId>14</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>86</id>
-		<type>inhibitor</type>
-		<sourceId>5</sourceId>
-		<destinationId>14</destinationId>
-		<multiplicity>1</multiplicity>
-		<breakPoint><x>751</x><y>524</y></breakPoint>
-	</arc>
-	<arc>
-		<id>88</id>
-		<type>inhibitor</type>
-		<sourceId>62</sourceId>
-		<destinationId>16</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>89</id>
-		<type>reset</type>
-		<sourceId>62</sourceId>
-		<destinationId>72</destinationId>
-		<multiplicity>1</multiplicity>
-		<breakPoint><x>1234</x><y>775</y></breakPoint>
-	</arc>
-	<arc>
-		<id>92</id>
-		<type>read</type>
-		<sourceId>62</sourceId>
-		<destinationId>72</destinationId>
-		<multiplicity>1</multiplicity>
-		<breakPoint><x>1169</x><y>777</y></breakPoint>
-	</arc>
-	<arc>
-		<id>95</id>
-		<type>reset</type>
-		<sourceId>4</sourceId>
-		<destinationId>18</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>96</id>
-		<type>regular</type>
-		<sourceId>5</sourceId>
-		<destinationId>18</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 </document>
