@@ -198,7 +198,7 @@
 		<title>Úspešnosť úkonu</title>
 		<values>Úkon úspešný</values>
 		<values>Úkon neúspešný</values>
-	</data>
+	</data>	
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
@@ -680,7 +680,7 @@
 					<template>material</template>
 					<appearance>fill</appearance>
 				</layout>
-			</dataRef>
+			</dataRef>			
 		</dataGroup>
 		<event type="finish">
 			<id>12_finish</id>

@@ -92,6 +92,10 @@
 		<title>Počítadlo servisných záznamov</title>
 		<init>0</init>
 	</data>
+	<data type="boolean">
+		<id>delete_all_services</id>
+		<title>Vymazať aj všetky servisné záznamy?</title>
+	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
@@ -904,12 +908,27 @@
 					<appearance>fill</appearance>
 				</layout>
 			</dataRef>
+			<dataRef>
+				<id>delete_all_services</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+				</layout>
+			</dataRef>
 		</dataGroup>
 		<event type="finish">
 			<id>46_finish</id>
 			<actions phase="post">
 				<action>
-					taskref: f.servis_creation;					
+					taskref: f.servis_creation,
+					deleteAll: f.delete_all_services;
 					
 					if(taskref.value != null){ //mb this if is redundant
 						if(taskref.value != []){
@@ -923,6 +942,20 @@
 								}							
 							}
 						}												
+					}
+					
+					if(deleteAll.value){							
+						def cases = findCases( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_service").and(it.dataSet.get("parent_id").value.eq(useCase.stringId))} )
+						def i = 0
+						cases.size().times {
+							def toRemoveService = cases.get(i++)
+							
+							if(toRemoveService != null){
+								async.run{
+									workflowService.deleteCase(toRemoveService._id.toString());
+								}
+							}						
+						}				
 					}
 										
 					def toRemoveCar = findCase( { it._id.eq(useCase._id) } );	
