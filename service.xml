@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://modeler.netgrif.com/petriflow_schema.xsd">
-	<id>servis</id>
+	<id>service</id>
 	<initials>servis</initials>
 	<title>Servis</title>
 	<defaultRole>true</defaultRole>
@@ -25,12 +25,127 @@
 					}
 				}
 				else {
-					change vinToCheck value {
-						"System neeviduje dané auto."
+					if(vinToCheck.value.contains("Záznam auta neexistuje") == false){
+						change vinToCheck value {
+							vinToCheck.value + " - Záznam auta neexistuje"
+						}
+					}					
+				}				
+			}	
+		</action>
+		<init>Servisný úkon nemá priradené vozidlo</init>
+	</data>
+	<data type="text">
+		<id>car_plate_number</id>
+		<title>EČV auta</title>
+		<action trigger="get">
+			parentId: f.parent_id,
+			plate_num: f.this;
+			
+			if(parentId.value != null){
+				def carInstance = findCase( {it._id.eq(parentId.value)} )
+				if( carInstance != null ){
+					def newPlateNumber = carInstance.getFieldValue("plate_number")
+					
+					change plate_num value {
+						newPlateNumber
 					}
+				}
+				else {
+					if(plate_num.value.contains("Záznam auta neexistuje") == false){
+						change plate_num value {
+							plate_num.value + " - Záznam auta neexistuje"
+						}
+					}					
 				}				
 			}			
 		</action>
+		<init>Servisný úkon nemá priradené vozidlo</init>
+	</data>
+	<data type="text">
+		<id>car_name</id>
+		<title>Názov auta</title>
+		<action trigger="get">
+			parentId: f.parent_id,
+			name: f.this;
+			
+			if(parentId.value != null){
+				def carInstance = findCase( {it._id.eq(parentId.value)} )
+				if( carInstance != null ){
+					def newName = carInstance.getFieldValue("car_name")
+					
+					change name value {
+						newName
+					}
+				}
+				else {
+					if(name.value.contains("Záznam auta neexistuje") == false){
+						change name value {
+							name.value + " - Záznam auta neexistuje"
+						}
+					}					
+				}				
+			}			
+		</action>
+		<init>Servisný úkon nemá priradené vozidlo</init>
+	</data>
+	<data type="text">
+		<id>car_brand</id>
+		<title>Značka auta</title>
+		<action trigger="get">
+			parentId: f.parent_id,
+			brand: f.this;
+			
+			if(parentId.value != null){
+				def carInstance = findCase( {it._id.eq(parentId.value)} )
+				if( carInstance != null ){
+					def newBrand = carInstance.getFieldValue("brand")
+					
+					change brand value {
+						newBrand
+					}
+				}
+				else {
+					if(brand.value.contains("Záznam auta neexistuje") == false){
+						change brand value {
+							brand.value + " - Záznam auta neexistuje"
+						}
+					}					
+				}				
+			}			
+		</action>
+		<init>Servisný úkon nemá priradené vozidlo</init>
+	</data>
+	<data type="text">
+		<id>car_model</id>
+		<title>Model auta</title>
+		<action trigger="get">
+			parentId: f.parent_id,
+			model: f.this;
+			
+			if(parentId.value != null){
+				def carInstance = findCase( {it._id.eq(parentId.value)} )
+				if( carInstance != null ){
+					def newModel = carInstance.getFieldValue("model")
+					
+					change model value {
+						newModel
+					}
+				}
+				else {
+					if(model.value.contains("Záznam auta neexistuje") == false){
+						change model value {
+							model.value + " - Záznam auta neexistuje"
+						}
+					}					
+				}				
+			}			
+		</action>
+		<init>Servisný úkon nemá priradené vozidlo</init>
+	</data>
+	<data type="taskRef">
+		<id>car_taskRef</id>
+		<title>Zobrazenie informácií o aute</title>
 	</data>
 	<data type="text">
 		<id>task</id>
@@ -66,7 +181,7 @@
 	</data>
 	<data type="text">
 		<id>text_3</id>
-		<title></title>
+		<title>Potvrdenie vymazania</title>
 		<desc>vymazanie treba potvrdiť</desc>
 		<init>Naozaj vymazať?</init>
 	</data>
@@ -93,13 +208,28 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>Vytvor záznam</label>
+		<label>Vytvorenie záznamu</label>
 		<dataGroup>
 			<id>DataGroup_1</id>
 			<dataRef>
 				<id>parent_id</id>
 				<logic>
 					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>8</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>car_taskRef</id>
+				<logic>
+					<behavior>visible</behavior>
 				</logic>
 				<layout>
 					<x>0</x>
@@ -161,29 +291,61 @@
 					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
-			<dataRef>
-				<id>car_vin</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
-					<y>3</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
 		</dataGroup>
+		<event type="assign">
+			<id>9_assign</id>
+			<actions phase="pre">
+				<action>	
+					taskRef: f.car_taskRef,
+					parentId: f.parent_id,
+					thisTask: t.9;
+					
+					def taskToRef = findTask( {it.caseId.eq(useCase.stringId).and(it.transitionId.eq("72"))} )
+					
+					change taskRef value {
+						[taskToRef.stringId];
+					}					
+					
+					if(parentId.value == null){
+						make taskRef, forbidden on thisTask when{ true }
+					}
+					else{
+						make taskRef, visible on thisTask when{ true }
+					}
+				</action>			
+			</actions>
+		</event>
 		<event type="finish">
 			<id>9_finish</id>
 			<actions phase="pre">
-				<action>				
+				<action>
+					parentId: f.parent_id,
+					carBrand: f.car_brand,
+					carModel: f.car_model,
+					carName: f.car_name,
+					carPlateNumber: f.car_plate_number;
+					
+					String resultStr;					
+					
+					if(parentId.value != null){
+						def parentCase = findCase( {it._id.eq(parentId.value)} )
+						def count = parentCase.getFieldValue("count_services")
+						
+						if(carName.value.isEmpty()){
+							resultStr = "Servis č." + (count+1 as Integer) + " - " + carPlateNumber.value
+						}
+						else{
+							resultStr = "Servis č." + (count+1 as Integer) + " - " + carName.value + " - "+ carPlateNumber.value
+						}
+					}
+					else{
+						resultStr = useCase.visualId;
+					}
+					
 					changeCaseProperty "title" about {
-						useCase.visualId;
-					}						
+						resultStr
+					}
+					
 				</action>
 			</actions>
 			<actions phase="post">
@@ -191,10 +353,10 @@
 					status: f.status,
 					start_date: f.start_date;
 					
-					change start_date value{ java.time.LocalDate.now() }
+					change start_date value{ java.time.LocalDate.now() }			
 
 					change status value{
-						"V očakávaní"
+						"V očakávaní";
 					}
 				</action>
 			</actions>
@@ -207,7 +369,52 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>zobraz info</label>
+		<label>Zobrazenie informácií</label>
+		<dataGroup>
+			<id>DataGroup_2</id>
+			<dataRef>
+				<id>car_taskRef</id>
+				<logic>
+					<behavior>visible</behavior>
+					<action trigger="get">
+						taskRef: f.car_taskRef,
+						parentId: f.parent_id,
+						thisTask: t.10;		
+
+						if(parentId.value == null){
+							make taskRef, forbidden on thisTask when{ true }
+						}
+						else{
+							make taskRef, visible on thisTask when{ true }
+						}
+					</action>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>4</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>parent_id</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>8</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
 		<dataGroup>
 			<id>DataGroup_1</id>
 			<dataRef>
@@ -259,21 +466,6 @@
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
-				<id>parent_id</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>8</y>
-					<rows>1</rows>
-					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
 				<id>mechanic</id>
 				<logic>
 					<behavior>visible</behavior>
@@ -310,21 +502,6 @@
 				</logic>
 				<layout>
 					<x>0</x>
-					<y>4</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>car_vin</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
 					<y>4</y>
 					<rows>1</rows>
 					<cols>2</cols>
@@ -402,7 +579,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>Upraviť info</label>
+		<label>Upravenie informácií</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -486,7 +663,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>vymaz zaznam</label>
+		<label>Vymazanie záznamu</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -527,7 +704,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>obhliadka vozidla</label>
+		<label>Obhliadnutie vozidla</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -563,7 +740,7 @@
 					status: f.status;					
 
 					change status value{
-						"Prebieha obhliadka vozidla"
+						"Prebieha obhliadka vozidla";
 					}
 				</action>
 			</actions>
@@ -576,7 +753,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>chyby nenajdene</label>
+		<label>Chyby nenájdené</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -612,7 +789,7 @@
 					status: f.status;
 
 					change status value {
-						"V očakávaní"
+						"V očakávaní";
 					}
 				</action>
 			</actions>
@@ -620,12 +797,12 @@
 	</transition>
 	<transition>
 		<id>15</id>
-		<x>115</x>
-		<y>476</y>
+		<x>100</x>
+		<y>460</y>
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>nevykonat opravu</label>
+		<label>Nevykonanie úkonu</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -707,7 +884,7 @@ change status value{
 				<action>status: f.status;
 
 change status value{
-    "Pripravené vykonať úkon"
+    "Pripravené vykonať úkon";
 }</action>
 			</actions>
 		</event>
@@ -719,7 +896,7 @@ change status value{
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>zacat opravu</label>
+		<label>Začatie úkonu</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -751,22 +928,24 @@ change status value{
 		<event type="finish">
 			<id>19_finish</id>
 			<actions phase="post">
-				<action>status: f.status;
+				<action>
+					statuss: f.status;
 
-change status value{
-    "Úkon sa vykonáva"
-}</action>
+					change statuss value{
+						"Úkon sa vykonáva";
+					}
+				</action>
 			</actions>
 		</event>
 	</transition>
 	<transition>
 		<id>20</id>
-		<x>111</x>
-		<y>704</y>
+		<x>100</x>
+		<y>700</y>
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>dokoncit opravu</label>
+		<label>Dokončenie úkonu</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -831,12 +1010,12 @@ change status value{
 	</transition>
 	<transition>
 		<id>47</id>
-		<x>427</x>
-		<y>538</y>
+		<x>420</x>
+		<y>540</y>
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>znovuotvorenie zaznamu</label>
+		<label>Znovuotvorenie záznamu</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -881,6 +1060,103 @@ change status value{
 			</actions>
 		</event>
 	</transition>
+	<transition>
+		<id>72</id>
+		<x>218</x>
+		<y>94</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>Zobrazenie informácií o aute</label>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>car_vin</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>car_brand</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>car_name</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>car_model</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>car_plate_number</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>47_assign</id>
+			<actions phase="pre">
+				<action>
+					desc: f.status_desc;
+					
+					change desc value { null }
+				</action>
+			</actions>
+		</event>
+	</transition>
 	<!-- PLACES -->
 	<place>
 		<id>1</id>
@@ -902,7 +1178,7 @@ change status value{
 		<id>3</id>
 		<x>420</x>
 		<y>220</y>
-		<label>zaznam existuje</label>
+		<label>Záznam existuje</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
@@ -910,7 +1186,7 @@ change status value{
 		<id>4</id>
 		<x>780</x>
 		<y>460</y>
-		<label>obhliadka prebieha</label>
+		<label>Obhliadka prebieha</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
@@ -918,7 +1194,7 @@ change status value{
 		<id>6</id>
 		<x>780</x>
 		<y>700</y>
-		<label>Pripravené</label>
+		<label>Pripravené vykonať úkon</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
@@ -926,15 +1202,15 @@ change status value{
 		<id>7</id>
 		<x>460</x>
 		<y>700</y>
-		<label>opravuje sa</label>
+		<label>Úkon sa vykonáva</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
 	<place>
 		<id>44</id>
-		<x>115</x>
-		<y>597</y>
-		<label>spracovanie zaznamu dokoncene</label>
+		<x>100</x>
+		<y>580</y>
+		<label>Spracovanie záznamu dokončené</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>

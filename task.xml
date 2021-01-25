@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://modeler.netgrif.com/petriflow_schema.xsd">
-	<id>uloha</id>
-	<initials>uloha</initials>
+	<id>task</id>
+	<initials>úloha</initials>
 	<title>Uloha</title>
 	<defaultRole>true</defaultRole>
 	<transitionRole>false</transitionRole>
@@ -72,7 +72,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>Vytvoriť úlohu</label>
+		<label>Vytvorenie úlohy</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -176,7 +176,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>Zobraziť info</label>
+		<label>Zobrazenie informácií</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -368,7 +368,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>Upraviť info</label>
+		<label>Upravenie informácií</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -452,7 +452,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>Vymazať úlohu</label>
+		<label>Vymazanie úlohy</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -493,7 +493,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>Uzavrieť úlohu</label>
+		<label>Uzavretie úlohy</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -583,7 +583,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>Znovuotvoriť úlohu</label>
+		<label>Znovuotvorenie úlohy</label>
 		<event type="finish">
 			<id>18_finish</id>
 			<actions phase="pre">
@@ -631,7 +631,7 @@
 		<id>4</id>
 		<x>700</x>
 		<y>300</y>
-		<label>Úloha aktívna</label>
+		<label>Úloha je aktívna</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
@@ -647,7 +647,7 @@
 		<id>16</id>
 		<x>1060</x>
 		<y>300</y>
-		<label>Úloha uzavretá</label>
+		<label>Úloha je uzavretá</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>

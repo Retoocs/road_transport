@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://modeler.netgrif.com/petriflow_schema.xsd">
-	<id>auto</id>
+	<id>car</id>
 	<version>1.0.0</version>
 	<initials>auto</initials>
 	<title>Auto</title>
@@ -74,18 +74,6 @@
 		<id>car_photo</id>
 		<title>Foto auta</title>
 	</data>
-	<data type="enumeration">
-		<id>repairs_toPerform</id>
-		<title>Na vykonanie</title>
-	</data>
-	<data type="enumeration">
-		<id>repairs_performed</id>
-		<title>Vykonané</title>
-	</data>
-	<data type="text">
-		<id>repairs_notPerformed</id>
-		<title>Nevykonané</title>
-	</data>
 	<data type="taskRef">
 		<id>servis_creation</id>
 		<title>Vytvorenie servisného záznamu</title>
@@ -96,8 +84,13 @@
 	</data>
 	<data type="text">
 		<id>accept_removal</id>
-		<title>Stav</title>
+		<title>Potvrdenie vymazania</title>
 		<init>Potvrď vymazanie</init>
+	</data>
+	<data type="number">
+		<id>count_services</id>
+		<title>Počítadlo servisných záznamov</title>
+		<init>0</init>
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
@@ -109,9 +102,9 @@
 			<cols>4</cols>
 			<offset>0</offset>
 		</layout>
-		<label>Vytvor auto do evidencie</label>
+		<label>Vytvorenie záznamu</label>
 		<dataGroup>
-			<id>DataGroup_1</id>
+			<id>DataGroup_0</id>
 			<dataRef>
 				<id>car_photo</id>
 				<logic>
@@ -127,9 +120,6 @@
 					<appearance></appearance>
 				</layout>
 			</dataRef>
-		</dataGroup>
-		<dataGroup>
-			<id>DataGroup_0</id>
 			<dataRef>
 				<id>brand</id>
 				<logic>
@@ -310,7 +300,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>zobraz info o aute</label>
+		<label>Zobrazenie informácií</label>
 		<dataGroup>
 			<id>DataGroup_1</id>
 			<dataRef>
@@ -336,6 +326,21 @@
 				<layout>
 					<x>0</x>
 					<y>9</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>mileage_date_change</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>6</y>
 					<rows>1</rows>
 					<cols>2</cols>
 					<offset>0</offset>
@@ -450,22 +455,7 @@
 					<template>material</template>
 					<appearance>outline</appearance>
 				</layout>
-			</dataRef>
-			<dataRef>
-				<id>mileage_date_change</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>6</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
+			</dataRef>			
 			<dataRef>
 				<id>plate_number</id>
 				<logic>
@@ -541,6 +531,21 @@
 					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
+			<dataRef>
+				<id>count_services</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>9</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
 		</dataGroup>
 	</transition>
 	<transition>
@@ -550,7 +555,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>Upraviť info o aute</label>
+		<label>Upravenie informácií</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -737,7 +742,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>Zaznamenanie potrebného servisného úkonu</label>
+		<label>Vytvorenie servisného záznamu</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -763,26 +768,30 @@
 					taskref: f.servis_creation,
 					disVin: f.vin;
 					
-					def groupId = findCase( { it.processIdentifier.eq("org_group").and(it.author.id.eq(loggedUser().id)) } )?.stringId;
-					def refedCase = createCase("${groupId}_servis" as String);
-					
-					def refedTask = assignTask("9", refedCase);						
+					//def groupId = findCase( { it.processIdentifier.eq("org_group").and(it.author.id.eq(loggedUser().id)) } )?.stringId;
+					//def refedCase = createCase("${groupId}_service" as String);
+					def refedCase = createCase("5faffef90a975a1b77c9b54a_service" as String);
+					def refedTask = findTask( {it.caseId.eq(refedCase.stringId).and(it.transitionId.eq("9"))} )
 					
 					change taskref value {
 						[refedTask.stringId]
 					}	
-
+					
 					setData(refedTask, [
 						"parent_id": [
 							"value": useCase.stringId,
 							"type" : "text"
 						],
-						"car_vin": [
-							"value": disVin.value,
-							"type" : "text"
-						],
-					])
-				
+					])													
+				</action>
+			</actions>
+			<actions phase="post">
+				<action>
+					taskRef: f.servis_creation;
+					
+					def refedTask = findTask( {it._id.eq(taskRef.value[0])} )
+					
+					assignTask(refedTask);																				
 				</action>
 			</actions>
 		</event>
@@ -811,11 +820,16 @@
 			<id>20_finish</id>
 			<actions phase="pre">
 				<action>
-					taskRef: f.servis_creation;
+					taskRef: f.servis_creation,
+					numberOfServices: f.count_services;
 					
-					def toFinish = findTask({it._id.eq(new org.bson.types.ObjectId(taskRef.value[0] as String))});							
+					def toFinish = findTask({it._id.eq(new org.bson.types.ObjectId(taskRef.value[0] as String))});	
 					
 					finishTask(toFinish);	
+					
+					change numberOfServices value{
+						numberOfServices.value + 1
+					}
 					
 					change taskRef value {
 						[]
@@ -832,7 +846,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>deaktivuj zaznam auta</label>
+		<label>Deaktivovanie záznamu</label>
 		<event type="finish">
 			<id>33_finish</id>
 			<actions phase="post">
@@ -852,7 +866,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>aktivuj zaznam auta </label>
+		<label>Aktivovanie záznamu</label>
 		<event type="finish">
 			<id>35_finish</id>
 			<actions phase="post">
@@ -872,7 +886,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>Vymaz zaznam auta</label>
+		<label>Vymazanie záznamu</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -888,24 +902,6 @@
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>fill</appearance>
-				</layout>
-			</dataRef>
-		</dataGroup>
-		<dataGroup>
-			<id>DataGroup_1</id>
-			<dataRef>
-				<id>servis_creation</id>
-				<logic>
-					<behavior>forbidden</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>0</y>
-					<rows>10</rows>
-					<cols>4</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
 		</dataGroup>
@@ -952,7 +948,7 @@
 		<id>22</id>
 		<x>780</x>
 		<y>540</y>
-		<label>zaznam auta je aktivny</label>
+		<label>Záznam je aktívny</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
@@ -960,7 +956,7 @@
 		<id>27</id>
 		<x>1291</x>
 		<y>626</y>
-		<label>servisne ukony na vykonanie</label>
+		<label>Servisné úkony</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
@@ -968,7 +964,7 @@
 		<id>34</id>
 		<x>746</x>
 		<y>825</y>
-		<label>auto je neaktivne</label>
+		<label>Záznam je neaktívny</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
@@ -976,7 +972,7 @@
 		<id>44</id>
 		<x>583</x>
 		<y>416</y>
-		<label>zaznam auta existuje</label>
+		<label>Záznam existuje</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
@@ -984,7 +980,7 @@
 		<id>60</id>
 		<x>580</x>
 		<y>188</y>
-		<label></label>
+		<label>Vymazané</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
