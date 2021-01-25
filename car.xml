@@ -160,6 +160,7 @@
 				<id>plate_number</id>
 				<logic>
 					<behavior>editable</behavior>
+					<behavior>required</behavior>
 				</logic>
 				<layout>
 					<x>1</x>

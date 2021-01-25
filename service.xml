@@ -20,6 +20,9 @@
 				if( carInstance != null ){
 					def newVin = carInstance.getFieldValue("vin")
 					
+					if(newVin == null)
+						newVin = "";
+					
 					change vinToCheck value {
 						newVin
 					}
@@ -46,6 +49,9 @@
 				def carInstance = findCase( {it._id.eq(parentId.value)} )
 				if( carInstance != null ){
 					def newPlateNumber = carInstance.getFieldValue("plate_number")
+					
+					if(newPlateNumber == null)
+						newPlateNumber = "";
 					
 					change plate_num value {
 						newPlateNumber
@@ -74,6 +80,9 @@
 				if( carInstance != null ){
 					def newName = carInstance.getFieldValue("car_name")
 					
+					if(newName == null)
+						newName = "";
+					
 					change name value {
 						newName
 					}
@@ -101,6 +110,9 @@
 				if( carInstance != null ){
 					def newBrand = carInstance.getFieldValue("brand")
 					
+					if(newBrand == null)
+						newBrand = "";
+					
 					change brand value {
 						newBrand
 					}
@@ -127,6 +139,9 @@
 				def carInstance = findCase( {it._id.eq(parentId.value)} )
 				if( carInstance != null ){
 					def newModel = carInstance.getFieldValue("model")
+					
+					if(newModel == null)
+						newModel = "";
 					
 					change model value {
 						newModel
@@ -332,10 +347,10 @@
 						def count = parentCase.getFieldValue("count_services")
 						
 						if(carName.value.isEmpty()){
-							resultStr = "Servis č." + (count+1 as Integer) + " - " + carPlateNumber.value
+							resultStr = "Servis č." + (count+1 as Integer) + " - " + carPlateNumber.value + " - " + carBrand.value + " " + carModel.value
 						}
 						else{
-							resultStr = "Servis č." + (count+1 as Integer) + " - " + carName.value + " - "+ carPlateNumber.value
+							resultStr = "Servis č." + (count+1 as Integer) + " - " + carName.value + " - "+ carPlateNumber.value + " - "+ carBrand.value + " " + carModel.value
 						}
 					}
 					else{
