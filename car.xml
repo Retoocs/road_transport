@@ -13,10 +13,48 @@
 	<data type="text">
 		<id>brand</id>
 		<title>Značka</title>
+		<action trigger="set">
+			plateNumber: f.plate_number,
+			name: f.car_name,
+			brand: f.this,
+			model: f.model;
+			
+			def resultStr;
+			
+			if(name.value == null){
+				resultStr = plateNumber.value + " - " + brand.value + " " + model.value
+			}
+			else{
+				resultStr = plateNumber.value + " - " + name.value + " - " + brand.value + " " + model.value
+			}
+			
+			changeCaseProperty "title" about {
+				resultStr
+			}
+		</action>
 	</data>
 	<data type="text">
 		<id>model</id>
 		<title>Model</title>
+		<action trigger="set">
+			plateNumber: f.plate_number,
+			name: f.car_name,
+			brand: f.brand,
+			model: f.this;
+			
+			def resultStr;
+			
+			if(name.value == null){
+				resultStr = plateNumber.value + " - " + brand.value + " " + model.value
+			}
+			else{
+				resultStr = plateNumber.value + " - " + name.value + " - " + brand.value + " " + model.value
+			}
+			
+			changeCaseProperty "title" about {
+				resultStr
+			}
+		</action>
 	</data>
 	<data type="text">
 		<id>vin</id>
@@ -30,6 +68,25 @@
 	<data type="text">
 		<id>plate_number</id>
 		<title>EČV</title>
+		<action trigger="set">
+			plateNumber: f.this,
+			name: f.car_name,
+			brand: f.brand,
+			model: f.model;
+			
+			def resultStr;
+			
+			if(name.value == null){
+				resultStr = plateNumber.value + " - " + brand.value + " " + model.value
+			}
+			else{
+				resultStr = plateNumber.value + " - " + name.value + " - " + brand.value + " " + model.value
+			}
+			
+			changeCaseProperty "title" about {
+				resultStr
+			}
+		</action>
 	</data>
 	<data type="user">
 		<id>car_owner</id>
@@ -42,6 +99,25 @@
 	<data type="text">
 		<id>car_name</id>
 		<title>Názov auta</title>
+		<action trigger="set">
+			plateNumber: f.plate_number,
+			name: f.this,
+			brand: f.brand,
+			model: f.model;
+			
+			def resultStr;
+			
+			if(name.value == null || name.value.isEmpty()){
+				resultStr = plateNumber.value + " - " + brand.value + " " + model.value
+			}
+			else{
+				resultStr = plateNumber.value + " - " + name.value + " - " + brand.value + " " + model.value
+			}
+			
+			changeCaseProperty "title" about {
+				resultStr
+			}
+		</action>
 	</data>
 	<data type="number">
 		<id>mileage</id>
@@ -281,6 +357,27 @@
 		</dataGroup>
 		<event type="finish">
 			<id>7_finish</id>
+			<actions phase="pre">
+				<action>
+					plateNumber: f.plate_number,
+					name: f.car_name,
+					brand: f.brand,
+					model: f.model;
+					
+					def resultStr;
+					
+					if(name.value == null){
+						resultStr = plateNumber.value + " - " + brand.value + " " + model.value
+					}
+					else{
+						resultStr = plateNumber.value + " - " + name.value + " - " + brand.value + " " + model.value
+					}
+					
+					changeCaseProperty "title" about {
+						resultStr
+					}
+				</action>
+			</actions>
 			<actions phase="post">
 				<action>
 					status: f.status,
