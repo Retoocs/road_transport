@@ -185,6 +185,19 @@
 	<data type="text">
 		<id>status</id>
 		<title>Stav</title>
+		<action trigger="set">
+			status: f.this,
+			history: f.status_history;
+			
+			def currentDateTime = java.time.LocalDateTime.now()
+			def formatter = java.time.format.DateTimeFormatter.ofPattern("dd.MM.YYYY HH:mm")
+			def formatedDateTime = currentDateTime.format(formatter)
+			def surname = userService.getLoggedOrSystem().surname
+						
+			change history choices {
+				history.choices + [formatedDateTime + " -- " + status.value + " (${surname})"]
+			}			
+		</action>
 	</data>
 	<data type="user">
 		<id>mechanic</id>
@@ -214,6 +227,10 @@
 		<values>Úkon úspešný</values>
 		<values>Úkon neúspešný</values>
 	</data>	
+	<data type="enumeration">
+		<id>status_history</id>
+		<title>História stavov</title>
+	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
@@ -385,6 +402,7 @@
 			<offset>0</offset>
 		</layout>
 		<label>Zobrazenie informácií</label>
+		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
 			<id>DataGroup_2</id>
 			<dataRef>
@@ -451,6 +469,21 @@
 				<id>status</id>
 				<logic>
 					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>status_history</id>
+				<logic>
+					<behavior>editable</behavior>
 				</logic>
 				<layout>
 					<x>0</x>
@@ -679,6 +712,7 @@
 			<offset>0</offset>
 		</layout>
 		<label>Vymazanie záznamu</label>
+		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -720,6 +754,7 @@
 			<offset>0</offset>
 		</layout>
 		<label>Obhliadnutie vozidla</label>
+		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -769,6 +804,7 @@
 			<offset>0</offset>
 		</layout>
 		<label>Chyby nenájdené</label>
+		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -818,6 +854,7 @@
 			<offset>0</offset>
 		</layout>
 		<label>Nevykonanie úkonu</label>
+		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -865,6 +902,7 @@ change status value{
 			<offset>0</offset>
 		</layout>
 		<label>Chyby nájdené</label>
+		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -912,6 +950,7 @@ change status value{
 			<offset>0</offset>
 		</layout>
 		<label>Začatie úkonu</label>
+		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -961,6 +1000,7 @@ change status value{
 			<offset>0</offset>
 		</layout>
 		<label>Dokončenie úkonu</label>
+		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -1031,12 +1071,14 @@ change status value{
 			<offset>0</offset>
 		</layout>
 		<label>Znovuotvorenie záznamu</label>
+		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
 				<id>status_desc</id>
 				<logic>
 					<behavior>editable</behavior>
+					<behavior>required</behavior>
 				</logic>
 				<layout>
 					<x>1</x>

@@ -15,6 +15,21 @@
 	<data type="user">
 		<id>assignee</id>
 		<title>Riešiteľ</title>
+		<action trigger="set">
+			user: f.this,
+			status: f.status;
+			
+			if(user.value == null){
+				change status value{
+					"Nepridelená"
+				}
+			}
+			else {
+				change status value{
+					"Zadaná"
+				}
+			}
+		</action>
 	</data>
 	<data type="text">
 		<id>task</id>
@@ -48,8 +63,8 @@
 		<title>Dátum poslednej zmeny</title>
 	</data>
 	<data type="date">
-		<id>deadline</id>
-		<title>Konečný termín</title>
+		<id>shedule_date</id>
+		<title>Dátum naplánovania</title>
 	</data>
 	<data type="text">
 		<id>title</id>
@@ -58,10 +73,27 @@
 	<data type="text">
 		<id>status</id>
 		<title>Stav</title>
+		<action trigger="set">
+			status: f.this,
+			history: f.status_history;
+			
+			def currentDateTime = java.time.LocalDateTime.now()
+			def formatter = java.time.format.DateTimeFormatter.ofPattern("dd.MM.YYYY HH:mm")
+			def formatedDateTime = currentDateTime.format(formatter)
+			def surname = userService.getLoggedOrSystem().surname
+						
+			change history choices {
+				history.choices + [formatedDateTime + " -- " + status.value + " (${surname})"]
+			}			
+		</action>
 	</data>
 	<data type="text">
 		<id>accept_removal</id>
 		<title>Vymazanie treba potvrdiť</title>
+	</data>
+	<data type="enumeration">
+		<id>status_history</id>
+		<title>História stavov</title>
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
@@ -106,7 +138,7 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>deadline</id>
+				<id>shedule_date</id>
 				<logic>
 					<behavior>editable</behavior>
 				</logic>
@@ -156,14 +188,23 @@
 			<actions phase="post">
 				<action>
 					status: f.status,
+					user: f.assignee,
 					creationDate: f.creation_date;
+
+					
+					if(user.value == null){
+						change status value{
+							"Nepridelená"
+						}
+					}
+					else {
+						change status value{
+							"Zadaná"
+						}
+					}
 
 					change creationDate value {
 						java.time.LocalDate.now()
-					}
-
-					change status value{
-						"Úloha bola zadaná"
 					}
 				</action>
 			</actions>
@@ -177,6 +218,7 @@
 			<offset>0</offset>
 		</layout>
 		<label>Zobrazenie informácií</label>
+		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -270,7 +312,7 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>deadline</id>
+				<id>shedule_date</id>
 				<logic>
 					<behavior>visible</behavior>
 				</logic>
@@ -318,6 +360,21 @@
 				<id>status</id>
 				<logic>
 					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>7</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>status_history</id>
+				<logic>
+					<behavior>editable</behavior>
 				</logic>
 				<layout>
 					<x>0</x>
@@ -402,7 +459,7 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>deadline</id>
+				<id>shedule_date</id>
 				<logic>
 					<behavior>editable</behavior>
 				</logic>
@@ -453,6 +510,7 @@
 			<offset>0</offset>
 		</layout>
 		<label>Vymazanie úlohy</label>
+		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -494,6 +552,7 @@
 			<offset>0</offset>
 		</layout>
 		<label>Uzavretie úlohy</label>
+		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -570,7 +629,7 @@
 					}
 
 					change status value{
-						"Úloha bola uzavretá"
+						"Uzavretá"
 					}
 				</action>
 			</actions>
@@ -584,6 +643,7 @@
 			<offset>0</offset>
 		</layout>
 		<label>Znovuotvorenie úlohy</label>
+		<assignPolicy>auto</assignPolicy>
 		<event type="finish">
 			<id>18_finish</id>
 			<actions phase="pre">
@@ -604,7 +664,7 @@
 					status: f.status;	
 
 					change status value{
-						"Úloha bola znovuotvorená"
+						"Znovuotvorená"
 					}
 				</action>
 			</actions>
