@@ -69,11 +69,22 @@
 		<id>plate_number</id>
 		<title>EČV</title>
 		<action trigger="set">
+			history: f.history_plate_number,
 			plateNumber: f.this,
 			name: f.car_name,
 			brand: f.brand,
 			model: f.model;
 			
+			if((plateNumber.value != null).and(plateNumber.value.isEmpty() == false) ){
+				def currentDateTime = java.time.LocalDateTime.now()
+				def formatter = java.time.format.DateTimeFormatter.ofPattern("dd.MM.YYYY HH:mm")
+				def formatedDateTime = currentDateTime.format(formatter)
+							
+				change history choices {
+					history.choices + [formatedDateTime + " -- " + plateNumber.value]
+				}
+			}
+		
 			def resultStr;
 			
 			if(name.value == null){
@@ -171,6 +182,10 @@
 	<data type="boolean">
 		<id>delete_all_services</id>
 		<title>Vymazať aj všetky servisné záznamy?</title>
+	</data>
+	<data type="enumeration">
+		<id>history_plate_number</id>
+		<title>História EČV</title>
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
@@ -574,6 +589,21 @@
 				</layout>
 			</dataRef>
 			<dataRef>
+				<id>history_plate_number</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>9</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef> 3
+			<dataRef>
 				<id>car_owner</id>
 				<logic>
 					<behavior>visible</behavior>
@@ -664,6 +694,7 @@
 				<id>brand</id>
 				<logic>
 					<behavior>editable</behavior>
+					<behavior>required</behavior>
 				</logic>
 				<layout>
 					<x>1</x>
@@ -679,6 +710,7 @@
 				<id>model</id>
 				<logic>
 					<behavior>editable</behavior>
+					<behavior>required</behavior>
 				</logic>
 				<layout>
 					<x>1</x>
@@ -724,6 +756,7 @@
 				<id>mileage</id>
 				<logic>
 					<behavior>editable</behavior>
+					<behavior>required</behavior>
 				</logic>
 				<layout>
 					<x>1</x>
@@ -754,6 +787,7 @@
 				<id>plate_number</id>
 				<logic>
 					<behavior>editable</behavior>
+					<behavior>required</behavior>
 				</logic>
 				<layout>
 					<x>1</x>
