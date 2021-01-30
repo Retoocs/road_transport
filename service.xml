@@ -197,6 +197,13 @@
 			change history choices {
 				history.choices + [formatedDateTime + " -- " + status.value + " (${surname})"]
 			}			
+			
+			def title = useCase.title
+			def torn = title.split("\\{", 0)
+			
+			changeCaseProperty "title" about {
+				torn[0] + " {${status.value}}"
+			}
 		</action>
 	</data>
 	<data type="user">
@@ -364,10 +371,10 @@
 						def count = parentCase.getFieldValue("count_services")
 						
 						if(carName.value.isEmpty()){
-							resultStr = "Servis č." + (count+1 as Integer) + " - " + carPlateNumber.value + " - " + carBrand.value + " " + carModel.value
+							resultStr = "Servis č." + (count+1 as Integer) + " - " + carPlateNumber.value + " - " + carBrand.value + " " + carModel.value + " {}"
 						}
 						else{
-							resultStr = "Servis č." + (count+1 as Integer) + " - " + carName.value + " - "+ carPlateNumber.value + " - "+ carBrand.value + " " + carModel.value
+							resultStr = "Servis č." + (count+1 as Integer) + " - " + carName.value + " - "+ carPlateNumber.value + " - "+ carBrand.value + " " + carModel.value + " {}"
 						}
 					}
 					else{

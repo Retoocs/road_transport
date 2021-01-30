@@ -85,6 +85,13 @@
 			change history choices {
 				history.choices + [formatedDateTime + " -- " + status.value + " (${surname})"]
 			}			
+			
+			def title = useCase.title
+			def torn = title.split("\\{", 0)
+			
+			changeCaseProperty "title" about {
+				torn[0] + " {${status.value}}"
+			}
 		</action>
 	</data>
 	<data type="text">
@@ -189,6 +196,7 @@
 				<action>
 					status: f.status,
 					user: f.assignee,
+					title: f.title,
 					creationDate: f.creation_date;
 
 					
@@ -199,8 +207,12 @@
 					}
 					else {
 						change status value{
-							"Zadaná"
+							"Pridelená"
 						}
+					}
+					
+					changeCaseProperty "title" about {
+						title.value + " {}"
 					}
 
 					change creationDate value {
