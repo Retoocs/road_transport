@@ -225,6 +225,10 @@
 		<title>Car id</title>
 	</data>
 	<data type="text">
+		<id>parent_task_id</id>
+		<title>Task id</title>
+	</data>
+	<data type="text">
 		<id>status_desc</id>
 		<title>Popis</title>
 	</data>
@@ -252,6 +256,21 @@
 			<id>DataGroup_1</id>
 			<dataRef>
 				<id>parent_id</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>8</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>parent_task_id</id>
 				<logic>
 					<behavior>hidden</behavior>
 				</logic>
@@ -792,7 +811,7 @@
 		</event>
 		<event type="finish">
 			<id>13_finish</id>
-			<actions phase="post">
+			<actions phase="pre">
 				<action>
 					status: f.status;					
 
@@ -842,7 +861,7 @@
 		</event>
 		<event type="finish">
 			<id>14_finish</id>
-			<actions phase="post">
+			<actions phase="pre">
 				<action>
 					status: f.status;
 
@@ -892,7 +911,7 @@
 		</event>
 		<event type="finish">
 			<id>15_finish</id>
-			<actions phase="post">
+			<actions phase="pre">
 				<action>status: f.status;
 
 change status value{
@@ -940,11 +959,11 @@ change status value{
 		</event>
 		<event type="finish">
 			<id>16_finish</id>
-			<actions phase="post">
+			<actions phase="pre">
 				<action>status: f.status;
 
 change status value{
-    "Pripravené vykonať úkon";
+    "Pripravené vykonať úkon"
 }</action>
 			</actions>
 		</event>
