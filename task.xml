@@ -855,8 +855,7 @@
 					<action trigger="get">		
 						carList: f.this;
 
-						//def carInstances = findCases( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_car").and(it.dataSet.get("status").value.eq("Aktívny"))} )
-						def carInstances = findCases( {it._id.eq("601681280a975a02a8d166f3")} )
+						def carInstances = findCases( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_car").and(it.dataSet.get("status").value.eq("Aktívny"))} )
 						def carInstancesMap = carInstances.collectEntries {
 							String value;
 							
