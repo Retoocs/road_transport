@@ -114,6 +114,10 @@
 		<id>last_car_select</id>
 		<title>ID posledne vybraného auta</title>
 	</data>
+	<data type="boolean">
+		<id>delete_service</id>
+		<title>Vymazať aj servisný záznam?</title>
+	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
@@ -552,11 +556,54 @@
 					<appearance>fill</appearance>
 				</layout>
 			</dataRef>
+			<dataRef>
+				<id>delete_service</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
 		</dataGroup>
+		<event type="assign">
+			<id>10_assign</id>
+			<actions phase="pre">
+				<action>				
+					deleteService: f.delete_service,
+					thisTask: t.10;
+					
+					def serviceCase = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_service").and(it.dataSet.get("parent_task_id").value?.eq(useCase.stringId))} ) 
+					
+					if(serviceCase == null){
+						make deleteService, visible on thisTask when { true }
+					} else {
+						make deleteService, editable on thisTask when { true }
+					}									
+				</action>
+			</actions>
+		</event>
 		<event type="finish">
 			<id>10_finish</id>
 			<actions phase="post">
-				<action>				
+				<action>		
+					deleteService: f.delete_service;
+					
+					if(deleteService.value){
+						def toRemoveService = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_service").and(it.dataSet.get("parent_task_id").value?.eq(useCase.stringId))} )
+						if(toRemoveService != null){
+							async.run{
+								workflowService.deleteCase(toRemoveService._id.toString());
+							}
+						}
+					}
+				
 					def toRemove = findCase( { it._id.eq(useCase._id) } );
 			
 					if(toRemove != null){
