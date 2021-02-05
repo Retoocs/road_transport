@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://modeler.netgrif.com/petriflow_schema.xsd">
-	<id>car</id>
+	<id>carr</id>
 	<initials>auto</initials>
 	<title>Auto</title>
 	<defaultRole>true</defaultRole>
@@ -1078,14 +1078,14 @@
 			<dataRef>
 				<id>delete_all_services</id>
 				<logic>
-					<behavior>editable</behavior>
-						<action trigger="get">
-							dis: f.this;
-							
-							change dis value {
-								false
-							}
-						</action>
+					<behavior>visible</behavior>
+					<action trigger="get">
+						dis: f.this;
+						
+						change dis value {
+							false
+						}
+					</action>
 				</logic>
 				<layout>
 					<x>2</x>
@@ -1097,6 +1097,23 @@
 				</layout>
 			</dataRef>
 		</dataGroup>
+		<event type="assign">
+			<id>46_assign</id>
+			<actions phase="pre">
+				<action>				
+					deleteAll: f.delete_all_services,
+					thisTask: t.46;
+					
+					def serviceCases = findCases( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_service").and(it.dataSet.get("parent_id").value?.eq(useCase.stringId))} ) 
+					
+					if(serviceCases == null || serviceCases == []){
+						make deleteAll, visible on thisTask when { true }
+					} else {
+						make deleteAll, editable on thisTask when { true }
+					}									
+				</action>
+			</actions>
+		</event>
 		<event type="finish">
 			<id>46_finish</id>
 			<actions phase="post">
@@ -1124,14 +1141,16 @@
 						cases.size().times {
 							def toRemoveService = cases.get(i++)
 							
-							if(toRemoveService != null){
-								async.run{
-									workflowService.deleteCase(toRemoveService._id.toString());
+							if(toRemoveService != null || toRemoveService.stringId != null){
+								def removeTrans = findTask( {it.caseId.eq(toRemoveService.stringId).and(it.transitionId.eq("12"))} )
+								if(removeTrans != null){
+									assignTask(removeTrans)
+									finishTask(removeTrans)
 								}
-							}						
-						}				
+							}					
+						}						
 					}
-										
+					
 					def toRemoveCar = findCase( { it._id.eq(useCase._id) } );	
 					if(toRemoveCar != null){
 						async.run{

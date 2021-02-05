@@ -242,6 +242,10 @@
 		<id>status_history</id>
 		<title>História stavov</title>
 	</data>
+	<data type="boolean">
+		<id>delete_task</id>
+		<title>Vymazať aj záznam úlohy?</title>
+	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
@@ -755,12 +759,66 @@
 					<template>material</template>
 					<appearance>fill</appearance>
 				</layout>
-			</dataRef>			
+			</dataRef>
+			<dataRef>
+				<id>delete_task</id>
+				<logic>
+					<behavior>visible</behavior>
+					<action trigger="get">
+						dis: f.this;
+						
+						change dis value {
+							false
+						}
+					</action>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
 		</dataGroup>
+		<event type="assign">
+			<id>12_assign</id>
+			<actions phase="pre">
+				<action>				
+					deleteTask: f.delete_task,
+					taskId: f.parent_task_id,
+					thisTask: t.12;
+					
+					if(taskId.value != null){
+						def taskCase = findCase( {it._id.eq(taskId.value)} )
+						
+						if(taskCase == null){
+							make deleteTask, visible on thisTask when { true }
+						} else {
+							make deleteTask, editable on thisTask when { true }
+						}
+					}																			
+				</action>
+			</actions>
+		</event>
 		<event type="finish">
 			<id>12_finish</id>
 			<actions phase="post">
 				<action>				
+					deleteTask: f.delete_task,
+					taskId: f.parent_task_id;
+					
+					if(deleteTask.value){
+						def removeTrans = findTask( {it.caseId.eq(taskId.value).and(it.transitionId.eq("10"))} )
+						
+						if(removeTrans != null){
+							assignTask(removeTrans)
+							finishTask(removeTrans)
+						}						
+					}
+				
 					def toRemove = findCase( { it._id.eq(useCase._id) } );
 			
 					if(toRemove != null){

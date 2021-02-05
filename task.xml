@@ -560,6 +560,13 @@
 				<id>delete_service</id>
 				<logic>
 					<behavior>editable</behavior>
+					<action trigger="get">
+						dis: f.this;
+						
+						change dis value {
+							false
+						}
+					</action>
 				</logic>
 				<layout>
 					<x>0</x>
@@ -597,11 +604,14 @@
 					
 					if(deleteService.value){
 						def toRemoveService = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_service").and(it.dataSet.get("parent_task_id").value?.eq(useCase.stringId))} )
+						
 						if(toRemoveService != null){
-							async.run{
-								workflowService.deleteCase(toRemoveService._id.toString());
+							def removeTrans = findTask( {it.caseId.eq(toRemoveService.stringId).and(it.transitionId.eq("12"))} )
+							if(removeTrans != null){
+								assignTask(removeTrans)
+								finishTask(removeTrans)
 							}
-						}
+						}						
 					}
 				
 					def toRemove = findCase( { it._id.eq(useCase._id) } );
@@ -855,11 +865,11 @@
 					<action trigger="get">		
 						carList: f.this;
 
-						def carInstances = findCases( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_car").and(it.dataSet.get("status").value.eq("Aktívny"))} )
+						def carInstances = findCases( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_carr").and(it.dataSet.get("status").value.eq("Aktívny"))} ) //todo change carr to car
 						def carInstancesMap = carInstances.collectEntries {
 							String value;
 							
-							if((it.getFieldValue("car_name") != null).and(!it.getFieldValue("car_name").isEmpty())){
+							if((it.getFieldValue("car_name") != null).and(!it.getFieldValue("car_name")?.isEmpty())){
 								value = it.getFieldValue("plate_number") + " - " + it.getFieldValue("car_name") + " - " + it.getFieldValue("brand") + " " + it.getFieldValue("model")
 							}
 							else {
