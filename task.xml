@@ -110,6 +110,10 @@
 		<id>car_list</id>
 		<title>Zoznam áut</title>
 	</data>
+	<data type="enumeration_map">
+		<id>car_list_nofilter</id>
+		<title>Car list NO FILTER</title>
+	</data>
 	<data type="text">
 		<id>last_car_select</id>
 		<title>ID posledne vybraného auta</title>
@@ -117,6 +121,30 @@
 	<data type="boolean">
 		<id>delete_service</id>
 		<title>Vymazať aj servisný záznam?</title>
+	</data>
+	<data type="enumeration">
+		<id>car_owner_category</id>
+		<title>Typ majiteľa</title>
+	</data>
+	<data type="enumeration_map">
+		<id>car_list_owner_cat</id>
+		<title>Car list with owner category filter</title>
+	</data>
+	<data type="enumeration_map">
+		<id>car_list_name</id>
+		<title>Car list with name filter</title>
+	</data>
+	<data type="text">
+		<id>car_name_filter</id>
+		<title>Názov auta</title>
+	</data>
+	<data type="enumeration_map">
+		<id>car_list_plate_number</id>
+		<title>Car list with plate number filter</title>
+	</data>
+	<data type="text">
+		<id>plate_number_filter</id>
+		<title>EČV</title>
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
@@ -863,9 +891,13 @@
 						}
 					</action>
 					<action trigger="get">		
-						carList: f.this;
+						carListNoFilter: f.car_list_nofilter,
+						carList: f.car_list,
+						carListName: f.car_list_name,
+						carListPlateNumber: f.car_list_plate_number,
+						carListOwnerCat: f.car_list_owner_cat;	
 
-						def carInstances = findCases( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_carr").and(it.dataSet.get("status").value.eq("Aktívny"))} ) //todo change carr to car
+						def carInstances = findCases( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_carr").and(it.dataSet.get("status").value.eq("Aktívny"))} ) //todo change carr to car 5faffef90a975a1b77c9b54a
 						def carInstancesMap = carInstances.collectEntries {
 							String value;
 							
@@ -879,9 +911,15 @@
 							[(it.stringId): value]
 						}
 						
+						change carListNoFilter options{
+							carInstancesMap
+						}						
+						
+						//update carList
 						change carList options{
 							carInstancesMap
 						}
+						
 					</action>
 				</logic>
 				<layout>
@@ -892,6 +930,288 @@
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>car_owner_category</id>
+				<logic>
+					<behavior>visible</behavior>
+					<action trigger="get">		
+						ownerCat: f.this,
+						carListOwnerCat: f.car_list_owner_cat,
+						carListNoFilter: f.car_list_nofilter,
+						thisTask: t.24;
+						
+						if(carListNoFilter.options == [:]){
+							make ownerCat, visible on thisTask when { true }
+						} else {
+							make ownerCat, editable on thisTask when { true }
+							
+							def carListIterator = carListNoFilter.options.entrySet().iterator()
+							def carId = carListIterator.next().getKey()
+							def car = findCase( {it._id.eq(carId)} )
+							
+							if(car != null){
+								def field = car.getField("owner_category")
+								
+								if(field != null){
+									change ownerCat choices {
+										["/Nepoužiť/"] + field.choices
+									}
+								}								
+							}
+
+							change carListOwnerCat options {
+								carListNoFilter.options
+							}
+						}					
+					</action>					
+					<action trigger="set">		
+						ownerCat: f.this,
+						carListNoFilter: f.car_list_nofilter,
+						carListOwnerCat: f.car_list_owner_cat,
+						carList: f.car_list,
+						carListName: f.car_list_name,
+						test: f.test,
+						carListPlateNumber: f.car_list_plate_number;
+						
+						change carListOwnerCat options{
+							[:]
+						}
+						
+						if(ownerCat.value == ownerCat.choices[0]){
+							change carListOwnerCat options{
+								carListNoFilter.options
+							}
+						}
+						else {
+							carListNoFilter.options.each{ key, value ->
+								def carId = key
+								def car = findCase( {it._id.eq(carId)} )
+								
+								if(car != null){
+									def ownerCatToCheck = car.getFieldValue("owner_category")
+									if((ownerCatToCheck != null).and(ownerCatToCheck == ownerCat.value)){
+										change carListOwnerCat options{
+											carListOwnerCat.options + [(key): value]
+										}
+									}								
+								}						
+							}
+						}	
+						
+						
+						//update carList
+						if(carListNoFilter.options != [:]){
+							change carList options{
+								[:]
+							}
+									
+							carListNoFilter.options.each{ key, value ->
+								if(true
+									.and(carListOwnerCat.options.containsKey(key))
+									.and(carListName.options.containsKey(key))
+									.and(carListPlateNumber.options.containsKey(key))
+								){
+									change carList options{
+										carList.options + [(key): value]
+									}
+								}
+							}
+						}					
+					</action>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>car_name_filter</id>
+				<logic>
+					<behavior>visible</behavior>
+					<action trigger="get">
+						carName: f.this,
+						carListNoFilter: f.car_list_nofilter,
+						carListName: f.car_list_name,
+						thisTask: t.24;
+						
+						if(carListNoFilter.options == [:]){
+							make carName, visible on thisTask when { true }
+						} else {
+							make carName, editable on thisTask when { true }
+							
+							change carListName options {
+								carListNoFilter.options
+							}
+						}
+					</action>
+					<action trigger="set">		
+						carName: f.this,
+						carListNoFilter: f.car_list_nofilter,
+						carListName: f.car_list_name,
+						carList: f.car_list,
+						carListPlateNumber: f.car_list_plate_number,
+						carListOwnerCat: f.car_list_owner_cat;
+						
+						if(carName.value == null || carName.value.isEmpty()){
+							change carListName options{
+								carListNoFilter.options
+							}
+						}
+						else {
+							change carListName options{
+								[:]
+							}
+							
+							carListNoFilter.options.each{ key, value ->
+								def carId = key
+								def car = findCase( {it._id.eq(carId)} )
+								
+								if(car != null){
+									def carNameToCheck = car.getFieldValue("car_name")
+									
+									if(carNameToCheck != null){
+										carNameToCheck = java.text.Normalizer.normalize(carNameToCheck, java.text.Normalizer.Form.NFD)
+										carNameToCheck = carNameToCheck.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "")
+										carNameToCheck = carNameToCheck.toLowerCase()
+
+										def carNameFilter = carName.value.toLowerCase()
+										
+										if((carNameToCheck != null).and(carNameToCheck.contains(carNameFilter))){
+											change carListName options{
+												carListName.options + [(key): value]
+											}
+										}
+									}																
+								}						
+							}														
+						}
+						
+						
+						//update carList
+						if(carListNoFilter.options != [:]){
+							change carList options{
+								[:]
+							}
+									
+							carListNoFilter.options.each{ key, value ->
+								if(true
+									.and(carListOwnerCat.options.containsKey(key))
+									.and(carListName.options.containsKey(key))
+									.and(carListPlateNumber.options.containsKey(key))
+								){
+									change carList options{
+										carList.options + [(key): value]
+									}
+								}
+							}
+						}											
+					</action>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>plate_number_filter</id>
+				<logic>
+					<behavior>visible</behavior>
+					<action trigger="get">
+						plateNumber: f.this,
+						carListNoFilter: f.car_list_nofilter,
+						carListPlateNumber: f.car_list_plate_number,
+						thisTask: t.24;
+						
+						if(carListNoFilter.options == [:]){
+							make plateNumber, visible on thisTask when { true }
+						} else {
+							make plateNumber, editable on thisTask when { true }
+							
+							change carListPlateNumber options {
+								carListNoFilter.options
+							}
+						}
+					</action>
+					<action trigger="set">
+						plateNumber: f.this,
+						carListPlateNumber: f.car_list_plate_number,
+						carListNoFilter: f.car_list_nofilter,		
+						carList: f.car_list,
+						carListName: f.car_list_name,
+						carListOwnerCat: f.car_list_owner_cat;						
+						
+						if(plateNumber.value == null || plateNumber.value.isEmpty()){
+							change carListPlateNumber options{
+								carListNoFilter.options
+							}
+						}
+						else{
+							change carListPlateNumber options{
+								[:]
+							}
+							
+							carListNoFilter.options.each{ key, value ->
+								def carId = key
+								def car = findCase( {it._id.eq(carId)} )
+								
+								if(car != null){
+									def plateNumberToCheck = car.getFieldValue("plate_number")
+									
+									if(plateNumberToCheck != null){
+										plateNumberToCheck = plateNumberToCheck.toLowerCase()
+
+										def plateNumberFilter = plateNumber.value.toLowerCase()
+										
+										if((plateNumberToCheck != null).and(plateNumberToCheck.contains(plateNumberFilter))){
+											change carListPlateNumber options{
+												carListPlateNumber.options + [(key): value]
+											}
+										}
+									}																
+								}						
+							}	
+						}
+						
+						//update carList
+						if(carListNoFilter.options != [:]){
+							change carList options{
+								[:]
+							}
+									
+							carListNoFilter.options.each{ key, value ->
+								if(true
+									.and(carListOwnerCat.options.containsKey(key))
+									.and(carListName.options.containsKey(key))
+									.and(carListPlateNumber.options.containsKey(key))
+								){
+									change carList options{
+										carList.options + [(key): value]
+									}
+								}
+							}
+						}
+					</action>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
 		</dataGroup>
@@ -929,7 +1249,7 @@
 								null
 							}						
 							change carList value {
-								[]
+								[:]
 							}
 							
 							cancelTask(toCancel);
@@ -961,7 +1281,7 @@
 								null
 							}						
 							change carList value {
-								[]
+								[:]
 							}
 							
 							finishTask(toFinish);
