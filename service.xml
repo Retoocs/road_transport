@@ -364,9 +364,11 @@
 					
 					def taskToRef = findTask( {it.caseId.eq(useCase.stringId).and(it.transitionId.eq("72"))} )
 					
-					change taskRef value {
-						[taskToRef.stringId];
-					}					
+					if(taskToRef != null){
+						change taskRef value {
+							[taskToRef.stringId];
+						}
+					}	
 					
 					if(parentId.value == null){
 						make taskRef, forbidden on thisTask when{ true }
@@ -374,6 +376,40 @@
 					else{
 						make taskRef, visible on thisTask when{ true }
 					}
+
+				</action>			
+			</actions>
+		</event>
+		<event type="cancel">
+			<id>9_cancel</id>
+			<actions phase="post">
+				<action>	
+					taskId: f.parent_task_id,
+					carId: f.parent_id;
+					
+					//also cancel car.task
+					if(carId.value != null){
+						carTask = findTask( {it.caseId.eq(carId.value).and(it.transitionId.eq("20"))} )
+						
+						if(carTask != null){
+							cancelTask(carTask)
+						}
+					}
+					
+					//also cancel task.task
+					if(taskId.value != null){
+						taskTask = findTask( {it.caseId.eq(taskId.value).and(it.transitionId.eq("24"))} )
+						
+						if(taskTask != null){
+							cancelTask(taskTask)
+						}
+					}	
+					
+					if(carId.value != null){
+						async.run{
+							workflowService.deleteCase(useCase.stringId)
+						}
+					}					
 				</action>			
 			</actions>
 		</event>
@@ -391,14 +427,21 @@
 					
 					if(parentId.value != null){
 						def parentCase = findCase( {it._id.eq(parentId.value)} )
-						def count = parentCase.getFieldValue("count_services")
 						
-						if(carName.value.isEmpty()){
-							resultStr = "Servis č." + (count+1 as Integer) + " - " + carPlateNumber.value + " - " + carBrand.value + " " + carModel.value + " {}"
+						if(parentCase != null){
+							def count = parentCase.getFieldValue("count_services")
+							
+							if(carName.value.isEmpty()){
+								resultStr = "Servis č." + (count+1 as Integer) + " - " + carPlateNumber.value + " - " + carBrand.value + " " + carModel.value + " {}"
+							}
+							else{
+								resultStr = "Servis č." + (count+1 as Integer) + " - " + carName.value + " - "+ carPlateNumber.value + " - "+ carBrand.value + " " + carModel.value + " {}"
+							}
 						}
 						else{
-							resultStr = "Servis č." + (count+1 as Integer) + " - " + carName.value + " - "+ carPlateNumber.value + " - "+ carBrand.value + " " + carModel.value + " {}"
+							resultStr = useCase.visualId;
 						}
+						
 					}
 					else{
 						resultStr = useCase.visualId;
@@ -413,7 +456,39 @@
 			<actions phase="post">
 				<action>
 					status: f.status,
+					carId: f.parent_id,
+					taskId: f.parent_task_id,
 					start_date: f.start_date;
+					
+					//finish carTask as well (if exists)
+					if(carId.value != null){
+						def car = findCase( {it._id.eq(carId.value)} )
+						def carTask = findTask( {it.caseId.eq(carId.value).and(it.transitionId.eq("20"))} )						
+						
+						if((carTask != null).and(car != null)){
+							def numberOfServices = car.getFieldValue("count_services")
+							
+							finishTask(carTask)
+							
+							if(numberOfServices != null){
+								setData(carTask, [
+									"count_services": [
+										"value": numberOfServices + 1,
+										"type" : "number"
+									],
+								])
+							}													
+						}
+					}	
+
+					//finish taskTask as well (if exists)
+					if(taskId.value != null){
+						def taskTask = findTask( {it.caseId.eq(taskId.value).and(it.transitionId.eq("24"))} )						
+						
+						if(taskTask != null){
+							finishTask(taskTask)												
+						}
+					}					
 					
 					change start_date value{ java.time.LocalDate.now() }			
 

@@ -202,6 +202,11 @@
 		<id>status_history</id>
 		<title>História stavov</title>
 	</data>
+	<data type="boolean">
+	   <id>event_from_outside</id>
+	   <title>Had the event happened outside? </title>
+	   <init>false</init>
+   </data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
@@ -212,7 +217,7 @@
 			<cols>4</cols>
 			<offset>0</offset>
 		</layout>
-		<label>Vytvorenie záznamu</label>
+		<label>vytvorenie záznamu</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -914,9 +919,39 @@
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
+				<id>count_services</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>10</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>			
+			<dataRef>
 				<id>servis_creation</id>
 				<logic>
 					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>10</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>event_from_outside</id>
+				<logic>
+					<behavior>hidden</behavior>
 				</logic>
 				<layout>
 					<x>0</x>
@@ -933,7 +968,7 @@
 			<id>20_assign</id>
 			<actions phase="pre">
 				<action>
-					taskref: f.servis_creation,
+					taskref: f.servis_creation,		
 					disVin: f.vin;
 					
 					//def groupId = findCase( { it.processIdentifier.eq("org_group").and(it.author.id.eq(loggedUser().id)) } )?.stringId;
@@ -955,54 +990,98 @@
 			</actions>
 			<actions phase="post">
 				<action>
+					outsideEvent: f.event_from_outside,
 					taskRef: f.servis_creation;
 					
 					def refedTask = findTask( {it._id.eq(taskRef.value[0])} )
 					
-					assignTask(refedTask);																				
+					assignTask(refedTask);
+
+					change outsideEvent value { false }
 				</action>
 			</actions>
 		</event>
 		<event type="cancel">
 			<id>20_cancel</id>
-			<actions phase="pre">
+			<actions phase="post">
 				<action>
+					outsideEvent: f.event_from_outside,
 					taskRef: f.servis_creation;
-
-					def toCancel = findTask({it._id.eq(new org.bson.types.ObjectId(taskRef.value[0] as String))});		
 					
-					cancelTask(toCancel);
-					
-					change taskRef value {
-						[]
-					}
+					if(taskRef.value != []){
+						def toCancel = findTask({it._id.eq(taskRef.value[0])})					
+						
+						if(toCancel != null){
+							def serviceCase = findCase( {it._id.eq(toCancel.caseId)} )
+							
+							//also find and cancel parent task (in task process) 
+							if((serviceCase != null).and(outsideEvent.value == false)){
+								def parent_task_id = serviceCase.getFieldValue("parent_task_id")
 
-					def toRemove = findCase( { it._id.eq(toCancel.caseId) } );
-					async.run{
-						workflowService.deleteCase(toRemove._id.toString());
-					}								
+								if(parent_task_id != null){								
+									def toCancelParent = findTask( {it.caseId.eq(parent_task_id).and(it.transitionId.eq("24"))} )		
+
+									if(toCancelParent != null){	
+										setData(toCancelParent, [
+											"event_from_outside": [
+												"value": true,
+												"type" : "boolean"
+											],
+										])
+										cancelTask(toCancelParent)																				
+									}
+								}								
+							}
+							
+							change taskRef value {
+								[]
+							}
+							
+							def toRemove = findCase( { it._id.eq(toCancel.caseId) } );
+							if(toRemove != null){
+								async.run{
+									workflowService.deleteCase(toRemove._id.toString());
+								}
+							}						
+						}	
+					}																
 				</action>
 			</actions>
 		</event>
 		<event type="finish">
 			<id>20_finish</id>
-			<actions phase="pre">
+			<actions phase="post">
 				<action>
 					taskRef: f.servis_creation,
 					numberOfServices: f.count_services;
 					
-					def toFinish = findTask({it._id.eq(new org.bson.types.ObjectId(taskRef.value[0] as String))});	
-					
-					finishTask(toFinish);	
-					
-					change numberOfServices value{
-						numberOfServices.value + 1
-					}
-					
-					change taskRef value {
-						[]
-					}
-					
+					if(taskRef.value != []){
+						def toFinish = findTask({it._id.eq(taskRef.value[0])});	
+						
+						if(toFinish != null){														
+							def serviceCase = findCase( {it._id.eq(toFinish.caseId)} )
+							finishTask(toFinish)
+							
+							//also find and finish parent task (in task process) 
+							if(serviceCase != null){
+								def parent_task_id = serviceCase.getFieldValue("parent_task_id")
+								if(parent_task_id != null){
+									def toFinishParent = findTask( {it.caseId.eq(parent_task_id).and(it.transitionId.eq("24"))} )
+									if(toFinishParent != null){
+										finishTask(toFinishParent)
+									}
+								}								
+							}																				
+							
+							change numberOfServices value{
+								numberOfServices.value + 1
+							}
+							
+							change taskRef value {
+								[]
+							}
+						}	
+					}																					
 				</action>
 			</actions>
 		</event>

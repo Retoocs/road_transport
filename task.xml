@@ -146,6 +146,12 @@
 		<id>plate_number_filter</id>
 		<title>EČV</title>
 	</data>
+	<data type="boolean">
+		   <id>event_from_outside</id>
+		   <title>Had the event happened outside? </title>
+		  <init>false</init>
+   </data>
+
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
@@ -628,7 +634,16 @@
 			<id>10_finish</id>
 			<actions phase="post">
 				<action>		
+					serviceTaskRef: f.service_creation,
 					deleteService: f.delete_service;
+					
+					if(serviceTaskRef.value != []){
+						def toCancel = findTask({it._id.eq(serviceTaskRef.value[0])});		
+							
+						if(toCancel != null){
+							cancelTask(toCancel);
+						}				
+					}
 					
 					if(deleteService.value){
 						def toRemoveService = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_service").and(it.dataSet.get("parent_task_id").value?.eq(useCase.stringId))} )
@@ -892,7 +907,7 @@
 					</action>
 					<action trigger="get">		
 						carListNoFilter: f.car_list_nofilter,
-						carList: f.car_list,
+						carList: f.this,
 						carListName: f.car_list_name,
 						carListPlateNumber: f.car_list_plate_number,
 						carListOwnerCat: f.car_list_owner_cat;	
@@ -918,8 +933,7 @@
 						//update carList
 						change carList options{
 							carInstancesMap
-						}
-						
+						}						
 					</action>
 				</logic>
 				<layout>
@@ -972,7 +986,6 @@
 						carListOwnerCat: f.car_list_owner_cat,
 						carList: f.car_list,
 						carListName: f.car_list_name,
-						test: f.test,
 						carListPlateNumber: f.car_list_plate_number;
 						
 						change carListOwnerCat options{
@@ -1232,33 +1245,69 @@
 					<appearance>fill</appearance>
 				</layout>
 			</dataRef>
+			<dataRef>
+				<id>event_from_outside</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
 		</dataGroup>
+		<event type="assign">
+			<id>24_assign</id>
+			<actions phase="pre">
+				<action>
+					outsideEvent: f.event_from_outside,
+					carList: f.car_list;
+					
+					change outsideEvent value { false }
+					change carList value { null }		
+				</action>
+			</actions>
+		</event>
 		<event type="cancel">
 			<id>24_cancel</id>
-			<actions phase="pre">
+			<actions phase="post">
 				<action>
 					taskRef: f.service_creation,
 					carList: f.car_list,
+					outsideEvent: f.event_from_outside,
 					lastId: f.last_car_select;
 					
-					if((taskRef.value != null).and(taskRef.value != [])){
-						def toCancel = findTask({it._id.eq(new org.bson.types.ObjectId(taskRef.value[0] as String))});		
-						
-						if(toCancel != null){
-							change lastId value {
-								null
-							}						
-							change carList value {
-								[:]
-							}
+					if(!outsideEvent.value){
+						if(taskRef.value != []){
+							def toCancel = findTask({it._id.eq(taskRef.value[0])});		
 							
-							cancelTask(toCancel);
-							
-							change taskRef value {
-								[]
-							}
+							if(toCancel != null){
+								change lastId value {
+									null
+								}						
+								change carList value {
+									[:]
+								}
+								
+								setData(toCancel, [
+									"event_from_outside": [
+										"value": true,
+										"type" : "boolean"
+									],
+								])
+								cancelTask(toCancel)
+								
+								change taskRef value {
+									[]
+								}
+							}	
 						}	
-					}							
+					}				
 				</action>
 			</actions>
 		</event>
@@ -1277,22 +1326,14 @@
 						def toFinish = findTask( {it._id.eq(taskRef.value[0])} );	
 						
 						if(toFinish != null){
+							finishTask(toFinish);
+							
 							change lastId value {
 								null
 							}						
 							change carList value {
 								[:]
-							}
-							
-							finishTask(toFinish);
-							
-							change status value{
-								"Uzavretá"
-							}
-							
-							change closeDate value {
-								java.time.LocalDate.now()
-							}
+							}								
 							
 							change closureState value{
 								closureState.choices[2]
@@ -1300,6 +1341,14 @@
 						
 							change taskRef value {
 								[]
+							}
+							
+							change closeDate value {
+								java.time.LocalDate.now()
+							}
+							
+							change status value{
+								"Uzavretá"
 							}
 						}
 					}						
