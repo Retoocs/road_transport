@@ -149,6 +149,14 @@
 		<id>carinfo_date_change</id>
 		<title>Dátum zmeny informácií</title>
 	</data>
+	<data type="date">
+		<id>stk_expiration_date</id>
+		<title>Dátum platnosti STK do</title>
+	</data>
+	<data type="date">
+		<id>last_oil_change_date</id>
+		<title>Dátum poslednej výmeny oleja</title>
+	</data>
 	<data type="enumeration">
 		<id>owner_category</id>
 		<title>Typ majiteľa</title>
@@ -203,10 +211,30 @@
 		<title>História stavov</title>
 	</data>
 	<data type="boolean">
-	   <id>event_from_outside</id>
-	   <title>Had the event happened outside? </title>
-	   <init>false</init>
-   </data>
+		<id>event_from_outside</id>
+		<title>Had the event happened outside? </title>
+		<init>false</init>
+	</data>
+	<data type="boolean">
+		<id>stk_notification</id>
+		<title>Notifikovať STK?</title>
+		<init>true</init>
+	</data>
+	<data type="boolean">
+		<id>oil_notification</id>
+		<title>Notifikovať výmenu oleja?</title>
+		<init>true</init>
+	</data>
+	<data type="number">
+		<id>oil_change_interval_km</id>
+		<title>Interval výmeny oleja v kilometroch [km]</title>
+		<init>15000</init>
+	</data>
+	<data type="number">
+		<id>oil_change_interval_months</id>
+		<title>Interval výmeny oleja v mesiacoch</title>
+		<init>12</init>
+	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
@@ -217,7 +245,7 @@
 			<cols>4</cols>
 			<offset>0</offset>
 		</layout>
-		<label>vytvorenie záznamu</label>
+		<label>Vytvorenie záznamu</label>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -345,6 +373,21 @@
 				</layout>
 			</dataRef>
 			<dataRef>
+				<id>stk_expiration_date</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>4</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
 				<id>engine</id>
 				<logic>
 					<behavior>editable</behavior>
@@ -378,6 +421,7 @@
 				<id>owner_category</id>
 				<logic>
 					<behavior>editable</behavior>
+					<behavior>required</behavior>
 				</logic>
 				<layout>
 					<x>3</x>
@@ -479,6 +523,36 @@
 				<layout>
 					<x>1</x>
 					<y>6</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>stk_expiration_date</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>4</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>last_oil_change_date</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>4</y>
 					<rows>1</rows>
 					<cols>2</cols>
 					<offset>0</offset>
@@ -608,7 +682,7 @@
 					<template>material</template>
 					<appearance>outline</appearance>
 				</layout>
-			</dataRef>			
+			</dataRef>
 			<dataRef>
 				<id>plate_number</id>
 				<logic>
@@ -638,7 +712,7 @@
 					<template>material</template>
 					<appearance>outline</appearance>
 				</layout>
-			</dataRef> 3
+			</dataRef>
 			<dataRef>
 				<id>car_owner</id>
 				<logic>
@@ -805,6 +879,36 @@
 				</layout>
 			</dataRef>
 			<dataRef>
+				<id>stk_expiration_date</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>4</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>last_oil_change_date</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>4</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
 				<id>vin</id>
 				<logic>
 					<behavior>editable</behavior>
@@ -884,6 +988,7 @@
 				<id>owner_category</id>
 				<logic>
 					<behavior>editable</behavior>
+					<behavior>required</behavior>
 				</logic>
 				<layout>
 					<x>3</x>
@@ -932,7 +1037,7 @@
 					<template>material</template>
 					<appearance>outline</appearance>
 				</layout>
-			</dataRef>			
+			</dataRef>
 			<dataRef>
 				<id>servis_creation</id>
 				<logic>
@@ -1173,6 +1278,7 @@
 					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
+					<appearance></appearance>
 				</layout>
 			</dataRef>
 		</dataGroup>
@@ -1239,6 +1345,85 @@
 				</action>
 			</actions>
 		</event>
+	</transition>
+	<transition>
+		<id>63</id>
+		<x>957</x>
+		<y>409</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>Nastavenie notifikácií</label>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>stk_notification</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>oil_notification</id>
+				<logic>
+					<behavior>editable</behavior>
+					<action trigger="get">
+						dis: f.this;
+						
+						change dis value {
+							false
+						}
+					</action>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance></appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>oil_change_interval_km</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>oil_change_interval_months</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
 	</transition>
 	<!-- PLACES -->
 	<place>
@@ -1386,6 +1571,13 @@
 		<type>read</type>
 		<sourceId>44</sourceId>
 		<destinationId>13</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>64</id>
+		<type>read</type>
+		<sourceId>22</sourceId>
+		<destinationId>63</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 </document>

@@ -246,6 +246,29 @@
 		<id>delete_task</id>
 		<title>Vymazať aj záznam úlohy?</title>
 	</data>
+	<data type="boolean" immediate="true">
+		<id>oil_change_performed</id>
+		<title>Bola vykonaná výmena oleja?</title>
+		<action trigger="set">
+			carId: f.parent_id,
+			oilPerformed: f.this;
+			
+			if((oilPerformed.value).and(carId.value != null)){
+				def carTask = findTask( {it.caseId.eq(carId.value).and(it.transitionId.eq("13"))} )
+				
+				if(carTask != null){
+					def tmpDate = java.time.LocalDate.now()
+					setData(carTask, [
+						"last_oil_change_date": [
+							"value": tmpDate.toString(),
+							"type" : "date"
+						],
+					])
+				}
+			}
+		</action>
+		<init>false</init>
+	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
@@ -405,6 +428,7 @@
 						}
 					}	
 					
+					//maybe remove under no if
 					if(carId.value != null){
 						async.run{
 							workflowService.deleteCase(useCase.stringId)
@@ -450,7 +474,6 @@
 					changeCaseProperty "title" about {
 						resultStr
 					}
-					
 				</action>
 			</actions>
 			<actions phase="post">
@@ -1160,6 +1183,29 @@ change status value{
 		</layout>
 		<label>Dokončenie úkonu</label>
 		<assignPolicy>auto</assignPolicy>
+		<dataGroup>
+			<id>DataGroup_1</id>
+			<dataRef>
+				<id>oil_change_performed</id>
+				<logic>
+					<behavior>editable</behavior>
+					<action trigger="get">
+						oilPerformed: f.this;
+						
+						change oilPerformed value{ false }
+					</action>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>2</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
