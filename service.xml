@@ -11,6 +11,7 @@
 	<data type="text">
 		<id>car_vin</id>
 		<title>VIN číslo auta</title>
+		<init>Servisný úkon nemá priradené vozidlo</init>
 		<action trigger="get">
 			parentId: f.parent_id,
 			vinToCheck: f.this;
@@ -36,11 +37,11 @@
 				}				
 			}	
 		</action>
-		<init>Servisný úkon nemá priradené vozidlo</init>
 	</data>
 	<data type="text">
 		<id>car_plate_number</id>
 		<title>EČV auta</title>
+		<init>Servisný úkon nemá priradené vozidlo</init>
 		<action trigger="get">
 			parentId: f.parent_id,
 			plate_num: f.this;
@@ -66,11 +67,11 @@
 				}				
 			}			
 		</action>
-		<init>Servisný úkon nemá priradené vozidlo</init>
 	</data>
 	<data type="text">
 		<id>car_name</id>
 		<title>Názov auta</title>
+		<init>Servisný úkon nemá priradené vozidlo</init>
 		<action trigger="get">
 			parentId: f.parent_id,
 			name: f.this;
@@ -96,11 +97,11 @@
 				}				
 			}			
 		</action>
-		<init>Servisný úkon nemá priradené vozidlo</init>
 	</data>
 	<data type="text">
 		<id>car_brand</id>
 		<title>Značka auta</title>
+		<init>Servisný úkon nemá priradené vozidlo</init>
 		<action trigger="get">
 			parentId: f.parent_id,
 			brand: f.this;
@@ -126,11 +127,11 @@
 				}				
 			}			
 		</action>
-		<init>Servisný úkon nemá priradené vozidlo</init>
 	</data>
 	<data type="text">
 		<id>car_model</id>
 		<title>Model auta</title>
+		<init>Servisný úkon nemá priradené vozidlo</init>
 		<action trigger="get">
 			parentId: f.parent_id,
 			model: f.this;
@@ -156,7 +157,6 @@
 				}				
 			}			
 		</action>
-		<init>Servisný úkon nemá priradené vozidlo</init>
 	</data>
 	<data type="taskRef">
 		<id>car_taskRef</id>
@@ -237,7 +237,7 @@
 		<title>Úspešnosť úkonu</title>
 		<values>Úkon úspešný</values>
 		<values>Úkon neúspešný</values>
-	</data>	
+	</data>
 	<data type="enumeration">
 		<id>status_history</id>
 		<title>História stavov</title>
@@ -286,6 +286,11 @@
 				}
 			}
 		</action>
+	</data>
+	<data type="boolean">
+		<id>deadline_notification</id>
+		<title>Notifikovať termín požadovaného uzavretia?</title>
+		<init>true</init>
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
@@ -418,7 +423,7 @@
 						make taskRef, visible on thisTask when{ true }
 					}
 
-				</action>			
+				</action>
 			</actions>
 		</event>
 		<event type="cancel">
@@ -452,7 +457,7 @@
 							workflowService.deleteCase(useCase.stringId)
 						}
 					}					
-				</action>			
+				</action>
 			</actions>
 		</event>
 		<event type="finish">
@@ -768,7 +773,7 @@
 	</transition>
 	<transition>
 		<id>11</id>
-		<x>620</x>
+		<x>572</x>
 		<y>100</y>
 		<layout>
 			<offset>0</offset>
@@ -1408,8 +1413,8 @@ change status value{
 	</transition>
 	<transition>
 		<id>72</id>
-		<x>218</x>
-		<y>94</y>
+		<x>260</x>
+		<y>100</y>
 		<layout>
 			<offset>0</offset>
 		</layout>
@@ -1502,6 +1507,34 @@ change status value{
 				</action>
 			</actions>
 		</event>
+	</transition>
+	<transition>
+		<id>73</id>
+		<x>260</x>
+		<y>220</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>Nastavenie notifikácií</label>
+		<assignPolicy>auto</assignPolicy>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>deadline_notification</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>		
 	</transition>
 	<!-- PLACES -->
 	<place>
@@ -1699,6 +1732,13 @@ change status value{
 		<type>regular</type>
 		<sourceId>6</sourceId>
 		<destinationId>19</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>	
+	<arc>
+		<id>74</id>
+		<type>read</type>
+		<sourceId>3</sourceId>
+		<destinationId>73</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 </document>

@@ -9,10 +9,6 @@
 	<!-- ROLES -->
 	<!-- DATA -->
 	<data type="enumeration_map">
-		<id>car_list_all</id>
-		<title>All vehicles</title>
-	</data>
-	<data type="enumeration_map">
 		<id>car_list_notify</id>
 		<title>Notifikované vozidlá</title>
 	</data>
@@ -21,20 +17,12 @@
 		<title>Zapnúť notifikácie vozidiel?</title>
 	</data>
 	<data type="enumeration_map">
-		<id>services_list_all</id>
-		<title>All vehicles</title>
-	</data>
-	<data type="enumeration_map">
 		<id>services_list_notify</id>
 		<title>Notifikované servisné záznamy</title>
 	</data>
 	<data type="boolean">
 		<id>notify_services</id>
 		<title>Zapnúť notifikácie servisných záznamov?</title>
-	</data>
-	<data type="enumeration_map">
-		<id>tasks_list_all</id>
-		<title>All vehicles</title>
 	</data>
 	<data type="enumeration_map">
 		<id>tasks_list_notify</id>
@@ -212,7 +200,7 @@
 
 									//time over
 									if( (!tmpKmOver).and(diff &lt; 1) ){										
-										alertOil = " - " + Math.abs(diff) + " " + daysTxt + " po intervale výmeny oleja"
+										alertOil = " - " + Math.abs(diff) + " " + daysTxt + " po intervale výmeny oleja!"
 									}
 									//time about to over
 									else if( (!tmpKmAlmostOver).and(diff &lt; 31) ){
@@ -271,6 +259,89 @@
 		</layout>
 		<label>Skontrolovanie serv. záznamov</label>
 		<assignPolicy>auto</assignPolicy>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>services_list_notify</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>13_assign</id>
+			<actions phase="pre">
+				<action>
+					notifiedServices: f.services_list_notify;
+						
+					change notifiedServices value { null } 					
+					change notifiedServices options { [:] }
+					
+					def all = findCases( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_service").and(it.dataSet.get("status").value?.ne("Úkon dokončený"))} )					
+					def nowDate = java.time.LocalDate.now()
+					
+					all.each{ service ->
+						def carPlateNumber = service.getFieldValue("car_plate_number")
+						def carName = service.getFieldValue("car_name")
+						def task = service.getFieldValue("task")
+						task = task.substring(0, Math.min(task.length(), 40));
+
+						def serviceTxt
+						if( (carName != null).and(!carName.isEmpty()) ){
+							serviceTxt = carPlateNumber + " - " + carName + " - " + task
+						}
+						else{
+							serviceTxt = carPlateNumber + " - " + task
+						}
+						
+						//check for deadline
+						if(service.getFieldValue("deadline_notification")){
+							def value
+							def alertDeadline
+							
+							def tmpDeadline = service.getFieldValue("deadline")
+							if(tmpDeadline != null){
+								def deadline = tmpDeadline.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+								def diff = java.time.temporal.ChronoUnit.DAYS.between(nowDate, deadline)
+								
+								String daysTxt
+								if(Math.abs(diff) == 1){
+									daysTxt = " deň"
+								}
+								else{
+									daysTxt = " dní"
+								}
+								
+								if(diff &lt; 0){
+									alertDeadline = " - " + Math.abs(diff) + " " + daysTxt + " po termíne uzavretia!"
+								}
+								else if(diff &lt; 4){
+									alertDeadline = " - " + diff + " " + daysTxt + " pred termínom uzavretia"
+								}	
+
+								if(alertDeadline != null){
+									value = serviceTxt + alertDeadline							
+									change notifiedServices options {
+										notifiedServices.options + [(service.stringId): value]
+									}
+								}
+							}
+						}
+					}
+					
+					notifiedServices.name.defaultValue = "Notifikované servisné záznamy (${notifiedServices.options.size()})"
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>14</id>
@@ -619,5 +690,5 @@
 		<sourceId>18</sourceId>
 		<destinationId>41</destinationId>
 		<multiplicity>1</multiplicity>
-	</arc>
+	</arc>	
 </document>
