@@ -32,10 +32,6 @@
 		<id>notify_tasks</id>
 		<title>Zapnúť notifikácie úloh?</title>
 	</data>
-	<data type="text">
-		<id>test</id>
-		<title>test</title>
-	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
@@ -398,27 +394,11 @@
 					<appearance>fill</appearance>
 				</layout>
 			</dataRef>
-			<dataRef>
-				<id>test</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>4</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>fill</appearance>
-				</layout>
-			</dataRef>
 		</dataGroup>
 		<event type="assign">
 			<id>16_assign</id>
 			<actions phase="pre">
 				<action>
-					test: f.test,
 					notifiedTasks: f.tasks_list_notify;
 						
 					change notifiedTasks value { null } 					
@@ -434,8 +414,6 @@
 						def taskTitle = task.getFieldValue("title")
 						taskTitle = taskTitle.substring(0, Math.min(taskTitle.length(), 40));						
 						def taskTxt = visualId + " - " + taskTitle		
-
-						change test value { task }
 						
 						//check for shedule date
 						if(task.getFieldValue("shedule_date_notification")){
