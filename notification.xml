@@ -53,9 +53,22 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>initialize</label>
-		<assignPolicy>auto</assignPolicy>
-		<finishPolicy>auto_no_data</finishPolicy>
+		<label>initialize</label>		
+		<trigger type="auto"/>
+		<event type="assign">
+			<id>5_assign</id>
+			<actions phase="pre">
+				<action>
+					//only one instance per user, otherwise delete created case
+					if(findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(useCase.processIdentifier)).and(it._id.ne(useCase._id))} )) {
+						async.run {
+							workflowService.deleteCase(useCase._id.toString())
+						}
+						throw new Exception("Instance of this process already exists for the author")		
+					}
+				</action>
+			</actions>
+		</event>
 		<event type="finish">
 			<id>5_finish</id>
 			<actions phase="pre">
@@ -79,6 +92,148 @@
 			<offset>0</offset>
 		</layout>
 		<label>Skontrolovanie vozidiel</label>
+		<assignPolicy>auto</assignPolicy>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>car_list_notify</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>9_assign</id>
+			<actions phase="pre">
+				<action>
+					notifiedVehicles: f.car_list_notify;
+						
+					change notifiedVehicles value { null } 					
+					change notifiedVehicles options { [:] }
+					
+					def all = findCases( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_carr").and(it.dataSet.get("status").value?.eq("Aktívny"))} )					
+					def nowDate = java.time.LocalDate.now()
+					
+					all.each{ car ->
+						String carTxt
+						if((car.getFieldValue("car_name") != null).and(!car.getFieldValue("car_name")?.isEmpty())){
+							carTxt = car.getFieldValue("plate_number") + " - " + car.getFieldValue("car_name") + " - " + car.getFieldValue("brand") + " " + car.getFieldValue("model")
+						}
+						else {
+							carTxt = car.getFieldValue("plate_number") + " - " + car.getFieldValue("brand") + " " + car.getFieldValue("model")
+						}
+					
+						// STK notification
+						if(car.getFieldValue("stk_notification")){ 
+							String value
+							String alertStk
+						
+							Date tmpToConvert = car.dataSet["stk_expiration_date"].value
+							if(tmpToConvert != null){
+								def carStkExpirationDate = tmpToConvert.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+								
+								//date is over
+								if(carStkExpirationDate.isBefore(nowDate)){ 
+									alertStk = " - !STK prepadla!"								
+								}
+								// date is over in less than 30 days
+								else{ 
+									def differenceInDays = java.time.temporal.ChronoUnit.DAYS.between(nowDate, carStkExpirationDate)
+									if(differenceInDays &lt; 31){
+										String daysTxt
+										if(differenceInDays == 1){
+											daysTxt = " deň"
+										}
+										else{
+											daysTxt = " dní"
+										}									
+										alertStk = " - STK prepadne o " + differenceInDays + daysTxt
+									}
+								}
+								
+								if(alertStk != null){
+									value = carTxt + alertStk							
+									change notifiedVehicles options {
+										notifiedVehicles.options + [(car.stringId): value]
+									}
+								}								
+							}
+						}
+
+
+						// OIL change notification
+						if(car.getFieldValue("oil_notification")){ 	
+							String value
+							String alertOil
+							boolean tmpKmOver = false, tmpKmAlmostOver = false
+							
+							
+							def carOilChangedAtKm = car.getFieldValue("last_oil_change_mileage")
+							def carKm = car.getFieldValue("mileage")
+							def carOilChangeIntervalKm = car.getFieldValue("oil_change_interval_km")
+							def carNotifyInKm = car.getFieldValue("oil_notify_in_km")
+							if( (carOilChangedAtKm != null).and(carKm != null).and(carOilChangeIntervalKm != null).and(carNotifyInKm != null) ){
+								def diff = carKm - (carOilChangedAtKm + carOilChangeIntervalKm)
+
+								// km over
+								if(diff > 0){ 									
+									alertOil = " - " + diff + " km po intervale výmeny oleja!"
+									tmpKmOver = true
+								}
+								//km bout to pass out
+								else if(Math.abs(diff) &lt; carNotifyInKm){
+									alertOil = " - " + Math.abs(diff) + " km pred intervalom výmeny oleja"
+									tmpKmAlmostOver = true
+								} 
+							}
+							
+							Date tmpToConvert = car.dataSet["last_oil_change_date"].value
+							if(tmpToConvert != null){
+								def carLastOilChangeDate = tmpToConvert.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+								def carOilChangeIntervalDate = car.getFieldValue("oil_change_interval_months")							
+								if(carOilChangeIntervalDate != null){
+									def diff = java.time.temporal.ChronoUnit.DAYS.between(nowDate, carLastOilChangeDate.plusMonths(carOilChangeIntervalDate as Long))
+									String daysTxt
+									if(Math.abs(diff) == 1){
+										daysTxt = " deň"
+									}
+									else{
+										daysTxt = " dní"
+									}	
+
+									//time over
+									if( (!tmpKmOver).and(diff &lt; 1) ){										
+										alertOil = " - " + Math.abs(diff) + " " + daysTxt + " po intervale výmeny oleja"
+									}
+									//time about to over
+									else if( (!tmpKmAlmostOver).and(diff &lt; 31) ){
+										alertOil = " - o " + Math.abs(diff) + " " + daysTxt + " treba vymeniť olej"
+									}
+								}
+								
+								if(alertOil != null){
+									value = carTxt + alertOil							
+									change notifiedVehicles options {
+										notifiedVehicles.options + [(car.stringId): value]
+									}
+								}
+							}													
+						}
+					}
+					
+					notifiedVehicles.name.defaultValue = "Notifikované vozidlá (${notifiedVehicles.options.size()})"
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>10</id>
@@ -115,6 +270,7 @@
 			<offset>0</offset>
 		</layout>
 		<label>Skontrolovanie serv. záznamov</label>
+		<assignPolicy>auto</assignPolicy>
 	</transition>
 	<transition>
 		<id>14</id>
@@ -142,6 +298,7 @@
 			<offset>0</offset>
 		</layout>
 		<label>Skontrolovanie úloh</label>
+		<assignPolicy>auto</assignPolicy>
 	</transition>
 	<transition>
 		<id>17</id>
@@ -233,6 +390,15 @@
 				</layout>
 			</dataRef>
 		</dataGroup>
+	</transition>
+	<transition>
+		<id>41</id>
+		<x>1504</x>
+		<y>740</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>Pracovná plocha</label>
 	</transition>
 	<!-- PLACES -->
 	<place>
@@ -445,6 +611,13 @@
 		<type>read</type>
 		<sourceId>18</sourceId>
 		<destinationId>19</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>42</id>
+		<type>read</type>
+		<sourceId>18</sourceId>
+		<destinationId>41</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 </document>

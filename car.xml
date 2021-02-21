@@ -157,6 +157,10 @@
 		<id>last_oil_change_date</id>
 		<title>Dátum poslednej výmeny oleja</title>
 	</data>
+	<data type="number">
+		<id>last_oil_change_mileage</id>
+		<title>Poslednej výmena oleja pri km</title>
+	</data>
 	<data type="enumeration">
 		<id>owner_category</id>
 		<title>Typ majiteľa</title>
@@ -229,6 +233,11 @@
 		<id>oil_change_interval_km</id>
 		<title>Interval výmeny oleja v kilometroch [km]</title>
 		<init>15000</init>
+	</data>
+	<data type="number">
+		<id>oil_notify_in_km</id>
+		<title>Notifikovať x km pred intervalom výmeny oleja</title>
+		<init>1000</init>
 	</data>
 	<data type="number">
 		<id>oil_change_interval_months</id>
@@ -547,6 +556,21 @@
 			</dataRef>
 			<dataRef>
 				<id>last_oil_change_date</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>4</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>last_oil_change_mileage</id>
 				<logic>
 					<behavior>visible</behavior>
 				</logic>
@@ -895,6 +919,21 @@
 			</dataRef>
 			<dataRef>
 				<id>last_oil_change_date</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>4</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>last_oil_change_mileage</id>
 				<logic>
 					<behavior>editable</behavior>
 				</logic>
@@ -1395,6 +1434,21 @@
 			</dataRef>
 			<dataRef>
 				<id>oil_change_interval_km</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>oil_notify_in_km</id>
 				<logic>
 					<behavior>editable</behavior>
 				</logic>

@@ -249,25 +249,43 @@
 	<data type="boolean" immediate="true">
 		<id>oil_change_performed</id>
 		<title>Bola vykonaná výmena oleja?</title>
+		<init>false</init>
+	</data>
+	<data type="number">
+		<id>oil_changed_at_km</id>
+		<title>Súčasný počet km vozidla</title>
 		<action trigger="set">
 			carId: f.parent_id,
-			oilPerformed: f.this;
+			oilChangedAtKm: f.this;
 			
-			if((oilPerformed.value).and(carId.value != null)){
-				def carTask = findTask( {it.caseId.eq(carId.value).and(it.transitionId.eq("13"))} )
+			if(carId.value != null){
+				def car = findCase( {it._id.eq(carId.value)} )
 				
-				if(carTask != null){
-					def tmpDate = java.time.LocalDate.now()
-					setData(carTask, [
-						"last_oil_change_date": [
-							"value": tmpDate.toString(),
-							"type" : "date"
-						],
-					])
+				if(car != null){
+					def carKm = car.getFieldValue("mileage")
+					
+					if((carKm != null).and(carKm > oilChangedAtKm.value)){
+						change oilChangedAtKm value { carKm }					
+					}
 				}
 			}
 		</action>
-		<init>false</init>
+		<action trigger="get">
+			carId: f.parent_id,
+			oilChangedAtKm: f.this;
+			
+			if(carId.value != null){
+				def car = findCase( {it._id.eq(carId.value)} )
+				if(car != null){
+					def mileage = car.getFieldValue("mileage")
+					if(mileage != null){
+						change oilChangedAtKm value {
+							mileage
+						}
+					}
+				}
+			}
+		</action>
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
@@ -1189,10 +1207,51 @@ change status value{
 				<id>oil_change_performed</id>
 				<logic>
 					<behavior>editable</behavior>
+					<action trigger="set">
+						oilPerformed: f.this,
+						oilChangedAtKm: f.oil_changed_at_km,
+						thisTask: t.20;
+						
+						make oilChangedAtKm, editable on thisTask when{
+							oilPerformed.value
+						}
+						make oilChangedAtKm, required on thisTask when{
+							oilPerformed.value
+						}
+						make oilChangedAtKm, hidden on thisTask when{
+							!oilPerformed.value
+						}
+					</action>
 					<action trigger="get">
-						oilPerformed: f.this;
+						carId: f.parent_id,
+						oilPerformed: f.this,
+						thisTask: t.20;
 						
 						change oilPerformed value{ false }
+						
+						make oilPerformed, editable on thisTask when { carId.value != null }
+					</action>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>2</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>oil_changed_at_km</id>
+				<logic>
+					<behavior>hidden</behavior>
+					<action trigger="get">
+						oilPerformed: f.oil_change_performed,
+						oilChangedAtKm: f.this,
+						thisTask: t.20;
+						
+						make oilChangedAtKm, hidden on thisTask when { !oilPerformed.value }
 					</action>
 				</logic>
 				<layout>
@@ -1255,7 +1314,32 @@ change status value{
 			<actions phase="post">
 				<action>
 					status: f.status,
+					carId: f.parent_id,
+					oilPerformed: f.oil_change_performed,
+					oilChangedAtKm: f.oil_changed_at_km,
 					endDate: f.end_date;
+					
+					// update mileage and last_oil_change_date in car
+					if((carId.value != null).and(oilPerformed.value)){
+						def car = findCase( {it._id.eq(carId.value)} )
+						def tmpNowDate = java.time.LocalDate.now()
+						if(car != null){						
+							setData("18", car, [
+								"mileage": [
+									"value": oilChangedAtKm.value,
+									"type" : "number"
+								],
+								"last_oil_change_mileage": [
+									"value": oilChangedAtKm.value,
+									"type" : "number"
+								],
+								"last_oil_change_date": [
+									"value": tmpNowDate.toString(),
+									"type" : "date"
+								],
+							])
+						}											
+					}
 					
 					change endDate value {
 						java.time.LocalDate.now()
