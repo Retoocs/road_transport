@@ -147,11 +147,15 @@
 		<title>EČV</title>
 	</data>
 	<data type="boolean">
-		   <id>event_from_outside</id>
-		   <title>Had the event happened outside? </title>
-		  <init>false</init>
-   </data>
-
+		<id>event_from_outside</id>
+		<title>Had the event happened outside? </title>
+		<init>false</init>
+	</data>
+	<data type="boolean">
+		<id>shedule_date_notification</id>
+		<title>Notifikovať termín požadovaného uzavretia?</title>
+		<init>true</init>
+	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
@@ -214,10 +218,10 @@
 				<logic>
 					<behavior>editable</behavior>
 				</logic>
-				<layout>
-					<x>0</x>
 					<y>5</y>
 					<rows>1</rows>
+				<layout>
+					<x>0</x>
 					<cols>2</cols>
 					<offset>0</offset>
 					<template>material</template>
@@ -979,7 +983,7 @@
 								carListNoFilter.options
 							}
 						}					
-					</action>					
+					</action>
 					<action trigger="set">		
 						ownerCat: f.this,
 						carListNoFilter: f.car_list_nofilter,
@@ -1356,6 +1360,34 @@
 			</actions>
 		</event>
 	</transition>
+	<transition>
+		<id>34</id>
+		<x>580</x>
+		<y>420</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>Nastavenie notifikácií</label>
+		<assignPolicy>auto</assignPolicy>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>shedule_date_notification</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+	</transition>
 	<!-- PLACES -->
 	<place>
 		<id>1</id>
@@ -1511,5 +1543,12 @@
 		<destinationId>16</destinationId>
 		<multiplicity>1</multiplicity>
 		<breakPoint><x>1060</x><y>500</y></breakPoint>
+	</arc>
+	<arc>
+		<id>35</id>
+		<type>read</type>
+		<sourceId>4</sourceId>
+		<destinationId>34</destinationId>
+		<multiplicity>1</multiplicity>
 	</arc>
 </document>

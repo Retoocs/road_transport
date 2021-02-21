@@ -32,6 +32,10 @@
 		<id>notify_tasks</id>
 		<title>Zapnúť notifikácie úloh?</title>
 	</data>
+	<data type="text">
+		<id>test</id>
+		<title>test</title>
+	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
@@ -112,12 +116,16 @@
 					def nowDate = java.time.LocalDate.now()
 					
 					all.each{ car ->
+						def visualId = car.visualId
+						visualId = visualId.split("-")[1]
+						
 						String carTxt
-						if((car.getFieldValue("car_name") != null).and(!car.getFieldValue("car_name")?.isEmpty())){
-							carTxt = car.getFieldValue("plate_number") + " - " + car.getFieldValue("car_name") + " - " + car.getFieldValue("brand") + " " + car.getFieldValue("model")
+						def carName = car.getFieldValue("car_name")
+						if((carName != null).and(!carName?.isEmpty())){
+							carTxt = visualId + " - " + car.getFieldValue("plate_number") + " - " + carName
 						}
 						else {
-							carTxt = car.getFieldValue("plate_number") + " - " + car.getFieldValue("brand") + " " + car.getFieldValue("model")
+							carTxt = visualId + " - " + car.getFieldValue("plate_number")
 						}
 					
 						// STK notification
@@ -199,7 +207,7 @@
 									}	
 
 									//time over
-									if( (!tmpKmOver).and(diff &lt; 1) ){										
+									if( (!tmpKmOver).and(diff &lt; 0) ){										
 										alertOil = " - " + Math.abs(diff) + " " + daysTxt + " po intervale výmeny oleja!"
 									}
 									//time about to over
@@ -290,6 +298,9 @@
 					def nowDate = java.time.LocalDate.now()
 					
 					all.each{ service ->
+						def visualId = service.visualId
+						visualId = visualId.split("-")[1]
+						
 						def carPlateNumber = service.getFieldValue("car_plate_number")
 						def carName = service.getFieldValue("car_name")
 						def task = service.getFieldValue("task")
@@ -297,10 +308,10 @@
 
 						def serviceTxt
 						if( (carName != null).and(!carName.isEmpty()) ){
-							serviceTxt = carPlateNumber + " - " + carName + " - " + task
+							serviceTxt = visualId + " - " + carPlateNumber + " - " + carName + " - " + task
 						}
 						else{
-							serviceTxt = carPlateNumber + " - " + task
+							serviceTxt = visualId + " - " + carPlateNumber + " - " + task
 						}
 						
 						//check for deadline
@@ -370,6 +381,101 @@
 		</layout>
 		<label>Skontrolovanie úloh</label>
 		<assignPolicy>auto</assignPolicy>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>tasks_list_notify</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>test</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>16_assign</id>
+			<actions phase="pre">
+				<action>
+					test: f.test,
+					notifiedTasks: f.tasks_list_notify;
+						
+					change notifiedTasks value { null } 					
+					change notifiedTasks options { [:] }
+					
+					def all = findCases( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_task").and(it.dataSet.get("status").value?.ne("Uzavretá"))} )					
+					def nowDate = java.time.LocalDate.now()
+					
+					all.each{ task ->
+						def visualId = task.visualId
+						visualId = visualId.split("-")[1]
+						
+						def taskTitle = task.getFieldValue("title")
+						taskTitle = taskTitle.substring(0, Math.min(taskTitle.length(), 40));						
+						def taskTxt = visualId + " - " + taskTitle		
+
+						change test value { task }
+						
+						//check for shedule date
+						if(task.getFieldValue("shedule_date_notification")){
+							def value
+							def alertSheduleDate
+							
+							def tmpSheduleDate = task.getFieldValue("shedule_date")
+							if(tmpSheduleDate != null){
+								def sheduleDate = tmpSheduleDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+								def diff = java.time.temporal.ChronoUnit.DAYS.between(nowDate, sheduleDate)
+								
+								String daysTxt
+								if(Math.abs(diff) == 1){
+									daysTxt = " deň"
+								}
+								else{
+									daysTxt = " dní"
+								}
+								
+								if(diff &lt; 0){
+									alertSheduleDate = " - " + Math.abs(diff) + " " + daysTxt + " po termíne uzavretia!"
+								}
+								else if(diff &lt; 4){
+									alertSheduleDate = " - " + diff + " " + daysTxt + " do termínu uzavretia"
+								}	
+
+								if(alertSheduleDate != null){
+									value = taskTxt + alertSheduleDate							
+									change notifiedTasks options {
+										notifiedTasks.options + [(task.stringId): value]
+									}
+								}
+							}
+						}
+					}
+					
+					notifiedTasks.name.defaultValue = "Notifikované úlohy (${notifiedTasks.options.size()})"
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>17</id>
