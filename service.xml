@@ -187,12 +187,25 @@
 		<title>Stav</title>
 		<action trigger="set">
 			status: f.this,
+			statusDesc: f.status_desc,
 			history: f.status_history;
 			
 			def currentDateTime = java.time.LocalDateTime.now()
 			def formatter = java.time.format.DateTimeFormatter.ofPattern("dd.MM.YYYY HH:mm")
 			def formatedDateTime = currentDateTime.format(formatter)
 			def surname = userService.getLoggedOrSystem().surname
+			
+			if( statusDesc.value != null ){
+				def len = history.choices.size()			
+				
+				if( (len != 0).and(!statusDesc.value.isEmpty()) ){
+					def list = new ArrayList&lt;String>(history.choices)
+					def last = list.get(len - 1)
+					history.choices.remove(last)
+					last = (String)last + " - " + statusDesc.value
+					history.choices.add(last)
+				}				
+			}
 						
 			change history choices {
 				history.choices + [formatedDateTime + " -- " + status.value + " (${surname})"]
@@ -291,6 +304,14 @@
 		<id>deadline_notification</id>
 		<title>Notifikovať termín požadovaného uzavretia?</title>
 		<init>true</init>
+	</data>
+	<data type="boolean">
+		<id>show_more_info</id>
+		<title>Rozšírené</title>
+	</data>
+	<data type="text">
+		<id>visual_id</id>
+		<title>ID</title>
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
@@ -504,6 +525,7 @@
 					status: f.status,
 					carId: f.parent_id,
 					taskId: f.parent_task_id,
+					id: f.visual_id,
 					start_date: f.start_date;
 					
 					//finish carTask as well (if exists)
@@ -536,8 +558,10 @@
 						}
 					}					
 					
-					change start_date value{ java.time.LocalDate.now() }			
+					change start_date value{ java.time.LocalDate.now() }		
 
+					change id value { useCase.visualId.split("-")[1] }
+					
 					change status value{
 						"V očakávaní";
 					}
@@ -583,32 +607,17 @@
 					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
-			<dataRef>
-				<id>parent_id</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>8</y>
-					<rows>1</rows>
-					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
 		</dataGroup>
 		<dataGroup>
 			<id>DataGroup_1</id>
 			<dataRef>
-				<id>status_desc</id>
+				<id>mechanic</id>
 				<logic>
 					<behavior>visible</behavior>
 				</logic>
 				<layout>
-					<x>0</x>
-					<y>1</y>
+					<x>2</x>
+					<y>0</y>
 					<rows>1</rows>
 					<cols>2</cols>
 					<offset>0</offset>
@@ -623,54 +632,6 @@
 				</logic>
 				<layout>
 					<x>0</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>status_history</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>act_success</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
-					<y>1</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-		</dataGroup>
-		<dataGroup>
-			<id>DataGroup_0</id>
-			<dataRef>
-				<id>mechanic</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
 					<y>0</y>
 					<rows>1</rows>
 					<cols>2</cols>
@@ -695,21 +656,6 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>customer</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>4</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
 				<id>deadline</id>
 				<logic>
 					<behavior>visible</behavior>
@@ -725,9 +671,132 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>start_date</id>
+				<id>customer</id>
 				<logic>
 					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>4</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>show_more_info</id>
+				<logic>
+					<behavior>editable</behavior>
+					<action trigger="get">
+						thisTask: t.10,
+						btn: f.this,
+						id: f.visual_id,
+						statusHistory: f.status_history,
+						actSuccess: f.act_success,
+						startDate: f.start_date,
+						endDate: f.end_date,
+						changeDate: f.change_date;
+
+						make id, hidden on thisTask when { !btn.value }	
+						make statusHistory, hidden on thisTask when { !btn.value }	
+						make actSuccess, hidden on thisTask when { !btn.value }
+						make startDate, hidden on thisTask when { !btn.value }
+						make endDate, hidden on thisTask when { !btn.value }
+						make changeDate, hidden on thisTask when { !btn.value }
+					</action>
+					<action trigger="set">
+						thisTask: t.10,
+						btn: f.this,
+						id: f.visual_id,
+						statusHistory: f.status_history,
+						actSuccess: f.act_success,
+						startDate: f.start_date,
+						endDate: f.end_date,
+						changeDate: f.change_date;
+						
+						make id, visible on thisTask when { btn.value }
+						make id, hidden on thisTask when { !btn.value }	
+						
+						make statusHistory, editable on thisTask when { btn.value }
+						make statusHistory, hidden on thisTask when { !btn.value }	
+
+						make actSuccess, visible on thisTask when { btn.value }
+						make actSuccess, hidden on thisTask when { !btn.value }
+						
+						make startDate, visible on thisTask when { btn.value }
+						make startDate, hidden on thisTask when { !btn.value }
+						
+						make endDate, visible on thisTask when { btn.value }
+						make endDate, hidden on thisTask when { !btn.value }
+						
+						make changeDate, visible on thisTask when { btn.value }
+						make changeDate, hidden on thisTask when { !btn.value }
+					</action>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>4</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>visual_id</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>status_history</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>act_success</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>start_date</id>
+				<logic>
+					<behavior>hidden</behavior>
 				</logic>
 				<layout>
 					<x>0</x>
@@ -742,7 +811,7 @@
 			<dataRef>
 				<id>end_date</id>
 				<logic>
-					<behavior>visible</behavior>
+					<behavior>hidden</behavior>
 				</logic>
 				<layout>
 					<x>2</x>
@@ -757,7 +826,7 @@
 			<dataRef>
 				<id>change_date</id>
 				<logic>
-					<behavior>visible</behavior>
+					<behavior>hidden</behavior>
 				</logic>
 				<layout>
 					<x>2</x>
@@ -812,21 +881,6 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>customer</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>3</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
 				<id>deadline</id>
 				<logic>
 					<behavior>editable</behavior>
@@ -841,6 +895,21 @@
 					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
+			<dataRef>
+				<id>customer</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>3</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>			
 		</dataGroup>
 		<event type="finish">
 			<id>11_finish</id>

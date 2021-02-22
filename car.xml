@@ -220,15 +220,15 @@
 		<init>false</init>
 	</data>
 	<data type="boolean">
-		<id>stk_notification</id>
-		<title>Notifikovať STK?</title>
-		<init>true</init>
-	</data>
-	<data type="boolean">
 		<id>oil_notification</id>
 		<title>Notifikovať výmenu oleja?</title>
 		<init>true</init>
 	</data>
+	<data type="boolean">
+		<id>stk_notification</id>
+		<title>Notifikovať STK?</title>
+		<init>true</init>
+	</data>	
 	<data type="number">
 		<id>oil_change_interval_km</id>
 		<title>Interval výmeny oleja v kilometroch [km]</title>
@@ -243,6 +243,15 @@
 		<id>oil_change_interval_months</id>
 		<title>Interval výmeny oleja v mesiacoch</title>
 		<init>12</init>
+	</data>
+	<data type="boolean">
+		<id>show_more_info</id>
+		<title>Rozšírené</title>
+		<init>false</init>
+	</data>
+	<data type="text">
+		<id>visual_id</id>
+		<title>ID</title>
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
@@ -470,11 +479,16 @@
 				<action>
 					status: f.status,
 					creationDate: f.creation_date,
+					id: f.visual_id,
 					mileageDateChange: f.mileage_date_change;
 			
 					change mileageDateChange value{ null }	
 					
 					change creationDate value{ java.time.LocalDate.now() }	
+					
+					change id value {
+						useCase.visualId.split("-")[1]
+					}
 
 					change status value{
 						"Aktívny"
@@ -495,129 +509,6 @@
 		<dataGroup>
 			<id>DataGroup_1</id>
 			<dataRef>
-				<id>creation_date</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>9</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>carinfo_date_change</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>9</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>mileage_date_change</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>6</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>stk_expiration_date</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>4</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>last_oil_change_date</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>4</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>last_oil_change_mileage</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>4</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>status</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
-					<y>9</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>status_history</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
-					<y>9</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-		</dataGroup>
-		<dataGroup>
-			<id>DataGroup_0</id>
-			<dataRef>
 				<id>car_photo</id>
 				<logic>
 					<behavior>visible</behavior>
@@ -633,13 +524,58 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>model</id>
+				<id>brand</id>
 				<logic>
 					<behavior>visible</behavior>
 				</logic>
 				<layout>
 					<x>1</x>
 					<y>1</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>model</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>car_name</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>2</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>plate_number</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>7</y>
 					<rows>1</rows>
 					<cols>2</cols>
 					<offset>0</offset>
@@ -708,51 +644,6 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>plate_number</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>7</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>history_plate_number</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>9</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>car_owner</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>3</x>
-					<y>1</y>
-					<rows>1</rows>
-					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
 				<id>owner_category</id>
 				<logic>
 					<behavior>visible</behavior>
@@ -768,12 +659,113 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>car_name</id>
+				<id>show_more_info</id>
 				<logic>
-					<behavior>visible</behavior>
+					<behavior>editable</behavior>
+					<action trigger="get">
+						thisTask: t.13,
+						btn: f.this,
+						id: f.visual_id,
+						creationDate: f.creation_date,
+						carInfoChangeDate: f.carinfo_date_change,
+						mileageChangeDate: f.mileage_date_change,
+						stkExpirationDate: f.stk_expiration_date,
+						lastOilChangeDate: f.last_oil_change_date,
+						lastOilChangeMileage: f.last_oil_change_mileage,
+						status: f.status,
+						statusHistory: f.status_history,
+						plateNumberHistory: f.history_plate_number,
+						carOwner: f.car_owner,
+						countServices: f.count_services;
+						
+						change btn value { false }
+
+						make id, hidden on thisTask when { !btn.value }	
+						make creationDate, hidden on thisTask when { !btn.value }	
+						make carInfoChangeDate, hidden on thisTask when { !btn.value }
+						make mileageChangeDate, hidden on thisTask when { !btn.value }
+						make stkExpirationDate, hidden on thisTask when { !btn.value }
+						make lastOilChangeDate, hidden on thisTask when { !btn.value }
+						make lastOilChangeMileage, hidden on thisTask when { !btn.value }
+						make status, hidden on thisTask when { !btn.value }
+						make statusHistory, hidden on thisTask when { !btn.value }
+						make plateNumberHistory, hidden on thisTask when { !btn.value }
+						make carOwner, hidden on thisTask when { !btn.value }
+						make countServices, hidden on thisTask when { !btn.value }
+					</action>
+					<action trigger="set">
+						thisTask: t.13,
+						btn: f.this,
+						id: f.visual_id,
+						creationDate: f.creation_date,
+						carInfoChangeDate: f.carinfo_date_change,
+						mileageChangeDate: f.mileage_date_change,
+						stkExpirationDate: f.stk_expiration_date,
+						lastOilChangeDate: f.last_oil_change_date,
+						lastOilChangeMileage: f.last_oil_change_mileage,
+						status: f.status,
+						statusHistory: f.status_history,
+						plateNumberHistory: f.history_plate_number,
+						carOwner: f.car_owner,
+						countServices: f.count_services;
+						
+						make id, visible on thisTask when { btn.value }
+						make id, hidden on thisTask when { !btn.value }	
+						
+						make creationDate, visible on thisTask when { btn.value }
+						make creationDate, hidden on thisTask when { !btn.value }	
+
+						make carInfoChangeDate, visible on thisTask when { btn.value }
+						make carInfoChangeDate, hidden on thisTask when { !btn.value }
+						
+						make mileageChangeDate, visible on thisTask when { btn.value }
+						make mileageChangeDate, hidden on thisTask when { !btn.value }
+						
+						make stkExpirationDate, visible on thisTask when { btn.value }
+						make stkExpirationDate, hidden on thisTask when { !btn.value }
+						
+						make lastOilChangeDate, visible on thisTask when { btn.value }
+						make lastOilChangeDate, hidden on thisTask when { !btn.value }
+						
+						make lastOilChangeMileage, visible on thisTask when { btn.value }
+						make lastOilChangeMileage, hidden on thisTask when { !btn.value }
+						
+						make status, visible on thisTask when { btn.value }
+						make status, hidden on thisTask when { !btn.value }
+						
+						make statusHistory, editable on thisTask when { btn.value }
+						make statusHistory, hidden on thisTask when { !btn.value }
+						
+						make plateNumberHistory, editable on thisTask when { btn.value }
+						make plateNumberHistory, hidden on thisTask when { !btn.value }
+						
+						make carOwner, visible on thisTask when { btn.value }
+						make carOwner, hidden on thisTask when { !btn.value }
+						
+						make countServices, visible on thisTask when { btn.value }
+						make countServices, hidden on thisTask when { !btn.value }
+					</action>
 				</logic>
 				<layout>
-					<x>0</x>
+					<x>3</x>
+					<y>2</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>visual_id</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>3</x>
 					<y>2</y>
 					<rows>1</rows>
 					<cols>1</cols>
@@ -783,13 +775,13 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>brand</id>
+				<id>creation_date</id>
 				<logic>
-					<behavior>visible</behavior>
+					<behavior>hidden</behavior>
 				</logic>
 				<layout>
-					<x>1</x>
-					<y>0</y>
+					<x>0</x>
+					<y>9</y>
 					<rows>1</rows>
 					<cols>2</cols>
 					<offset>0</offset>
@@ -798,9 +790,144 @@
 				</layout>
 			</dataRef>
 			<dataRef>
+				<id>carinfo_date_change</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>9</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>mileage_date_change</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>6</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>stk_expiration_date</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>4</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>last_oil_change_date</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>4</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>last_oil_change_mileage</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>4</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>status</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>9</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>status_history</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>9</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>history_plate_number</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>9</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>car_owner</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>3</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
 				<id>count_services</id>
 				<logic>
-					<behavior>visible</behavior>
+					<behavior>hidden</behavior>
 				</logic>
 				<layout>
 					<x>2</x>
@@ -823,9 +950,24 @@
 		</layout>
 		<label>Upravenie informácií</label>
 		<dataGroup>
-			<id>DataGroup_0</id>
+			<id>DataGroup_1</id>
 			<dataRef>
-				<id>brand</id>
+				<id>car_photo</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance></appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>model</id>
 				<logic>
 					<behavior>editable</behavior>
 					<behavior>required</behavior>
@@ -841,7 +983,7 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>model</id>
+				<id>brand</id>
 				<logic>
 					<behavior>editable</behavior>
 					<behavior>required</behavior>
@@ -849,6 +991,52 @@
 				<layout>
 					<x>1</x>
 					<y>1</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>car_name</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>2</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>plate_number</id>
+				<logic>
+					<behavior>editable</behavior>
+					<behavior>required</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>6</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>year_of_production</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>3</y>
 					<rows>1</rows>
 					<cols>2</cols>
 					<offset>0</offset>
@@ -872,13 +1060,13 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>year_of_production</id>
+				<id>vin</id>
 				<logic>
 					<behavior>editable</behavior>
 				</logic>
 				<layout>
 					<x>1</x>
-					<y>3</y>
+					<y>5</y>
 					<rows>1</rows>
 					<cols>2</cols>
 					<offset>0</offset>
@@ -903,9 +1091,78 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>stk_expiration_date</id>
+				<id>owner_category</id>
 				<logic>
 					<behavior>editable</behavior>
+					<behavior>required</behavior>
+				</logic>
+				<layout>
+					<x>3</x>
+					<y>2</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>show_more_info</id>
+				<logic>
+					<behavior>editable</behavior>
+					<action trigger="get">
+						thisTask: t.18,
+						btn: f.this,
+						stkExpirationDate: f.stk_expiration_date,
+						lastOilChangeDate: f.last_oil_change_date,
+						lastOilChangeMileage: f.last_oil_change_mileage,
+						carOwner: f.car_owner;
+						
+						change btn value { false }
+						
+						make stkExpirationDate, hidden on thisTask when { !btn.value }
+						make lastOilChangeDate, hidden on thisTask when { !btn.value }
+						make lastOilChangeMileage, hidden on thisTask when { !btn.value }
+						make carOwner, hidden on thisTask when { !btn.value }
+					</action>
+					<action trigger="set">
+						thisTask: t.18,
+						btn: f.this,
+						stkExpirationDate: f.stk_expiration_date,
+						lastOilChangeDate: f.last_oil_change_date,
+						lastOilChangeMileage: f.last_oil_change_mileage,
+						carOwner: f.car_owner;
+						
+						make stkExpirationDate, editable on thisTask when { btn.value }
+						make stkExpirationDate, hidden on thisTask when { !btn.value }
+						
+						make lastOilChangeDate, editable on thisTask when { btn.value }
+						make lastOilChangeDate, hidden on thisTask when { !btn.value }
+						
+						make lastOilChangeMileage, editable on thisTask when { btn.value }
+						make lastOilChangeMileage, hidden on thisTask when { !btn.value }
+						
+						make carOwner, editable on thisTask when { btn.value }
+						make carOwner, hidden on thisTask when { !btn.value }
+					</action>
+				</logic>
+				<layout>
+					<x>3</x>
+					<y>2</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>stk_expiration_date</id>
+				<logic>
+					<behavior>hidden</behavior>
 				</logic>
 				<layout>
 					<x>1</x>
@@ -920,7 +1177,7 @@
 			<dataRef>
 				<id>last_oil_change_date</id>
 				<logic>
-					<behavior>editable</behavior>
+					<behavior>hidden</behavior>
 				</logic>
 				<layout>
 					<x>1</x>
@@ -935,7 +1192,7 @@
 			<dataRef>
 				<id>last_oil_change_mileage</id>
 				<logic>
-					<behavior>editable</behavior>
+					<behavior>hidden</behavior>
 				</logic>
 				<layout>
 					<x>1</x>
@@ -948,90 +1205,13 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>vin</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>5</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>plate_number</id>
-				<logic>
-					<behavior>editable</behavior>
-					<behavior>required</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>6</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>car_name</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>2</y>
-					<rows>1</rows>
-					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>car_photo</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>1</y>
-					<rows>1</rows>
-					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance></appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
 				<id>car_owner</id>
 				<logic>
-					<behavior>editable</behavior>
+					<behavior>hidden</behavior>
 				</logic>
 				<layout>
 					<x>3</x>
 					<y>1</y>
-					<rows>1</rows>
-					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>owner_category</id>
-				<logic>
-					<behavior>editable</behavior>
-					<behavior>required</behavior>
-				</logic>
-				<layout>
-					<x>3</x>
-					<y>2</y>
 					<rows>1</rows>
 					<cols>1</cols>
 					<offset>0</offset>
@@ -1414,13 +1594,6 @@
 				<id>oil_notification</id>
 				<logic>
 					<behavior>editable</behavior>
-					<action trigger="get">
-						dis: f.this;
-						
-						change dis value {
-							false
-						}
-					</action>
 				</logic>
 				<layout>
 					<x>2</x>

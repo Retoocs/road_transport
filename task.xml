@@ -26,7 +26,7 @@
 			}
 			else {
 				change status value{
-					"Pridelená"
+					"Pridelená -> " + user.value.surname
 				}
 			}
 		</action>
@@ -75,15 +75,23 @@
 		<title>Stav</title>
 		<action trigger="set">
 			status: f.this,
+			desc: f.desc,
 			history: f.status_history;
 			
 			def currentDateTime = java.time.LocalDateTime.now()
 			def formatter = java.time.format.DateTimeFormatter.ofPattern("dd.MM.YYYY HH:mm")
 			def formatedDateTime = currentDateTime.format(formatter)
 			def surname = userService.getLoggedOrSystem().surname
+			
+			def txt = formatedDateTime + " -- " + status.value + " (${surname})"
+			if(desc.value != null){
+				if(!desc.value.isEmpty()){
+					txt = txt + " - " + desc.value
+				}				
+			}		
 						
 			change history choices {
-				history.choices + [formatedDateTime + " -- " + status.value + " (${surname})"]
+				history.choices + [txt]
 			}			
 			
 			def title = useCase.title
@@ -155,6 +163,14 @@
 		<id>shedule_date_notification</id>
 		<title>Notifikovať termín požadovaného uzavretia?</title>
 		<init>true</init>
+	</data>
+	<data type="boolean">
+		<id>show_more_info</id>
+		<title>Rozšírené</title>
+	</data>
+	<data type="text">
+		<id>visual_id</id>
+		<title>ID</title>
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
@@ -251,6 +267,7 @@
 					status: f.status,
 					user: f.assignee,
 					title: f.title,
+					id: f.visual_id,
 					creationDate: f.creation_date;
 
 					
@@ -259,14 +276,13 @@
 							"Nepridelená"
 						}
 					}
-					else {
-						change status value{
-							"Pridelená"
-						}
-					}
 					
 					changeCaseProperty "title" about {
 						title.value + " {}"
+					}
+					
+					change id value {
+						useCase.visualId.split("-")[1]
 					}
 
 					change creationDate value {
@@ -286,37 +302,7 @@
 		<label>Zobrazenie informácií</label>
 		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
-			<id>DataGroup_0</id>
-			<dataRef>
-				<id>closure_state</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
-					<y>7</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>change_date</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
-					<y>5</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
+			<id>DataGroup_1</id>
 			<dataRef>
 				<id>title</id>
 				<logic>
@@ -348,36 +334,6 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>creator</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>creation_date</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
 				<id>shedule_date</id>
 				<logic>
 					<behavior>visible</behavior>
@@ -387,66 +343,6 @@
 					<y>4</y>
 					<rows>1</rows>
 					<cols>4</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>closed_by</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
-					<y>9</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>close_date</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>9</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>status</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>7</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>status_history</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>7</y>
-					<rows>1</rows>
-					<cols>2</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -468,15 +364,212 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>desc</id>
+				<id>show_more_info</id>
 				<logic>
-					<behavior>visible</behavior>
+					<behavior>editable</behavior>
+					<action trigger="get">
+						thisTask: t.8,
+						btn: f.this,
+						id: f.visual_id,
+						creationDate: f.creation_date,
+						creator: f.creator,
+						status: f.status,
+						statusHistory: f.status_history,
+						changeDate: f.change_date,
+						closureState: f.closure_state,
+						closeDate: f.close_date,
+						closedBy: f.closed_by;
+
+						make id, hidden on thisTask when { !btn.value }	
+						make creator, hidden on thisTask when { !btn.value }	
+						make status, hidden on thisTask when { !btn.value }
+						make statusHistory, hidden on thisTask when { !btn.value }
+						make changeDate, hidden on thisTask when { !btn.value }
+						make closureState, hidden on thisTask when { !btn.value }
+						make closeDate, hidden on thisTask when { !btn.value }
+						make closedBy, hidden on thisTask when { !btn.value }
+					</action>
+					<action trigger="set">
+						thisTask: t.8,
+						btn: f.this,
+						id: f.visual_id,
+						creationDate: f.creation_date,
+						creator: f.creator,
+						status: f.status,
+						statusHistory: f.status_history,
+						changeDate: f.change_date,
+						closureState: f.closure_state,
+						closeDate: f.close_date,
+						closedBy: f.closed_by;
+						
+						make id, visible on thisTask when { btn.value }
+						make id, hidden on thisTask when { !btn.value }	
+						
+						make creator, visible on thisTask when { btn.value }
+						make creator, hidden on thisTask when { !btn.value }	
+
+						make status, visible on thisTask when { btn.value }
+						make status, hidden on thisTask when { !btn.value }
+						
+						make statusHistory, editable on thisTask when { btn.value }
+						make statusHistory, hidden on thisTask when { !btn.value }
+						
+						make changeDate, visible on thisTask when { btn.value }
+						make changeDate, hidden on thisTask when { !btn.value }
+						
+						make closureState, visible on thisTask when { (btn.value).and(closureState.value != null) }
+						make closureState, hidden on thisTask when { !btn.value }
+						
+						make closeDate, visible on thisTask when { (btn.value).and(closeDate.value != null) }
+						make closeDate, hidden on thisTask when { !btn.value }
+						
+						make closedBy, visible on thisTask when { (btn.value).and(closedBy.value != null) }
+						make closedBy, hidden on thisTask when { !btn.value }
+					</action>
 				</logic>
 				<layout>
 					<x>0</x>
-					<y>8</y>
+					<y>5</y>
 					<rows>1</rows>
-					<cols>4</cols>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>visual_id</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>creation_date</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>creator</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>status</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>7</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>status_history</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>7</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>change_date</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>5</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>closure_state</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>7</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>close_date</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>9</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>closed_by</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>9</y>
+					<rows>1</rows>
+					<cols>2</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -641,7 +734,7 @@
 					serviceTaskRef: f.service_creation,
 					deleteService: f.delete_service;
 					
-					if(serviceTaskRef.value != []){
+					if( (serviceTaskRef.value != []).and(serviceTaskRef.value != null) ){
 						def toCancel = findTask({it._id.eq(serviceTaskRef.value[0])});		
 							
 						if(toCancel != null){
@@ -684,6 +777,36 @@
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
+				<id>title</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>1</y>
+					<rows>2</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>task</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
 				<id>closure_state</id>
 				<logic>
 					<behavior>editable</behavior>
@@ -713,37 +836,7 @@
 					<template>material</template>
 					<appearance>outline</appearance>
 				</layout>
-			</dataRef>
-			<dataRef>
-				<id>task</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>1</y>
-					<rows>2</rows>
-					<cols>4</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>fill</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>title</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>4</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>fill</appearance>
-				</layout>
-			</dataRef>
+			</dataRef>			
 		</dataGroup>
 		<event type="cancel">
 			<id>17_cancel</id>
@@ -1287,7 +1380,7 @@
 					lastId: f.last_car_select;
 					
 					if(!outsideEvent.value){
-						if(taskRef.value != []){
+						if( (taskRef.value != []).and(taskRef.value != null) ){
 							def toCancel = findTask({it._id.eq(taskRef.value[0])});		
 							
 							if(toCancel != null){
