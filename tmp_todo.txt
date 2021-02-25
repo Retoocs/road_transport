@@ -1,3 +1,0 @@
-task.xml:
-  - when creating service record, delete asignee from forms and add visual_id filter
-  - filtered car list, in view add visual_id number
