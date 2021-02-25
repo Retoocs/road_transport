@@ -32,6 +32,25 @@
 		<id>notify_tasks</id>
 		<title>Zapnúť notifikácie úloh?</title>
 	</data>
+	<data type="taskRef">
+		<id>all_notification_tasks</id>
+		<title>All notification tasks</title>
+	</data>
+	<data type="button">
+		<id>vehicle_show_info</id>
+		<title>Zobraziť informácie o vozidle</title>
+		<placeholder>Zobraziť</placeholder>
+	</data>
+	<data type="button">
+		<id>service_show_info</id>
+		<title>Zobraziť informácie o servisnom zázname</title>
+		<placeholder>Zobraziť</placeholder>
+	</data>
+	<data type="button">
+		<id>task_show_info</id>
+		<title>Zobraziť informácie o úlohe</title>
+		<placeholder>Zobraziť</placeholder>
+	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
@@ -85,6 +104,21 @@
 			<id>DataGroup_0</id>
 			<dataRef>
 				<id>car_list_notify</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>vehicle_show_info</id>
 				<logic>
 					<behavior>editable</behavior>
 				</logic>
@@ -280,6 +314,21 @@
 					<appearance>fill</appearance>
 				</layout>
 			</dataRef>
+			<dataRef>
+				<id>service_show_info</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
 		</dataGroup>
 		<event type="assign">
 			<id>13_assign</id>
@@ -381,6 +430,21 @@
 			<id>DataGroup_0</id>
 			<dataRef>
 				<id>tasks_list_notify</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>task_show_info</id>
 				<logic>
 					<behavior>editable</behavior>
 				</logic>
@@ -554,6 +618,61 @@
 			<offset>0</offset>
 		</layout>
 		<label>Pracovná plocha</label>
+		<assignPolicy>auto</assignPolicy>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>all_notification_tasks</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance></appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>41_assign</id>
+			<actions phase="pre">
+				<action>
+					allNotifications: f.all_notification_tasks;
+					
+					def notificationTasks = findTasks({ it.caseId.eq(useCase.stringId).and(
+						it.transitionId.eq("9") // vehicle check
+						.or(it.transitionId.eq("13")) // service check
+						.or(it.transitionId.eq("16")) //task check
+					)})
+					
+					def notificationTasksIds = notificationTasks.collect { it.stringId }
+					
+					assignTasks(notificationTasks)
+					
+					change allNotifications value { notificationTasksIds }
+				</action>
+			</actions>
+		</event>
+		<event type="cancel">
+			<id>41_cancel</id>
+			<actions phase="pre">
+				<action>
+					//todo iterate through taskRef values, each(findTask on value and cancel it)
+				
+					def notificationTasks = findTasks({ it.caseId.eq(useCase.stringId).and(
+						it.transitionId.eq("9") // vehicle check
+						.or(it.transitionId.eq("13")) // service check
+						.or(it.transitionId.eq("16")) //task check
+					)})
+					
+					cancelTasks(notificationTasks)
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<!-- PLACES -->
 	<place>
