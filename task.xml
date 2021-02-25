@@ -154,6 +154,14 @@
 		<id>plate_number_filter</id>
 		<title>EČV</title>
 	</data>
+	<data type="enumeration_map">
+		<id>car_list_visual_id</id>
+		<title>Car list with name filter</title>
+	</data>
+	<data type="text">
+		<id>visual_id_filter</id>
+		<title>ID</title>
+	</data>
 	<data type="boolean">
 		<id>event_from_outside</id>
 		<title>Had the event happened outside? </title>
@@ -935,25 +943,6 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>assignee</id>
-				<logic>
-					<behavior>visible</behavior>
-					<behavior>required</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>4</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>fill</appearance>
-				</layout>
-			</dataRef>
-		</dataGroup>
-		<dataGroup>
-			<id>DataGroup_1</id>
-			<dataRef>
 				<id>car_list</id>
 				<logic>
 					<behavior>editable</behavior>
@@ -1013,11 +1002,14 @@
 						def carInstancesMap = carInstances.collectEntries {
 							String value;
 							
+							def visualId = it.visualId
+							visualId = visualId.split("-")[1]
+							
 							if((it.getFieldValue("car_name") != null).and(!it.getFieldValue("car_name")?.isEmpty())){
-								value = it.getFieldValue("plate_number") + " - " + it.getFieldValue("car_name") + " - " + it.getFieldValue("brand") + " " + it.getFieldValue("model")
+								value = visualId + " - " + it.getFieldValue("plate_number") + " - " + it.getFieldValue("car_name") + " - " + it.getFieldValue("brand") + " " + it.getFieldValue("model")
 							}
 							else {
-								value = it.getFieldValue("plate_number") + " - " + it.getFieldValue("brand") + " " + it.getFieldValue("model")
+								value = visualId + " - " + it.getFieldValue("plate_number") + " - " + it.getFieldValue("brand") + " " + it.getFieldValue("model")
 							}
 							
 							[(it.stringId): value]
@@ -1043,6 +1035,9 @@
 					<appearance>fill</appearance>
 				</layout>
 			</dataRef>
+		</dataGroup>
+		<dataGroup>
+			<id>DataGroup_1</id>
 			<dataRef>
 				<id>car_owner_category</id>
 				<logic>
@@ -1083,6 +1078,7 @@
 						carListOwnerCat: f.car_list_owner_cat,
 						carList: f.car_list,
 						carListName: f.car_list_name,
+						carListVisualId: f.car_list_visual_id,
 						carListPlateNumber: f.car_list_plate_number;
 						
 						change carListOwnerCat options{
@@ -1122,6 +1118,7 @@
 									.and(carListOwnerCat.options.containsKey(key))
 									.and(carListName.options.containsKey(key))
 									.and(carListPlateNumber.options.containsKey(key))
+									.and(carListVisualId.options.containsKey(key))
 								){
 									change carList options{
 										carList.options + [(key): value]
@@ -1167,6 +1164,7 @@
 						carListName: f.car_list_name,
 						carList: f.car_list,
 						carListPlateNumber: f.car_list_plate_number,
+						carListVisualId: f.car_list_visual_id,
 						carListOwnerCat: f.car_list_owner_cat;
 						
 						if(carName.value == null || carName.value.isEmpty()){
@@ -1215,6 +1213,7 @@
 									.and(carListOwnerCat.options.containsKey(key))
 									.and(carListName.options.containsKey(key))
 									.and(carListPlateNumber.options.containsKey(key))
+									.and(carListVisualId.options.containsKey(key))
 								){
 									change carList options{
 										carList.options + [(key): value]
@@ -1260,6 +1259,7 @@
 						carListNoFilter: f.car_list_nofilter,		
 						carList: f.car_list,
 						carListName: f.car_list_name,
+						carListVisualId: f.car_list_visual_id,
 						carListOwnerCat: f.car_list_owner_cat;						
 						
 						if(plateNumber.value == null || plateNumber.value.isEmpty()){
@@ -1305,6 +1305,7 @@
 									.and(carListOwnerCat.options.containsKey(key))
 									.and(carListName.options.containsKey(key))
 									.and(carListPlateNumber.options.containsKey(key))
+									.and(carListVisualId.options.containsKey(key))
 								){
 									change carList options{
 										carList.options + [(key): value]
@@ -1312,6 +1313,99 @@
 								}
 							}
 						}
+					</action>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>visual_id_filter</id>
+				<logic>
+					<behavior>visible</behavior>
+					<action trigger="get">
+						id: f.this,
+						carListNoFilter: f.car_list_nofilter,
+						carListVisualId: f.car_list_visual_id,
+						thisTask: t.24;
+						
+						if(carListNoFilter.options == [:]){
+							make id, visible on thisTask when { true }
+						} else {
+							make id, editable on thisTask when { true }
+							
+							change carListVisualId options {
+								carListNoFilter.options
+							}
+						}
+					</action>
+					<action trigger="set">		
+						id: f.this,
+						carListNoFilter: f.car_list_nofilter,
+						carListVisualId: f.car_list_visual_id,
+						carList: f.car_list,
+						carListName: f.car_list_name,
+						carListPlateNumber: f.car_list_plate_number,
+						carListOwnerCat: f.car_list_owner_cat;
+						
+						if(id.value == null || id.value.isEmpty()){
+							change carListVisualId options{
+								carListNoFilter.options
+							}
+						}
+						else {
+							change carListVisualId options{
+								[:]
+							}
+							
+							carListNoFilter.options.each{ key, value ->
+								def carId = key
+								def car = findCase( {it._id.eq(carId)} )
+								
+								if(car != null){
+									def carVisualIdToCheck = car.visualId
+									
+									if(carVisualIdToCheck != null){
+										carVisualIdToCheck = carVisualIdToCheck.toLowerCase()
+
+										def carVisualIdFilter = id.value.toLowerCase()
+										
+										if((carVisualIdToCheck != null).and(carVisualIdToCheck.contains(carVisualIdFilter))){
+											change carListVisualId options{
+												carListVisualId.options + [(key): value]
+											}
+										}
+									}																
+								}						
+							}														
+						}
+						
+						
+						//update carList
+						if(carListNoFilter.options != [:]){
+							change carList options{
+								[:]
+							}
+									
+							carListNoFilter.options.each{ key, value ->
+								if(true
+									.and(carListOwnerCat.options.containsKey(key))
+									.and(carListName.options.containsKey(key))
+									.and(carListPlateNumber.options.containsKey(key))
+									.and(carListVisualId.options.containsKey(key))
+								){
+									change carList options{
+										carList.options + [(key): value]
+									}
+								}
+							}
+						}											
 					</action>
 				</logic>
 				<layout>
