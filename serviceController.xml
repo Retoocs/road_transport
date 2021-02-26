@@ -31,7 +31,7 @@
 	</data>
 	<data type="enumeration">
 		<id>car_owner_category</id>
-		<title>Typ majiteľa</title>
+		<title>Typ majiteľa [filter]</title>
 	</data>
 	<data type="enumeration_map">
 		<id>car_list_owner_cat</id>
@@ -43,7 +43,7 @@
 	</data>
 	<data type="text">
 		<id>car_name_filter</id>
-		<title>Názov auta</title>
+		<title>Názov auta [filter]</title>
 	</data>
 	<data type="enumeration_map">
 		<id>car_list_plate_number</id>
@@ -51,7 +51,7 @@
 	</data>
 	<data type="text">
 		<id>plate_number_filter</id>
-		<title>EČV</title>
+		<title>EČV [filter]</title>
 	</data>
 	<data type="enumeration_map">
 		<id>car_list_visual_id</id>
@@ -59,7 +59,7 @@
 	</data>
 	<data type="text">
 		<id>visual_id_filter</id>
-		<title>ID</title>
+		<title>ID [filter]</title>
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
@@ -82,6 +82,18 @@
 							workflowService.deleteCase(useCase._id.toString())
 						}
 						throw new Exception("Instance of this process already exists for the author")		
+					}
+				</action>
+			</actions>
+		</event>
+		<event type="finish">
+			<id>2_finish</id>
+			<actions phase="post">
+				<action>
+					def title = "Ovládač servisného záznamu"
+					def name = userService.getLoggedOrSystem().name + " " + userService.getLoggedOrSystem().surname
+					changeCaseProperty "title" about {
+						title + " - " + name
 					}
 				</action>
 			</actions>

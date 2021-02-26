@@ -37,6 +37,18 @@
 				</action>
 			</actions>
 		</event>
+		<event type="finish">
+			<id>2_finish</id>
+			<actions phase="post">
+				<action>
+					def title = "Ovládač auta"
+					def name = userService.getLoggedOrSystem().name + " " + userService.getLoggedOrSystem().surname
+					changeCaseProperty "title" about {
+						title + " - " + name
+					}
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>4</id>
