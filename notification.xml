@@ -342,56 +342,58 @@
 					def all = findCases( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_service").and(it.dataSet.get("status").value?.ne("Úkon dokončený"))} )					
 					def nowDate = java.time.LocalDate.now()
 					
-					all.each{ service ->
-						def visualId = service.visualId
-						visualId = visualId.split("-")[1]
-						
-						def carPlateNumber = service.getFieldValue("car_plate_number")
-						def carName = service.getFieldValue("car_name")
-						def task = service.getFieldValue("task")
-						task = task.substring(0, Math.min(task.length(), 40));
-
-						def serviceTxt
-						if( (carName != null).and(!carName.isEmpty()) ){
-							serviceTxt = visualId + " - " + carPlateNumber + " - " + carName + " - " + task
-						}
-						else{
-							serviceTxt = visualId + " - " + carPlateNumber + " - " + task
-						}
-						
-						//check for deadline
-						if(service.getFieldValue("deadline_notification")){
-							def value
-							def alertDeadline
+					all.each{ service ->					
+						if(service.getFieldValue("start_date") != null){
+							def visualId = service.visualId
+							visualId = visualId.split("-")[1]
 							
-							def tmpDeadline = service.getFieldValue("deadline")
-							if(tmpDeadline != null){
-								def deadline = tmpDeadline.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
-								def diff = java.time.temporal.ChronoUnit.DAYS.between(nowDate, deadline)
-								
-								String daysTxt
-								if(Math.abs(diff) == 1){
-									daysTxt = " deň"
-								}
-								else{
-									daysTxt = " dní"
-								}
-								
-								if(diff &lt; 0){
-									alertDeadline = " - " + Math.abs(diff) + " " + daysTxt + " po termíne uzavretia!"
-								}
-								else if(diff &lt; 4){
-									alertDeadline = " - " + diff + " " + daysTxt + " pred termínom uzavretia"
-								}	
+							def carPlateNumber = service.getFieldValue("car_plate_number")
+							def carName = service.getFieldValue("car_name")
+							def task = service.getFieldValue("task")
+							task = task.substring(0, Math.min(task.length(), 40));
 
-								if(alertDeadline != null){
-									value = serviceTxt + alertDeadline							
-									change notifiedServices options {
-										notifiedServices.options + [(service.stringId): value]
+							def serviceTxt
+							if( (carName != null).and(!carName.isEmpty()) ){
+								serviceTxt = visualId + " - " + carPlateNumber + " - " + carName + " - " + task
+							}
+							else{
+								serviceTxt = visualId + " - " + carPlateNumber + " - " + task
+							}
+							
+							//check for deadline
+							if(service.getFieldValue("deadline_notification")){
+								def value
+								def alertDeadline
+								
+								def tmpDeadline = service.getFieldValue("deadline")
+								if(tmpDeadline != null){
+									def deadline = tmpDeadline.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+									def diff = java.time.temporal.ChronoUnit.DAYS.between(nowDate, deadline)
+									
+									String daysTxt
+									if(Math.abs(diff) == 1){
+										daysTxt = " deň"
+									}
+									else{
+										daysTxt = " dní"
+									}
+									
+									if(diff &lt; 0){
+										alertDeadline = " - " + Math.abs(diff) + " " + daysTxt + " po termíne uzavretia!"
+									}
+									else if(diff &lt; 4){
+										alertDeadline = " - " + diff + " " + daysTxt + " pred termínom uzavretia"
+									}	
+
+									if(alertDeadline != null){
+										value = serviceTxt + alertDeadline							
+										change notifiedServices options {
+											notifiedServices.options + [(service.stringId): value]
+										}
 									}
 								}
 							}
-						}
+						}						
 					}
 					
 					notifiedServices.name.defaultValue = "Notifikované servisné záznamy (${notifiedServices.options.size()})"
@@ -472,46 +474,48 @@
 					def nowDate = java.time.LocalDate.now()
 					
 					all.each{ task ->
-						def visualId = task.visualId
-						visualId = visualId.split("-")[1]
-						
-						def taskTitle = task.getFieldValue("title")
-						taskTitle = taskTitle.substring(0, Math.min(taskTitle.length(), 40));						
-						def taskTxt = visualId + " - " + taskTitle		
-						
-						//check for shedule date
-						if(task.getFieldValue("shedule_date_notification")){
-							def value
-							def alertSheduleDate
+						if(task.getFieldValue("creation_date") != null){
+							def visualId = task.visualId
+							visualId = visualId.split("-")[1]
 							
-							def tmpSheduleDate = task.getFieldValue("shedule_date")
-							if(tmpSheduleDate != null){
-								def sheduleDate = tmpSheduleDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
-								def diff = java.time.temporal.ChronoUnit.DAYS.between(nowDate, sheduleDate)
+							def taskTitle = task.getFieldValue("title")
+							taskTitle = taskTitle.substring(0, Math.min(taskTitle.length(), 40));						
+							def taskTxt = visualId + " - " + taskTitle		
+							
+							//check for shedule date
+							if(task.getFieldValue("shedule_date_notification")){
+								def value
+								def alertSheduleDate
 								
-								String daysTxt
-								if(Math.abs(diff) == 1){
-									daysTxt = " deň"
-								}
-								else{
-									daysTxt = " dní"
-								}
-								
-								if(diff &lt; 0){
-									alertSheduleDate = " - " + Math.abs(diff) + " " + daysTxt + " po termíne uzavretia!"
-								}
-								else if(diff &lt; 4){
-									alertSheduleDate = " - " + diff + " " + daysTxt + " do termínu uzavretia"
-								}	
+								def tmpSheduleDate = task.getFieldValue("shedule_date")
+								if(tmpSheduleDate != null){
+									def sheduleDate = tmpSheduleDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+									def diff = java.time.temporal.ChronoUnit.DAYS.between(nowDate, sheduleDate)
+									
+									String daysTxt
+									if(Math.abs(diff) == 1){
+										daysTxt = " deň"
+									}
+									else{
+										daysTxt = " dní"
+									}
+									
+									if(diff &lt; 0){
+										alertSheduleDate = " - " + Math.abs(diff) + " " + daysTxt + " po termíne uzavretia!"
+									}
+									else if(diff &lt; 4){
+										alertSheduleDate = " - " + diff + " " + daysTxt + " do termínu uzavretia"
+									}	
 
-								if(alertSheduleDate != null){
-									value = taskTxt + alertSheduleDate							
-									change notifiedTasks options {
-										notifiedTasks.options + [(task.stringId): value]
+									if(alertSheduleDate != null){
+										value = taskTxt + alertSheduleDate							
+										change notifiedTasks options {
+											notifiedTasks.options + [(task.stringId): value]
+										}
 									}
 								}
 							}
-						}
+						}						
 					}
 					
 					notifiedTasks.name.defaultValue = "Notifikované úlohy (${notifiedTasks.options.size()})"
@@ -651,7 +655,9 @@
 					
 					def notificationTasksIds = notificationTasks.collect { it.stringId }
 					
-					assignTasks(notificationTasks)
+					async.run{
+						assignTasks(notificationTasks)
+					}					
 					
 					change allNotifications value { notificationTasksIds }
 				</action>
@@ -669,7 +675,9 @@
 						.or(it.transitionId.eq("16")) //task check
 					)})
 					
-					cancelTasks(notificationTasks)
+					async.run{
+						cancelTasks(notificationTasks)
+					}
 				</action>
 			</actions>
 		</event>

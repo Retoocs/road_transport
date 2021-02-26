@@ -452,6 +452,16 @@
 				</layout>
 			</dataRef>
 		</dataGroup>
+		<event type="cancel">
+			<id>7_cancel</id>
+			<actions phase="post">
+				<action>
+					async.run{
+						workflowService.deleteCase(useCase.stringId)
+					}		
+				</action>
+			</actions>
+		</event>
 		<event type="finish">
 			<id>7_finish</id>
 			<actions phase="pre">
@@ -967,7 +977,7 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>model</id>
+				<id>brand</id>
 				<logic>
 					<behavior>editable</behavior>
 					<behavior>required</behavior>
@@ -983,7 +993,7 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>brand</id>
+				<id>model</id>
 				<logic>
 					<behavior>editable</behavior>
 					<behavior>required</behavior>

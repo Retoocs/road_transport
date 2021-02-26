@@ -471,12 +471,9 @@
 							cancelTask(taskTask)
 						}
 					}	
-					
-					//maybe remove under no if
-					if(carId.value != null){
-						async.run{
-							workflowService.deleteCase(useCase.stringId)
-						}
+
+					async.run{
+						workflowService.deleteCase(useCase.stringId)
 					}					
 				</action>
 			</actions>
