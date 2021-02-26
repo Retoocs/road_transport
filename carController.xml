@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://modeler.netgrif.com/petriflow_schema.xsd">
+	<id>car_controller</id>
+	<initials>car_control</initials>
+	<title>Ovládač auta</title>
+	<defaultRole>true</defaultRole>
+	<transitionRole>false</transitionRole>
+	<!-- TRANSACTIONS -->
+	<!-- ROLES -->
+	<!-- DATA -->
+	<data type="taskRef">
+		<id>create_car_taskref</id>
+		<title>Vytvorenie záznamu vozidla</title>
+	</data>
+	<!-- I18NS -->
+	<!-- TRANSITIONS -->
+	<transition>
+		<id>2</id>
+		<x>599</x>
+		<y>489</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>init</label>
+		<trigger type="auto"/>
+		<event type="assign">
+			<id>2_assign</id>
+			<actions phase="pre">
+				<action>
+					//only one instance per user, otherwise delete created case
+					if(findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(useCase.processIdentifier)).and(it._id.ne(useCase._id))} )) {
+						async.run {
+							workflowService.deleteCase(useCase._id.toString())
+						}
+						throw new Exception("Instance of this process already exists for the author")		
+					}
+				</action>
+			</actions>
+		</event>
+	</transition>
+	<transition>
+		<id>4</id>
+		<x>729</x>
+		<y>359</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>Vytvorenie záznamu auta</label>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>create_car_taskref</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>4_assign</id>
+			<actions phase="pre">
+				<action>
+					createCar: f.create_car_taskref;
+					
+					def newCar = createCase("5faffef90a975a1b77c9b54a_carr") //change this to car
+					if(newCar != null){
+						def carTask = findTask( {it.caseId.eq(newCar.stringId).and(it.transitionId.eq("7"))} )
+						if(carTask != null){
+							assignTask(carTask)
+							
+							change createCar value{
+								[carTask.stringId]
+							}
+						}
+					}
+				</action>
+			</actions>
+		</event>
+		<event type="cancel">
+			<id>4_assign</id>
+			<actions phase="pre">
+				<action>
+					createCar: f.create_car_taskref;
+					
+					if((createCar.value != null).and(createCar.value != [])){
+						def carTask = findTask( {it._id.eq(createCar.value[0])} )
+						if(carTask != null){
+							async.run{
+								workflowService.deleteCase(carTask.caseId);
+							}
+							
+							change createCar value{ [] }
+						}
+					}					
+				</action>
+			</actions>
+		</event>
+		<event type="finish">
+			<id>4_assign</id>
+			<actions phase="pre">
+				<action>
+					createCar: f.create_car_taskref;
+					
+					if((createCar.value != null).and(createCar.value != [])){
+						def carTask = findTask( {it._id.eq(createCar.value[0])} )
+						if(carTask != null){
+							finishTask(carTask)
+							
+							change createCar value{ [] }
+						}
+					}	
+				</action>
+			</actions>
+		</event>
+	</transition>
+	<!-- PLACES -->
+	<place>
+		<id>1</id>
+		<x>443</x>
+		<y>491</y>
+		<label>uninitialized</label>
+		<tokens>1</tokens>
+		<static>false</static>
+	</place>
+	<place>
+		<id>3</id>
+		<x>734</x>
+		<y>488</y>
+		<label>initialized</label>
+		<tokens>0</tokens>
+		<static>false</static>
+	</place>
+	<!-- ARCS -->
+	<arc>
+		<id>5</id>
+		<type>regular</type>
+		<sourceId>1</sourceId>
+		<destinationId>2</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>6</id>
+		<type>regular</type>
+		<sourceId>2</sourceId>
+		<destinationId>3</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>7</id>
+		<type>read</type>
+		<sourceId>3</sourceId>
+		<destinationId>4</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+</document>

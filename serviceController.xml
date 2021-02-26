@@ -1,0 +1,787 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://modeler.netgrif.com/petriflow_schema.xsd">
+	<id>service_controller</id>
+	<initials>service_control</initials>
+	<title>Ovládač servisného záznamu</title>
+	<defaultRole>true</defaultRole>
+	<transitionRole>false</transitionRole>
+	<!-- TRANSACTIONS -->
+	<!-- ROLES -->
+	<!-- DATA -->
+	<data type="boolean">
+		<id>is_car_service</id>
+		<title>Servisný záznam auta?</title>
+		<init>true</init>
+	</data>
+	<data type="taskRef">
+		<id>service_creation</id>
+		<title>Vytvorenie servisného záznamu</title>
+	</data>
+	<data type="enumeration_map">
+		<id>car_list</id>
+		<title>Zoznam áut</title>
+	</data>
+	<data type="enumeration_map">
+		<id>car_list_nofilter</id>
+		<title>Car list NO FILTER</title>
+	</data>
+	<data type="text">
+		<id>last_car_select</id>
+		<title>ID posledne vybraného auta</title>
+	</data>
+	<data type="enumeration">
+		<id>car_owner_category</id>
+		<title>Typ majiteľa</title>
+	</data>
+	<data type="enumeration_map">
+		<id>car_list_owner_cat</id>
+		<title>Car list with owner category filter</title>
+	</data>
+	<data type="enumeration_map">
+		<id>car_list_name</id>
+		<title>Car list with name filter</title>
+	</data>
+	<data type="text">
+		<id>car_name_filter</id>
+		<title>Názov auta</title>
+	</data>
+	<data type="enumeration_map">
+		<id>car_list_plate_number</id>
+		<title>Car list with plate number filter</title>
+	</data>
+	<data type="text">
+		<id>plate_number_filter</id>
+		<title>EČV</title>
+	</data>
+	<data type="enumeration_map">
+		<id>car_list_visual_id</id>
+		<title>Car list with name filter</title>
+	</data>
+	<data type="text">
+		<id>visual_id_filter</id>
+		<title>ID</title>
+	</data>
+	<!-- I18NS -->
+	<!-- TRANSITIONS -->
+	<transition>
+		<id>1</id>
+		<x>500</x>
+		<y>620</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>init</label>
+		<trigger type="auto"/>
+		<event type="assign">
+			<id>1_assign</id>
+			<actions phase="pre">
+				<action>
+					//only one instance per user, otherwise delete created case
+					if(findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(useCase.processIdentifier)).and(it._id.ne(useCase._id))} )) {
+						async.run {
+							workflowService.deleteCase(useCase._id.toString())
+						}
+						throw new Exception("Instance of this process already exists for the author")		
+					}
+				</action>
+			</actions>
+		</event>
+	</transition>
+	<transition>
+		<id>2</id>
+		<x>620</x>
+		<y>460</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>Vytvorenie servisného záznamu</label>
+		<dataGroup>
+			<id>DataGroup_2</id>
+			<dataRef>
+				<id>is_car_service</id>
+				<logic>
+					<behavior>editable</behavior>
+					<action trigger="set">
+						lastId: f.last_car_select,
+						taskRef: f.service_creation,
+						carList: f.car_list,
+						carOwnerCat: f.car_owner_category,
+						carNameFilter: f.car_name_filter,
+						plateNumberFilter: f.plate_number_filter,
+						visualIdFilter: f.visual_id_filter,
+						isCarService: f.this,
+						thisTask: t.2;
+						
+						if(isCarService.value){
+							make carList, editable on thisTask when { true }
+							make carOwnerCat, editable on thisTask when { true }
+							make carNameFilter, editable on thisTask when { true }
+							make plateNumberFilter, editable on thisTask when { true }
+							make visualIdFilter, editable on thisTask when { true }
+							
+							if( (taskRef.value != []).and(taskRef.value != null) ){
+								def task = findTask( {it._id.eq(taskRef.value[0])} )
+								if(task != null){
+									change taskRef value { [] }
+									
+									cancelTask(task)
+								}
+							}
+						}
+						else{
+							make carList, hidden on thisTask when { true }
+							make carOwnerCat, hidden on thisTask when { true }
+							make carNameFilter, hidden on thisTask when { true }
+							make plateNumberFilter, hidden on thisTask when { true }
+							make visualIdFilter, hidden on thisTask when { true }
+							
+							if( (taskRef.value != []).and(taskRef.value != null) ){
+								def task = findTask( {it._id.eq(taskRef.value[0])} )
+								if(task != null){
+									setData(task, [
+										"event_from_outside": [
+											"value": true,
+											"type" : "boolean"
+										],
+									])
+									
+									change taskRef value { [] }
+									change lastId value { null } 
+									change carList value { [:] }
+									
+									cancelTask(task)
+								}
+							}
+						
+							if(!isCarService.value){
+								def service = createCase("5faffef90a975a1b77c9b54a_service")
+								if(service != null){
+									def serviceTask = findTask( {it.caseId.eq(service.stringId).and(it.transitionId.eq("9"))} )
+									if(serviceTask != null){
+										assignTask(serviceTask)
+										
+										change taskRef value { [serviceTask.stringId] }
+									}
+								}
+							}
+						}
+					</action>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<dataGroup>
+			<id>DataGroup_1</id>
+			<dataRef>
+				<id>car_list</id>
+				<logic>
+					<behavior>editable</behavior>
+					<behavior>required</behavior>
+					<action trigger="set">		
+						carList: f.this,
+						lastId: f.last_car_select,
+						taskRef: f.service_creation;
+						
+						if(lastId.value != null){
+							def refedTask = findTask( {it._id.eq(lastId.value)} )
+							if(refedTask != null){
+								cancelTask(refedTask)	
+							}	
+						}
+						
+						def refedTask = findTask( {it.caseId.eq(carList.value).and(it.transitionId.eq("20"))} )												
+						
+						if(refedTask != null){
+							change taskRef value {
+								[refedTask.stringId]
+							}							
+							assignTask(refedTask)	
+							change lastId value{
+								refedTask.stringId
+							}						
+						}
+					</action>
+					<action trigger="get">		
+						carListNoFilter: f.car_list_nofilter,
+						carList: f.this,
+						carListName: f.car_list_name,
+						carListPlateNumber: f.car_list_plate_number,
+						carListOwnerCat: f.car_list_owner_cat;	
+
+						def carInstances = findCases( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_carr").and(it.dataSet.get("status").value.eq("Aktívny"))} ) //todo change carr to car 5faffef90a975a1b77c9b54a
+						def carInstancesMap = carInstances.collectEntries {
+							String value;
+							
+							def visualId = it.visualId
+							visualId = visualId.split("-")[1]
+							
+							if((it.getFieldValue("car_name") != null).and(!it.getFieldValue("car_name")?.isEmpty())){
+								value = visualId + " - " + it.getFieldValue("plate_number") + " - " + it.getFieldValue("car_name") + " - " + it.getFieldValue("brand") + " " + it.getFieldValue("model")
+							}
+							else {
+								value = visualId + " - " + it.getFieldValue("plate_number") + " - " + it.getFieldValue("brand") + " " + it.getFieldValue("model")
+							}
+							
+							[(it.stringId): value]
+						}
+						
+						change carListNoFilter options{
+							carInstancesMap
+						}						
+						
+						//update carList
+						change carList options{
+							carInstancesMap
+						}						
+					</action>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>car_owner_category</id>
+				<logic>
+					<behavior>visible</behavior>
+					<action trigger="get">		
+						ownerCat: f.this,
+						carListOwnerCat: f.car_list_owner_cat,
+						carListNoFilter: f.car_list_nofilter,
+						isCarService: f.is_car_service,
+						thisTask: t.2;
+						
+						if(carListNoFilter.options == [:]){
+							make ownerCat, visible on thisTask when { true }
+						} else if(isCarService.value) {
+							make ownerCat, editable on thisTask when { true }
+							
+							def carListIterator = carListNoFilter.options.entrySet().iterator()
+							def carId = carListIterator.next().getKey()
+							def car = findCase( {it._id.eq(carId)} )
+							
+							if(car != null){
+								def field = car.getField("owner_category")
+								
+								if(field != null){
+									change ownerCat choices {
+										["/Nepoužiť/"] + field.choices
+									}
+								}								
+							}
+
+							change carListOwnerCat options {
+								carListNoFilter.options
+							}
+						}					
+					</action>
+					<action trigger="set">		
+						ownerCat: f.this,
+						carListNoFilter: f.car_list_nofilter,
+						carListOwnerCat: f.car_list_owner_cat,
+						carList: f.car_list,
+						carListName: f.car_list_name,
+						carListVisualId: f.car_list_visual_id,
+						carListPlateNumber: f.car_list_plate_number;
+						
+						change carListOwnerCat options{
+							[:]
+						}
+						
+						if(ownerCat.value == ownerCat.choices[0]){
+							change carListOwnerCat options{
+								carListNoFilter.options
+							}
+						}
+						else {
+							carListNoFilter.options.each{ key, value ->
+								def carId = key
+								def car = findCase( {it._id.eq(carId)} )
+								
+								if(car != null){
+									def ownerCatToCheck = car.getFieldValue("owner_category")
+									if((ownerCatToCheck != null).and(ownerCatToCheck == ownerCat.value)){
+										change carListOwnerCat options{
+											carListOwnerCat.options + [(key): value]
+										}
+									}								
+								}						
+							}
+						}	
+						
+						
+						//update carList
+						if(carListNoFilter.options != [:]){
+							change carList options{
+								[:]
+							}
+									
+							carListNoFilter.options.each{ key, value ->
+								if(true
+									.and(carListOwnerCat.options.containsKey(key))
+									.and(carListName.options.containsKey(key))
+									.and(carListPlateNumber.options.containsKey(key))
+									.and(carListVisualId.options.containsKey(key))
+								){
+									change carList options{
+										carList.options + [(key): value]
+									}
+								}
+							}
+						}	
+					</action>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>car_name_filter</id>
+				<logic>
+					<behavior>visible</behavior>
+					<action trigger="get">
+						carName: f.this,
+						carListNoFilter: f.car_list_nofilter,
+						carListName: f.car_list_name,
+						isCarService: f.is_car_service,
+						thisTask: t.2;
+						
+						if(carListNoFilter.options == [:]){
+							make carName, visible on thisTask when { true }
+						} else if(isCarService.value){
+							make carName, editable on thisTask when { true }
+							
+							change carListName options {
+								carListNoFilter.options
+							}
+						}
+					</action>
+					<action trigger="set">		
+						carName: f.this,
+						carListNoFilter: f.car_list_nofilter,
+						carListName: f.car_list_name,
+						carList: f.car_list,
+						carListPlateNumber: f.car_list_plate_number,
+						carListVisualId: f.car_list_visual_id,
+						carListOwnerCat: f.car_list_owner_cat;
+						
+						if(carName.value == null || carName.value.isEmpty()){
+							change carListName options{
+								carListNoFilter.options
+							}
+						}
+						else {
+							change carListName options{
+								[:]
+							}
+							
+							carListNoFilter.options.each{ key, value ->
+								def carId = key
+								def car = findCase( {it._id.eq(carId)} )
+								
+								if(car != null){
+									def carNameToCheck = car.getFieldValue("car_name")
+									
+									if(carNameToCheck != null){
+										carNameToCheck = java.text.Normalizer.normalize(carNameToCheck, java.text.Normalizer.Form.NFD)
+										carNameToCheck = carNameToCheck.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "")
+										carNameToCheck = carNameToCheck.toLowerCase()
+
+										def carNameFilter = carName.value.toLowerCase()
+										
+										if((carNameToCheck != null).and(carNameToCheck.contains(carNameFilter))){
+											change carListName options{
+												carListName.options + [(key): value]
+											}
+										}
+									}																
+								}						
+							}														
+						}
+						
+						
+						//update carList
+						if(carListNoFilter.options != [:]){
+							change carList options{
+								[:]
+							}
+									
+							carListNoFilter.options.each{ key, value ->
+								if(true
+									.and(carListOwnerCat.options.containsKey(key))
+									.and(carListName.options.containsKey(key))
+									.and(carListPlateNumber.options.containsKey(key))
+									.and(carListVisualId.options.containsKey(key))
+								){
+									change carList options{
+										carList.options + [(key): value]
+									}
+								}
+							}
+						}											
+					</action>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>plate_number_filter</id>
+				<logic>
+					<behavior>visible</behavior>
+					<action trigger="get">
+						plateNumber: f.this,
+						carListNoFilter: f.car_list_nofilter,
+						carListPlateNumber: f.car_list_plate_number,
+						isCarService: f.is_car_service,
+						thisTask: t.2;
+						
+						if(carListNoFilter.options == [:]){
+							make plateNumber, visible on thisTask when { true }
+						} else if(isCarService.value){
+							make plateNumber, editable on thisTask when { true }
+							
+							change carListPlateNumber options {
+								carListNoFilter.options
+							}
+						}
+					</action>
+					<action trigger="set">
+						plateNumber: f.this,
+						carListPlateNumber: f.car_list_plate_number,
+						carListNoFilter: f.car_list_nofilter,		
+						carList: f.car_list,
+						carListName: f.car_list_name,
+						carListVisualId: f.car_list_visual_id,
+						carListOwnerCat: f.car_list_owner_cat;						
+						
+						if(plateNumber.value == null || plateNumber.value.isEmpty()){
+							change carListPlateNumber options{
+								carListNoFilter.options
+							}
+						}
+						else{
+							change carListPlateNumber options{
+								[:]
+							}
+							
+							carListNoFilter.options.each{ key, value ->
+								def carId = key
+								def car = findCase( {it._id.eq(carId)} )
+								
+								if(car != null){
+									def plateNumberToCheck = car.getFieldValue("plate_number")
+									
+									if(plateNumberToCheck != null){
+										plateNumberToCheck = plateNumberToCheck.toLowerCase()
+
+										def plateNumberFilter = plateNumber.value.toLowerCase()
+										
+										if((plateNumberToCheck != null).and(plateNumberToCheck.contains(plateNumberFilter))){
+											change carListPlateNumber options{
+												carListPlateNumber.options + [(key): value]
+											}
+										}
+									}																
+								}						
+							}	
+						}
+						
+						//update carList
+						if(carListNoFilter.options != [:]){
+							change carList options{
+								[:]
+							}
+									
+							carListNoFilter.options.each{ key, value ->
+								if(true
+									.and(carListOwnerCat.options.containsKey(key))
+									.and(carListName.options.containsKey(key))
+									.and(carListPlateNumber.options.containsKey(key))
+									.and(carListVisualId.options.containsKey(key))
+								){
+									change carList options{
+										carList.options + [(key): value]
+									}
+								}
+							}
+						}
+					</action>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>visual_id_filter</id>
+				<logic>
+					<behavior>visible</behavior>
+					<action trigger="get">
+						id: f.this,
+						carListNoFilter: f.car_list_nofilter,
+						carListVisualId: f.car_list_visual_id,
+						isCarService: f.is_car_service,
+						thisTask: t.2;
+						
+						if(carListNoFilter.options == [:]){
+							make id, visible on thisTask when { true }
+						} else if(isCarService.value){
+							make id, editable on thisTask when { true }
+							
+							change carListVisualId options {
+								carListNoFilter.options
+							}
+						}
+					</action>
+					<action trigger="set">		
+						id: f.this,
+						carListNoFilter: f.car_list_nofilter,
+						carListVisualId: f.car_list_visual_id,
+						carList: f.car_list,
+						carListName: f.car_list_name,
+						carListPlateNumber: f.car_list_plate_number,
+						carListOwnerCat: f.car_list_owner_cat;
+						
+						if(id.value == null || id.value.isEmpty()){
+							change carListVisualId options{
+								carListNoFilter.options
+							}
+						}
+						else {
+							change carListVisualId options{
+								[:]
+							}
+							
+							carListNoFilter.options.each{ key, value ->
+								def carId = key
+								def car = findCase( {it._id.eq(carId)} )
+								
+								if(car != null){
+									def carVisualIdToCheck = car.visualId
+									
+									if(carVisualIdToCheck != null){
+										carVisualIdToCheck = carVisualIdToCheck.toLowerCase()
+
+										def carVisualIdFilter = id.value.toLowerCase()
+										
+										if((carVisualIdToCheck != null).and(carVisualIdToCheck.contains(carVisualIdFilter))){
+											change carListVisualId options{
+												carListVisualId.options + [(key): value]
+											}
+										}
+									}																
+								}						
+							}														
+						}
+						
+						
+						//update carList
+						if(carListNoFilter.options != [:]){
+							change carList options{
+								[:]
+							}
+									
+							carListNoFilter.options.each{ key, value ->
+								if(true
+									.and(carListOwnerCat.options.containsKey(key))
+									.and(carListName.options.containsKey(key))
+									.and(carListPlateNumber.options.containsKey(key))
+									.and(carListVisualId.options.containsKey(key))
+								){
+									change carList options{
+										carList.options + [(key): value]
+									}
+								}
+							}
+						}											
+					</action>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>service_creation</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>2_assign</id>
+			<actions phase="pre">
+				<action>
+					taskRef: f.service_creation,
+					isCarService: f.is_car_service,
+					carList: f.car_list;				
+					
+					if(!isCarService.value){
+						def service = createCase("5faffef90a975a1b77c9b54a_service")
+						if(service != null){
+							def serviceTask = findTask( {it.caseId.eq(service.stringId).and(it.transitionId.eq("9"))} )
+							if(serviceTask != null){
+								assignTask(serviceTask)
+								
+								change taskRef value { [serviceTask.stringId] }
+							}
+						}
+					}
+					
+					change carList value { null }		
+				</action>
+			</actions>
+		</event>
+		<event type="cancel">
+			<id>2_cancel</id>
+			<actions phase="post">
+				<action>
+					taskRef: f.service_creation,
+					carList: f.car_list,
+					lastId: f.last_car_select;
+					
+					if( (taskRef.value != []).and(taskRef.value != null) ){
+						def toCancel = findTask({it._id.eq(taskRef.value[0])});		
+						
+						if(toCancel != null){
+							change lastId value {
+								null
+							}						
+							change carList value {
+								[:]
+							}
+							
+							setData(toCancel, [
+								"event_from_outside": [
+									"value": true,
+									"type" : "boolean"
+								],
+							])
+							cancelTask(toCancel)
+							
+							change taskRef value {
+								[]
+							}
+						}	
+					}					
+				</action>
+			</actions>
+		</event>
+		<event type="finish">
+			<id>2_finish</id>
+			<actions phase="pre">
+				<action>
+					taskRef: f.service_creation,
+					carList: f.car_list,
+					lastId: f.last_car_select;
+					
+					if((taskRef.value != null).and(taskRef.value != [])){
+						def toFinish = findTask( {it._id.eq(taskRef.value[0])} );	
+						
+						if(toFinish != null){
+							finishTask(toFinish);
+							
+							change lastId value {
+								null
+							}						
+							change carList value {
+								[:]
+							}								
+						
+							change taskRef value {
+								[]
+							}
+						}
+					}						
+				</action>
+			</actions>
+		</event>
+	</transition>
+	<!-- PLACES -->
+	<place>
+		<id>3</id>
+		<x>380</x>
+		<y>620</y>
+		<label>uninitialized</label>
+		<tokens>1</tokens>
+		<static>false</static>
+	</place>
+	<place>
+		<id>4</id>
+		<x>620</x>
+		<y>620</y>
+		<label>initialized</label>
+		<tokens>0</tokens>
+		<static>false</static>
+	</place>
+	<!-- ARCS -->
+	<arc>
+		<id>5</id>
+		<type>regular</type>
+		<sourceId>3</sourceId>
+		<destinationId>1</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>6</id>
+		<type>regular</type>
+		<sourceId>1</sourceId>
+		<destinationId>4</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>7</id>
+		<type>read</type>
+		<sourceId>4</sourceId>
+		<destinationId>2</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+</document>

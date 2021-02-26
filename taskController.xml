@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://modeler.netgrif.com/petriflow_schema.xsd">
+	<id>task_controller</id>
+	<initials>task_control</initials>
+	<title>Ovládač úlohy</title>
+	<defaultRole>true</defaultRole>
+	<transitionRole>false</transitionRole>
+	<!-- TRANSACTIONS -->
+	<!-- ROLES -->
+	<!-- DATA -->
+	<data type="taskRef">
+		<id>create_task_taskref</id>
+		<title>Vytvorenie úlohy</title>
+	</data>
+	<!-- I18NS -->
+	<!-- TRANSITIONS -->
+	<transition>
+		<id>3</id>
+		<x>500</x>
+		<y>460</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>init</label>
+		<trigger type="auto"/>
+		<event type="assign">
+			<id>3_assign</id>
+			<actions phase="pre">
+				<action>
+					//only one instance per user, otherwise delete created case
+					if(findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(useCase.processIdentifier)).and(it._id.ne(useCase._id))} )) {
+						async.run {
+							workflowService.deleteCase(useCase._id.toString())
+						}
+						throw new Exception("Instance of this process already exists for the author")		
+					}
+				</action>
+			</actions>
+		</event>
+	</transition>
+	<transition>
+		<id>4</id>
+		<x>620</x>
+		<y>300</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>Vytvorenie úlohy</label>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>create_task_taskref</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>4_assign</id>
+			<actions phase="pre">
+				<action>
+					createTask: f.create_task_taskref;
+					
+					def newTask = createCase("5faffef90a975a1b77c9b54a_task")
+					if(newTask != null){
+						def taskTask = findTask( {it.caseId.eq(newTask.stringId).and(it.transitionId.eq("2"))} )
+						if(taskTask != null){
+							assignTask(taskTask)
+							
+							change createTask value{
+								[taskTask.stringId]
+							}
+						}
+					}
+				</action>
+			</actions>
+		</event>
+		<event type="cancel">
+			<id>4_assign</id>
+			<actions phase="pre">
+				<action>
+					createTask: f.create_task_taskref;
+					
+					if((createTask.value != null).and(createTask.value != [])){
+						def taskTask = findTask( {it._id.eq(createTask.value[0])} )
+						if(taskTask != null){
+							async.run{
+								workflowService.deleteCase(taskTask.caseId);
+							}
+							
+							change createTask value{ [] }
+						}
+					}					
+				</action>
+			</actions>
+		</event>
+		<event type="finish">
+			<id>4_assign</id>
+			<actions phase="pre">
+				<action>
+					createTask: f.create_task_taskref;
+					
+					if((createTask.value != null).and(createTask.value != [])){
+						def taskTask = findTask( {it._id.eq(createTask.value[0])} )
+						if(taskTask != null){
+							finishTask(taskTask)
+							
+							change createTask value{ [] }
+						}
+					}	
+				</action>
+			</actions>
+		</event>
+	</transition>
+	<!-- PLACES -->
+	<place>
+		<id>1</id>
+		<x>380</x>
+		<y>460</y>
+		<label>uninitialized</label>
+		<tokens>1</tokens>
+		<static>false</static>
+	</place>
+	<place>
+		<id>2</id>
+		<x>620</x>
+		<y>460</y>
+		<label>initialized</label>
+		<tokens>0</tokens>
+		<static>false</static>
+	</place>
+	<!-- ARCS -->
+	<arc>
+		<id>6</id>
+		<type>regular</type>
+		<sourceId>1</sourceId>
+		<destinationId>3</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>7</id>
+		<type>regular</type>
+		<sourceId>3</sourceId>
+		<destinationId>2</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>8</id>
+		<type>read</type>
+		<sourceId>2</sourceId>
+		<destinationId>4</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+</document>
