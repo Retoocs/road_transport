@@ -132,7 +132,7 @@
 	</data>
 	<data type="enumeration">
 		<id>car_owner_category</id>
-		<title>Typ majiteľa</title>
+		<title>Typ majiteľa [filter]</title>
 	</data>
 	<data type="enumeration_map">
 		<id>car_list_owner_cat</id>
@@ -144,7 +144,7 @@
 	</data>
 	<data type="text">
 		<id>car_name_filter</id>
-		<title>Názov auta</title>
+		<title>Názov auta [filter]</title>
 	</data>
 	<data type="enumeration_map">
 		<id>car_list_plate_number</id>
@@ -152,7 +152,7 @@
 	</data>
 	<data type="text">
 		<id>plate_number_filter</id>
-		<title>EČV</title>
+		<title>EČV [filter]</title>
 	</data>
 	<data type="enumeration_map">
 		<id>car_list_visual_id</id>
@@ -160,7 +160,7 @@
 	</data>
 	<data type="text">
 		<id>visual_id_filter</id>
-		<title>ID</title>
+		<title>ID [filter]</title>
 	</data>
 	<data type="boolean">
 		<id>event_from_outside</id>

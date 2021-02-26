@@ -73,7 +73,9 @@
 			brand: f.brand,
 			model: f.model;
 			
+			
 			if((plateNumber.value != null).and(plateNumber.value.isEmpty() == false) ){
+			
 				def currentDateTime = java.time.LocalDateTime.now()
 				def formatter = java.time.format.DateTimeFormatter.ofPattern("dd.MM.YYYY HH:mm")
 				def formatedDateTime = currentDateTime.format(formatter)
