@@ -180,6 +180,14 @@
 		<id>visual_id</id>
 		<title>ID</title>
 	</data>
+	<data type="enumeration" immediate="true">
+		<id>priority</id> 
+		<title>Priorita</title>
+		<values>0 - Nízka</values>
+		<values>1 - Stredná</values>
+		<values>2 - Vysoká</values>
+		<init>0 - Nízka</init>
+	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
@@ -196,6 +204,7 @@
 				<id>title</id>
 				<logic>
 					<behavior>editable</behavior>
+					<behavior>required</behavior>
 				</logic>
 				<layout>
 					<x>0</x>
@@ -211,6 +220,7 @@
 				<id>task</id>
 				<logic>
 					<behavior>editable</behavior>
+					<behavior>required</behavior>
 				</logic>
 				<layout>
 					<x>0</x>
@@ -223,9 +233,26 @@
 				</layout>
 			</dataRef>
 			<dataRef>
+				<id>priority</id>
+				<logic>
+					<behavior>editable</behavior>
+					<behavior>required</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>4</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
 				<id>shedule_date</id>
 				<logic>
 					<behavior>editable</behavior>
+					<behavior>required</behavior>
 				</logic>
 				<layout>
 					<x>0</x>
@@ -345,6 +372,21 @@
 					<x>0</x>
 					<y>2</y>
 					<rows>2</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>priority</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>4</y>
+					<rows>1</rows>
 					<cols>4</cols>
 					<offset>0</offset>
 					<template>material</template>
@@ -629,6 +671,21 @@
 					<x>0</x>
 					<y>1</y>
 					<rows>2</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>priority</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>4</y>
+					<rows>1</rows>
 					<cols>4</cols>
 					<offset>0</offset>
 					<template>material</template>
@@ -961,11 +1018,18 @@
 						carList: f.this,
 						lastId: f.last_car_select,
 						description: f.task,
+						sheduleDate: f.shedule_date,
 						taskRef: f.service_creation;
 						
 						if(lastId.value != null){
 							def refedTask = findTask( {it._id.eq(lastId.value)} )
 							if(refedTask != null){
+								setData(refedTask, [
+									"event_from_outside": [
+										"value": true,
+										"type" : "boolean"
+									],
+								])
 								cancelTask(refedTask)	
 							}	
 						}
@@ -979,25 +1043,30 @@
 							assignTask(refedTask)	
 							change lastId value{
 								refedTask.stringId
-							}						
+							}				
 							
 							def carTaskData = getData(refedTask)
 							if(carTaskData != null){
 								def serviceTaskId = carTaskData.get("servis_creation").value[0]
-								def serviceTask = findTask( {it._id.eq(serviceTaskId)} )							
-								
-								if(serviceTask != null){
-									setData(serviceTask, [
-										"task": [
-											"value": description.value,
-											"type" : "text"
-										],
-										"parent_task_id": [
-											"value": useCase.stringId,
-											"type" : "text"
-										],
-									])
-								}									
+								if(serviceTaskId != null){
+									def serviceTask = findTask( {it._id.eq(serviceTaskId)} )										
+									if(serviceTask != null){
+										setData(serviceTask, [
+											"task": [
+												"value": description.value,
+												"type" : "text"
+											],
+											"parent_task_id": [
+												"value": useCase.stringId,
+												"type" : "text"
+											],
+											"deadline": [
+												"value": sheduleDate.value.toString(),
+												"type" : "date"
+											],
+										])
+									}
+								}																	
 							}
 						}
 					</action>
