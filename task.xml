@@ -1654,6 +1654,48 @@
 			</dataRef>
 		</dataGroup>
 	</transition>
+	<transition>
+		<id>75</id>
+		<x>380</x>
+		<y>180</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>short_overview</label>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>shedule_date</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>title</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+	</transition>
 	<!-- PLACES -->
 	<place>
 		<id>1</id>
@@ -1815,6 +1857,13 @@
 		<type>read</type>
 		<sourceId>4</sourceId>
 		<destinationId>34</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>76</id>
+		<type>read</type>
+		<sourceId>3</sourceId>
+		<destinationId>75</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 </document>

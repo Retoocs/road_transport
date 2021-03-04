@@ -12,6 +12,37 @@
 		<id>create_task_taskref</id>
 		<title>Vytvorenie úlohy</title>
 	</data>
+	<data type="taskRef">
+		<id>overview_tasks_taskref</id>
+		<title>Prehľad týždňa</title>
+	</data>
+	<data type="button">
+		<id>btn_plus_week</id>
+		<title>Týždeň</title>
+		<placeholder>+1</placeholder>
+	</data>
+	<data type="button">
+		<id>btn_minus_week</id>
+		<title>Týždeň</title>
+		<placeholder>-1</placeholder>
+	</data>
+	<data type="date">
+		<id>from_date</id>
+		<title>Od</title>
+	</data>
+	<data type="date">
+		<id>to_date</id>
+		<title>Do</title>
+	</data>	
+	<data type="date">
+		<id>today</id>
+		<title>Dnes</title>
+	</data>	
+	<data type="number">
+		<id>week_offset</id>
+		<title>Číslo týždňa</title>
+		<init>0</init>
+	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
@@ -133,6 +164,283 @@
 			</actions>
 		</event>
 	</transition>
+	<transition>
+		<id>9</id>
+		<x>780</x>
+		<y>460</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>Prehľad týždňa</label>
+		<dataGroup>
+			<id>DataGroup_1</id>
+			<dataRef>
+				<id>today</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>week_offset</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>from_date</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>to_date</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>btn_minus_week</id>
+				<logic>
+					<behavior>editable</behavior>
+					<action trigger="set">
+						fromDate: f.from_date,
+						weekOffset: f.week_offset,
+						toDate: f.to_date,
+						overview: f.overview_tasks_taskref;						
+						
+						if( (fromDate.value != null).and(toDate.value != null) ){
+							change fromDate value{
+								fromDate.value.minusWeeks(1)
+							}
+							change toDate value{
+								toDate.value.minusWeeks(1)
+							}
+							change weekOffset value{ weekOffset.value - 1 }
+							
+							def allTaskInstances = findCases( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_task")} )
+							def idsWithinWeek = []
+							
+							allTaskInstances.each{ taskInstance ->
+								def tmpDate = taskInstance.getFieldValue("shedule_date")
+								if( (tmpDate != null).and(taskInstance != null) ){
+									def sheduleDate = tmpDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+									
+									if( (sheduleDate.isAfter(fromDate.value).and(sheduleDate.isBefore(toDate.value)) )){
+										def task = findTask( {it.caseId.eq(taskInstance.stringId).and(it.transitionId.eq("75"))} )
+										if(task != null){
+											idsWithinWeek.add(task.stringId)
+										}
+									}
+								}								
+							}
+							
+							change overview value{
+								idsWithinWeek
+							}
+						}
+					</action>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>btn_plus_week</id>
+				<logic>
+					<behavior>editable</behavior>
+					<action trigger="set">
+						fromDate: f.from_date,
+						weekOffset: f.week_offset,
+						toDate: f.to_date,
+						overview: f.overview_tasks_taskref;
+						
+						if( (fromDate.value != null).and(toDate.value != null) ){
+							change fromDate value{
+								fromDate.value.plusWeeks(1)
+							}
+							change toDate value{
+								toDate.value.plusWeeks(1)
+							}
+							change weekOffset value{ weekOffset.value + 1 }
+							
+							def allTaskInstances = findCases( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_task")} )
+							def idsWithinWeek = []
+							
+							allTaskInstances.each{ taskInstance ->
+								def tmpDate = taskInstance.getFieldValue("shedule_date")
+								if( (tmpDate != null).and(taskInstance != null) ){
+									def sheduleDate = tmpDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+									
+									if( (sheduleDate.isAfter(fromDate.value).and(sheduleDate.isBefore(toDate.value)) )){
+										def task = findTask( {it.caseId.eq(taskInstance.stringId).and(it.transitionId.eq("75"))} )
+										if(task != null){
+											idsWithinWeek.add(task.stringId)
+										}
+									}
+								}								
+							}
+							
+							change overview value{
+								idsWithinWeek
+							}
+						}
+					</action>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<dataGroup>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>overview_tasks_taskref</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>9_assign</id>
+			<actions phase="pre">
+				<action>
+					fromDate: f.from_date,
+					toDate: f.to_date,
+					today: f.today,
+					overview: f.overview_tasks_taskref;
+					
+					def tmpToday = java.time.LocalDate.now()
+					def mondayOfCurrentWeek = tmpToday.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY))
+					
+					change fromDate value{
+						mondayOfCurrentWeek
+					}					
+					change toDate value{
+						mondayOfCurrentWeek.plusDays(6)
+					}
+					change today value { tmpToday }
+					
+					if( (fromDate.value != null).and(toDate.value != null) ){
+						def allTaskInstances = findCases( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_task")} )
+						def idsWithinWeek = []
+						
+						//sort allTaskInstances						
+						//Comparator caseComparator = (case1, case2) -> case1.getFieldValue("shedule_date").compareTo(case2.getFieldValue("shedule_date"))
+						//Collections.sort(allTaskInstances, caseComparator)
+
+						
+						allTaskInstances.each{ taskInstance ->
+							def tmpDate = taskInstance.getFieldValue("shedule_date")
+							if( (tmpDate != null).and(taskInstance != null) ){
+								def sheduleDate = tmpDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+								
+								if( (sheduleDate.isAfter(fromDate.value).and(sheduleDate.isBefore(toDate.value)) )){
+									def task = findTask( {it.caseId.eq(taskInstance.stringId).and(it.transitionId.eq("75"))} )
+									if(task != null){
+										idsWithinWeek.add(task.stringId)
+									}
+								}
+							}							
+						}					
+						
+						change overview value{
+							idsWithinWeek
+						}
+					}					
+				</action>
+			</actions>
+		</event>
+		<event type="cancel">
+			<id>9_cancel</id>
+			<actions phase="pre">
+				<action>
+					fromDate: f.from_date,
+					toDate: f.to_date,
+					weekOffset: f.week_offset,
+					overview: f.overview_tasks_taskref;
+					
+					change fromDate value{ null }
+					change toDate value{ null }
+					change weekOffset value { 0 }
+					change overview value { [] }
+				</action>
+			</actions>
+		</event>
+		<event type="finish">
+			<id>9_finish</id>
+			<actions phase="pre">
+				<action>
+					fromDate: f.from_date,
+					toDate: f.to_date,
+					weekOffset: f.week_offset,
+					overview: f.overview_tasks_taskref;
+					
+					change fromDate value{ null }
+					change toDate value{ null }
+					change weekOffset value { 0 }
+					change overview value { [] }
+				</action>
+			</actions>
+		</event>
+	</transition>
+	
 	<!-- PLACES -->
 	<place>
 		<id>1</id>
@@ -170,6 +478,13 @@
 		<type>read</type>
 		<sourceId>2</sourceId>
 		<destinationId>4</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>10</id>
+		<type>read</type>
+		<sourceId>2</sourceId>
+		<destinationId>9</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 </document>

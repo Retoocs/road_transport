@@ -1481,8 +1481,8 @@ change status value{
 	</transition>
 	<transition>
 		<id>72</id>
-		<x>260</x>
-		<y>100</y>
+		<x>93</x>
+		<y>219</y>
 		<layout>
 			<offset>0</offset>
 		</layout>
@@ -1603,7 +1603,7 @@ change status value{
 				</layout>
 			</dataRef>
 		</dataGroup>		
-	</transition>
+	</transition>	
 	<!-- PLACES -->
 	<place>
 		<id>1</id>
