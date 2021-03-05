@@ -112,6 +112,7 @@
 		<label>Skontrolovanie vozidiel</label>
 		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
 			<dataRef>
 				<id>car_list_notify</id>
@@ -122,7 +123,7 @@
 					<x>0</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>4</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>fill</appearance>
@@ -134,10 +135,10 @@
 					<behavior>editable</behavior>
 				</logic>
 				<layout>
-					<x>0</x>
+					<x>1</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>4</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>fill</appearance>
@@ -309,6 +310,7 @@
 		<label>Skontrolovanie serv. záznamov</label>
 		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
 			<dataRef>
 				<id>services_list_notify</id>
@@ -319,7 +321,7 @@
 					<x>0</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>4</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>fill</appearance>
@@ -331,10 +333,10 @@
 					<behavior>editable</behavior>
 				</logic>
 				<layout>
-					<x>0</x>
+					<x>1</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>4</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>fill</appearance>
@@ -440,6 +442,7 @@
 		<label>Skontrolovanie úloh</label>
 		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
 			<dataRef>
 				<id>tasks_list_notify</id>
@@ -450,7 +453,7 @@
 					<x>0</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>4</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>fill</appearance>
@@ -462,10 +465,10 @@
 					<behavior>editable</behavior>
 				</logic>
 				<layout>
-					<x>0</x>
+					<x>1</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>4</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>fill</appearance>
@@ -553,6 +556,7 @@
 		<label>Nastavenie notifikácií</label>
 		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
 			<dataRef>
 				<id>notify_services</id>
@@ -568,7 +572,7 @@
 					</action>
 				</logic>
 				<layout>
-					<x>1</x>
+					<x>0</x>
 					<y>0</y>
 					<rows>1</rows>
 					<cols>1</cols>
@@ -591,7 +595,7 @@
 					</action>
 				</logic>
 				<layout>
-					<x>0</x>
+					<x>1</x>
 					<y>0</y>
 					<rows>1</rows>
 					<cols>1</cols>

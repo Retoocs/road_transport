@@ -108,6 +108,7 @@
 		</layout>
 		<label>Vytvorenie servisného záznamu</label>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_2</id>
 			<dataRef>
 				<id>is_car_service</id>
@@ -183,15 +184,12 @@
 					<x>0</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>4</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>fill</appearance>
 				</layout>
 			</dataRef>
-		</dataGroup>
-		<dataGroup>
-			<id>DataGroup_1</id>
 			<dataRef>
 				<id>car_list</id>
 				<logic>
@@ -256,15 +254,19 @@
 					</action>
 				</logic>
 				<layout>
-					<x>0</x>
+					<x>1</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>4</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>fill</appearance>
 				</layout>
 			</dataRef>
+		</dataGroup>
+		<dataGroup>
+			<layout>grid</layout>
+			<id>DataGroup_1</id>
 			<dataRef>
 				<id>car_owner_category</id>
 				<logic>
@@ -360,7 +362,7 @@
 					<x>0</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>4</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -453,10 +455,10 @@
 					</action>
 				</logic>
 				<layout>
-					<x>0</x>
+					<x>1</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>4</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -546,10 +548,10 @@
 					</action>
 				</logic>
 				<layout>
-					<x>0</x>
+					<x>2</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>4</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -640,10 +642,10 @@
 					</action>
 				</logic>
 				<layout>
-					<x>0</x>
+					<x>3</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>4</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>

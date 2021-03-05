@@ -165,6 +165,7 @@
 	<data type="text">
 		<id>task</id>
 		<title>Úloha</title>
+		<values>area</values>
 	</data>
 	<data type="date">
 		<id>deadline</id>
@@ -228,9 +229,8 @@
 		<title>Zákazník</title>
 	</data>
 	<data type="text">
-		<id>text_3</id>
+		<id>confirm_removal</id>
 		<title>Potvrdenie vymazania</title>
-		<desc>vymazanie treba potvrdiť</desc>
 		<init>Naozaj vymazať?</init>
 	</data>
 	<data type="text">
@@ -244,6 +244,7 @@
 	<data type="text">
 		<id>status_desc</id>
 		<title>Popis</title>
+		<values>area</values>
 	</data>
 	<data type="enumeration">
 		<id>act_success</id>
@@ -324,6 +325,7 @@
 		</layout>
 		<label>Vytvorenie záznamu</label>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_1</id>
 			<dataRef>
 				<id>parent_id</id>
@@ -372,23 +374,8 @@
 			</dataRef>
 		</dataGroup>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
-			<dataRef>
-				<id>deadline</id>
-				<logic>
-					<behavior>editable</behavior>
-					<behavior>required</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
-					<y>9</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
 			<dataRef>
 				<id>task</id>
 				<logic>
@@ -397,9 +384,25 @@
 				</logic>
 				<layout>
 					<x>0</x>
-					<y>1</y>
-					<rows>2</rows>
-					<cols>4</cols>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>deadline</id>
+				<logic>
+					<behavior>editable</behavior>
+					<behavior>required</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -411,10 +414,10 @@
 					<behavior>editable</behavior>
 				</logic>
 				<layout>
-					<x>0</x>
-					<y>3</y>
+					<x>3</x>
+					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -606,6 +609,7 @@
 			</dataRef>
 		</dataGroup>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_1</id>
 			<dataRef>
 				<id>mechanic</id>
@@ -613,10 +617,10 @@
 					<behavior>visible</behavior>
 				</logic>
 				<layout>
-					<x>2</x>
+					<x>0</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -628,10 +632,40 @@
 					<behavior>visible</behavior>
 				</logic>
 				<layout>
-					<x>0</x>
+					<x>1</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>deadline</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>customer</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>3</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -644,39 +678,9 @@
 				</logic>
 				<layout>
 					<x>0</x>
-					<y>2</y>
-					<rows>2</rows>
-					<cols>4</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>deadline</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>9</y>
+					<y>1</y>
 					<rows>1</rows>
-					<cols>4</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>fill</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>customer</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>4</y>
-					<rows>1</rows>
-					<cols>2</cols>
+					<cols>3</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -719,13 +723,13 @@
 						make statusHistory, editable on thisTask when { btn.value }
 						make statusHistory, hidden on thisTask when { !btn.value }	
 
-						make actSuccess, visible on thisTask when { btn.value }
+						make actSuccess, visible on thisTask when { btn.value.and(actSuccess.value != null) }
 						make actSuccess, hidden on thisTask when { !btn.value }
 						
 						make startDate, visible on thisTask when { btn.value }
 						make startDate, hidden on thisTask when { !btn.value }
 						
-						make endDate, visible on thisTask when { btn.value }
+						make endDate, visible on thisTask when { btn.value.and(endDate.value != null) }
 						make endDate, hidden on thisTask when { !btn.value }
 						
 						make changeDate, visible on thisTask when { btn.value }
@@ -733,10 +737,10 @@
 					</action>
 				</logic>
 				<layout>
-					<x>0</x>
-					<y>4</y>
+					<x>3</x>
+					<y>1</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -744,6 +748,7 @@
 			</dataRef>
 		</dataGroup>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
 			<dataRef>
 				<id>visual_id</id>
@@ -754,37 +759,7 @@
 					<x>0</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>status_history</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>act_success</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
-					<y>1</y>
-					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -796,25 +771,10 @@
 					<behavior>hidden</behavior>
 				</logic>
 				<layout>
-					<x>0</x>
-					<y>8</y>
+					<x>1</x>
+					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>end_date</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
-					<y>8</y>
-					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -827,9 +787,54 @@
 				</logic>
 				<layout>
 					<x>2</x>
-					<y>8</y>
+					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>status_history</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>3</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>end_date</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>act_success</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -842,10 +847,12 @@
 		<x>572</x>
 		<y>100</y>
 		<layout>
+			<cols>3</cols>
 			<offset>0</offset>
 		</layout>
 		<label>Upravenie informácií</label>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
 			<dataRef>
 				<id>mechanic</id>
@@ -853,10 +860,41 @@
 					<behavior>editable</behavior>
 				</logic>
 				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>deadline</id>
+				<logic>
+					<behavior>editable</behavior>
+					<behavior>required</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>customer</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
 					<x>2</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -871,39 +909,8 @@
 				<layout>
 					<x>0</x>
 					<y>1</y>
-					<rows>2</rows>
-					<cols>4</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>deadline</id>
-				<logic>
-					<behavior>editable</behavior>
-					<behavior>required</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>9</y>
 					<rows>1</rows>
-					<cols>4</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>customer</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>3</y>
-					<rows>1</rows>
-					<cols>2</cols>
+					<cols>3</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -933,17 +940,18 @@
 		<label>Vymazanie záznamu</label>
 		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
 			<dataRef>
-				<id>text_3</id>
+				<id>confirm_removal</id>
 				<logic>
 					<behavior>visible</behavior>
 				</logic>
 				<layout>
-					<x>1</x>
+					<x>0</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>fill</appearance>
@@ -965,7 +973,7 @@
 					<x>1</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>fill</appearance>
@@ -1029,6 +1037,7 @@
 		<label>Vykonanie obhliadky</label>
 		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
 			<dataRef>
 				<id>status_desc</id>
@@ -1079,6 +1088,7 @@
 		<label>Chyby nenájdené</label>
 		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
 			<dataRef>
 				<id>status_desc</id>
@@ -1129,6 +1139,7 @@
 		<label>Nevykonanie úkonu</label>
 		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
 			<dataRef>
 				<id>status_desc</id>
@@ -1159,11 +1170,23 @@
 		<event type="finish">
 			<id>15_finish</id>
 			<actions phase="pre">
-				<action>status: f.status;
+				<action>
+					closeDate: f.end_date,
+					actSuccess: f.act_success,
+					status: f.status;
+					
+					change closeDate value {
+						java.time.LocalDate.now()
+					}
+					
+					change actSuccess value{
+						actSuccess.choices[1]
+					}
 
-change status value{
-    "Úkon nevykonaný"
-}</action>
+					change status value{
+						"Úkon nevykonaný"
+					}
+				</action>
 			</actions>
 		</event>
 	</transition>
@@ -1177,6 +1200,7 @@ change status value{
 		<label>Chyby nájdené</label>
 		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
 			<dataRef>
 				<id>status_desc</id>
@@ -1225,6 +1249,7 @@ change status value{
 		<label>Začatie úkonu</label>
 		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
 			<dataRef>
 				<id>status_desc</id>
@@ -1275,6 +1300,42 @@ change status value{
 		<label>Dokončenie úkonu</label>
 		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
+			<layout>grid</layout>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>act_success</id>
+				<logic>
+					<behavior>editable</behavior>
+					<behavior>required</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>status_desc</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_1</id>
 			<dataRef>
 				<id>oil_change_performed</id>
@@ -1306,10 +1367,10 @@ change status value{
 					</action>
 				</logic>
 				<layout>
-					<x>1</x>
+					<x>0</x>
 					<y>0</y>
-					<rows>2</rows>
-					<cols>2</cols>
+					<rows>1</rows>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -1330,42 +1391,8 @@ change status value{
 				<layout>
 					<x>1</x>
 					<y>0</y>
-					<rows>2</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-		</dataGroup>
-		<dataGroup>
-			<id>DataGroup_0</id>
-			<dataRef>
-				<id>act_success</id>
-				<logic>
-					<behavior>editable</behavior>
-					<behavior>required</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>0</y>
-					<rows>2</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>status_desc</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>2</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -1435,6 +1462,7 @@ change status value{
 		<label>Znovuotvorenie záznamu</label>
 		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
 			<dataRef>
 				<id>status_desc</id>
@@ -1468,8 +1496,10 @@ change status value{
 			<actions phase="post">
 				<action>
 					status: f.status,
+					closeDate: f.end_date,
 					stateList: f.act_success;
 
+					change closeDate value { null }
 					change stateList value { null }
 			
 					change status value{
@@ -1488,22 +1518,8 @@ change status value{
 		</layout>
 		<label>Zobrazenie informácií o aute</label>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
-			<dataRef>
-				<id>car_vin</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>1</y>
-					<rows>1</rows>
-					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
 			<dataRef>
 				<id>car_brand</id>
 				<logic>
@@ -1511,21 +1527,6 @@ change status value{
 				</logic>
 				<layout>
 					<x>0</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>car_name</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
 					<y>0</y>
 					<rows>1</rows>
 					<cols>1</cols>
@@ -1555,8 +1556,23 @@ change status value{
 					<behavior>visible</behavior>
 				</logic>
 				<layout>
-					<x>1</x>
-					<y>1</y>
+					<x>2</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>car_name</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>3</x>
+					<y>0</y>
 					<rows>1</rows>
 					<cols>1</cols>
 					<offset>0</offset>

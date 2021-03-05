@@ -267,6 +267,7 @@
 		</layout>
 		<label>Vytvorenie záznamu</label>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
 			<dataRef>
 				<id>car_photo</id>
@@ -275,7 +276,7 @@
 				</logic>
 				<layout>
 					<x>0</x>
-					<y>1</y>
+					<y>0</y>
 					<rows>1</rows>
 					<cols>1</cols>
 					<offset>0</offset>
@@ -293,7 +294,7 @@
 					<x>1</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -306,10 +307,40 @@
 					<behavior>required</behavior>
 				</logic>
 				<layout>
-					<x>1</x>
+					<x>2</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>year_of_production</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>3</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>car_name</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
 					<y>1</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -323,16 +354,47 @@
 				</logic>
 				<layout>
 					<x>1</x>
-					<y>6</y>
+					<y>1</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>car_name</id>
+				<id>engine</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>mileage</id>
+				<logic>
+					<behavior>editable</behavior>
+					<behavior>required</behavior>
+				</logic>
+				<layout>
+					<x>3</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>vin</id>
 				<logic>
 					<behavior>editable</behavior>
 				</logic>
@@ -347,89 +409,13 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>vin</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>5</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>year_of_production</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>3</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>mileage</id>
-				<logic>
-					<behavior>editable</behavior>
-					<behavior>required</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>4</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>stk_expiration_date</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>4</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>engine</id>
+				<id>car_owner</id>
 				<logic>
 					<behavior>editable</behavior>
 				</logic>
 				<layout>
 					<x>1</x>
 					<y>2</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>car_owner</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>3</x>
-					<y>1</y>
 					<rows>1</rows>
 					<cols>1</cols>
 					<offset>0</offset>
@@ -442,6 +428,21 @@
 				<logic>
 					<behavior>editable</behavior>
 					<behavior>required</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>2</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>stk_expiration_date</id>
+				<logic>
+					<behavior>editable</behavior>
 				</logic>
 				<layout>
 					<x>3</x>
@@ -519,6 +520,7 @@
 		<label>Zobrazenie informácií</label>
 		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_1</id>
 			<dataRef>
 				<id>car_photo</id>
@@ -527,7 +529,7 @@
 				</logic>
 				<layout>
 					<x>0</x>
-					<y>1</y>
+					<y>0</y>
 					<rows>1</rows>
 					<cols>1</cols>
 					<offset>0</offset>
@@ -542,9 +544,9 @@
 				</logic>
 				<layout>
 					<x>1</x>
-					<y>1</y>
+					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -556,10 +558,25 @@
 					<behavior>visible</behavior>
 				</logic>
 				<layout>
-					<x>1</x>
+					<x>2</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>year_of_production</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>3</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -572,7 +589,7 @@
 				</logic>
 				<layout>
 					<x>0</x>
-					<y>2</y>
+					<y>1</y>
 					<rows>1</rows>
 					<cols>1</cols>
 					<offset>0</offset>
@@ -587,54 +604,24 @@
 				</logic>
 				<layout>
 					<x>1</x>
-					<y>7</y>
+					<y>1</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
 				</layout>
-			</dataRef>
-			<dataRef>
-				<id>year_of_production</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>2</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
+			</dataRef>			
 			<dataRef>
 				<id>engine</id>
 				<logic>
 					<behavior>visible</behavior>
 				</logic>
 				<layout>
-					<x>1</x>
-					<y>3</y>
+					<x>2</x>
+					<y>1</y>
 					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>vin</id>
-				<logic>
-					<behavior>visible</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>4</y>
-					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -646,22 +633,37 @@
 					<behavior>visible</behavior>
 				</logic>
 				<layout>
-					<x>1</x>
-					<y>5</y>
+					<x>3</x>
+					<y>1</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
 			<dataRef>
+				<id>vin</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>2</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>			
+			<dataRef>
 				<id>owner_category</id>
 				<logic>
 					<behavior>visible</behavior>
 				</logic>
 				<layout>
-					<x>3</x>
+					<x>1</x>
 					<y>2</y>
 					<rows>1</rows>
 					<cols>1</cols>
@@ -759,7 +761,7 @@
 					</action>
 				</logic>
 				<layout>
-					<x>3</x>
+					<x>2</x>
 					<y>2</y>
 					<rows>1</rows>
 					<cols>1</cols>
@@ -771,106 +773,17 @@
 		</dataGroup>
 		<dataGroup>
 			<id>DataGroup_0</id>
+			<layout>grid</layout>
 			<dataRef>
 				<id>visual_id</id>
 				<logic>
 					<behavior>hidden</behavior>
 				</logic>
 				<layout>
-					<x>3</x>
-					<y>2</y>
+					<x>0</x>
+					<y>0</y>
 					<rows>1</rows>
 					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>creation_date</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>9</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>carinfo_date_change</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>9</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>mileage_date_change</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>6</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>stk_expiration_date</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>4</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>last_oil_change_date</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>4</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>last_oil_change_mileage</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>4</y>
-					<rows>1</rows>
-					<cols>2</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -882,40 +795,10 @@
 					<behavior>hidden</behavior>
 				</logic>
 				<layout>
-					<x>2</x>
-					<y>9</y>
+					<x>1</x>
+					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>status_history</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
-					<y>9</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>history_plate_number</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>9</y>
-					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -927,8 +810,8 @@
 					<behavior>hidden</behavior>
 				</logic>
 				<layout>
-					<x>3</x>
-					<y>1</y>
+					<x>2</x>
+					<y>0</y>
 					<rows>1</rows>
 					<cols>1</cols>
 					<offset>0</offset>
@@ -942,10 +825,130 @@
 					<behavior>hidden</behavior>
 				</logic>
 				<layout>
-					<x>2</x>
-					<y>9</y>
+					<x>3</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>status_history</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>1</y>
 					<rows>1</rows>
 					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>history_plate_number</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>creation_date</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>2</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>carinfo_date_change</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>2</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>mileage_date_change</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>2</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>stk_expiration_date</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>3</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>last_oil_change_date</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>3</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>last_oil_change_mileage</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>3</y>
+					<rows>1</rows>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -962,6 +965,7 @@
 		</layout>
 		<label>Upravenie informácií</label>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_1</id>
 			<dataRef>
 				<id>car_photo</id>
@@ -970,12 +974,12 @@
 				</logic>
 				<layout>
 					<x>0</x>
-					<y>1</y>
+					<y>0</y>
 					<rows>1</rows>
 					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
-					<appearance></appearance>
+					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
 			<dataRef>
@@ -988,7 +992,7 @@
 					<x>1</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -1001,10 +1005,25 @@
 					<behavior>required</behavior>
 				</logic>
 				<layout>
-					<x>1</x>
-					<y>1</y>
+					<x>2</x>
+					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>year_of_production</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>3</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -1017,7 +1036,7 @@
 				</logic>
 				<layout>
 					<x>0</x>
-					<y>2</y>
+					<y>1</y>
 					<rows>1</rows>
 					<cols>1</cols>
 					<offset>0</offset>
@@ -1033,24 +1052,9 @@
 				</logic>
 				<layout>
 					<x>1</x>
-					<y>6</y>
+					<y>1</y>
 					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>year_of_production</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>3</y>
-					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -1062,25 +1066,10 @@
 					<behavior>editable</behavior>
 				</logic>
 				<layout>
-					<x>1</x>
-					<y>2</y>
+					<x>2</x>
+					<y>1</y>
 					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>vin</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>5</y>
-					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -1093,10 +1082,25 @@
 					<behavior>required</behavior>
 				</logic>
 				<layout>
-					<x>1</x>
-					<y>4</y>
+					<x>3</x>
+					<y>1</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>vin</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>2</y>
+					<rows>1</rows>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -1109,7 +1113,7 @@
 					<behavior>required</behavior>
 				</logic>
 				<layout>
-					<x>3</x>
+					<x>1</x>
 					<y>2</y>
 					<rows>1</rows>
 					<cols>1</cols>
@@ -1159,7 +1163,7 @@
 					</action>
 				</logic>
 				<layout>
-					<x>3</x>
+					<x>2</x>
 					<y>2</y>
 					<rows>1</rows>
 					<cols>1</cols>
@@ -1170,7 +1174,23 @@
 			</dataRef>
 		</dataGroup>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
+			<dataRef>
+				<id>car_owner</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
 			<dataRef>
 				<id>stk_expiration_date</id>
 				<logic>
@@ -1178,9 +1198,9 @@
 				</logic>
 				<layout>
 					<x>1</x>
-					<y>4</y>
+					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -1192,10 +1212,10 @@
 					<behavior>hidden</behavior>
 				</logic>
 				<layout>
-					<x>1</x>
-					<y>4</y>
+					<x>2</x>
+					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>outline</appearance>
@@ -1207,23 +1227,8 @@
 					<behavior>hidden</behavior>
 				</logic>
 				<layout>
-					<x>1</x>
-					<y>4</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>car_owner</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
 					<x>3</x>
-					<y>1</y>
+					<y>0</y>
 					<rows>1</rows>
 					<cols>1</cols>
 					<offset>0</offset>
@@ -1231,7 +1236,7 @@
 					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
-		</dataGroup>
+		</dataGroup>		
 		<event type="finish">
 			<id>18_finish</id>
 			<actions phase="post">
@@ -1474,6 +1479,7 @@
 		<label>Vymazanie záznamu</label>
 		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
 			<dataRef>
 				<id>accept_removal</id>
@@ -1481,10 +1487,10 @@
 					<behavior>visible</behavior>
 				</logic>
 				<layout>
-					<x>1</x>
+					<x>0</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>fill</appearance>
@@ -1503,7 +1509,7 @@
 					</action>
 				</logic>
 				<layout>
-					<x>2</x>
+					<x>1</x>
 					<y>0</y>
 					<rows>1</rows>
 					<cols>1</cols>
@@ -1586,50 +1592,21 @@
 		</layout>
 		<label>Nastavenie notifikácií</label>
 		<dataGroup>
+			<layout>grid</layout>
 			<id>DataGroup_0</id>
-			<dataRef>
-				<id>stk_notification</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>1</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>2</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>fill</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>oil_notification</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>2</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance></appearance>
-				</layout>
-			</dataRef>
 			<dataRef>
 				<id>oil_change_interval_km</id>
 				<logic>
 					<behavior>editable</behavior>
 				</logic>
 				<layout>
-					<x>1</x>
+					<x>0</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
-					<appearance>fill</appearance>
+					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
 			<dataRef>
@@ -1641,10 +1618,10 @@
 					<x>1</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
-					<appearance>fill</appearance>
+					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
 			<dataRef>
@@ -1653,13 +1630,43 @@
 					<behavior>editable</behavior>
 				</logic>
 				<layout>
-					<x>1</x>
+					<x>2</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>2</cols>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>stk_notification</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>oil_notification</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance></appearance>
 				</layout>
 			</dataRef>
 		</dataGroup>
