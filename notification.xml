@@ -38,18 +38,23 @@
 	</data>
 	<data type="button">
 		<id>vehicle_show_info</id>
-		<title>Zobraziť informácie o vozidle</title>
+		<title>Informácie o vozidle</title>
 		<placeholder>Zobraziť</placeholder>
 	</data>
 	<data type="button">
 		<id>service_show_info</id>
-		<title>Zobraziť informácie o servisnom zázname</title>
+		<title>Informácie o servisnom zázname</title>
 		<placeholder>Zobraziť</placeholder>
 	</data>
 	<data type="button">
 		<id>task_show_info</id>
-		<title>Zobraziť informácie o úlohe</title>
+		<title>Informácie o úlohe</title>
 		<placeholder>Zobraziť</placeholder>
+	</data>
+	<data type="button">
+		<id>refresh_notifications</id>
+		<title>Notifikácie</title>
+		<placeholder>Obnoviť</placeholder>
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
@@ -87,6 +92,12 @@
 					change enableVehicles value { true }
 					change enableServices value { true }
 					change enableTasks value { true }
+					
+					def title = "Notifikácie"
+					def name = userService.getLoggedOrSystem().name + " " + userService.getLoggedOrSystem().surname
+					changeCaseProperty "title" about {
+						title + " - " + name
+					}
 				</action>
 			</actions>
 		</event>
@@ -624,6 +635,25 @@
 		<label>Pracovná plocha</label>
 		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
+			<id>DataGroup_1</id>
+			<layout>grid</layout>
+			<dataRef>
+				<id>refresh_notifications</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
 				<id>all_notification_tasks</id>
@@ -637,7 +667,7 @@
 					<cols>1</cols>
 					<offset>0</offset>
 					<template>material</template>
-					<appearance></appearance>
+					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
 		</dataGroup>
