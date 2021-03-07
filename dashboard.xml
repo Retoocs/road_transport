@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://modeler.netgrif.com/petriflow_schema.xsd">
+	<id>dashboard</id>
+	<initials>dashboard</initials>
+	<title>Domov</title>
+	<defaultRole>true</defaultRole>
+	<transitionRole>false</transitionRole>
+	<!-- TRANSACTIONS -->
+	<!-- ROLES -->
+	<!-- DATA -->
+	<data type="taskRef">
+		<id>home_taskref</id>
+		<title>Pracovná plocha</title>
+	</data>
+	<data type="button">
+		<id>btn_reset</id>
+		<title>Domov</title>
+		<placeholder>Obnoviť</placeholder>
+		<action trigger="set">
+			home: f.home_taskref;
+		
+			def carController = createCase("5faffef90a975a1b77c9b54a_car_controller")
+			def serviceController = createCase("5faffef90a975a1b77c9b54a_service_controller")
+			def taskController = createCase("5faffef90a975a1b77c9b54a_task_controller")
+			def notification = createCase("5faffef90a975a1b77c9b54a_notification")
+			
+			/*if( (home.value != null).and(home.value != []) ){
+				def toCancel = findTask( {it._id.eq(home.value[0])} )
+				if(toCancel != null){
+					cancelTask(toCancel)
+				}
+			}
+			
+			change home value { [] }*/
+		</action>
+	</data>
+	<data type="button">
+		<id>btn_finish</id>
+		<title></title>
+		<placeholder>Dokončiť</placeholder>
+	</data>
+	<data type="button">
+		<id>btn_cancel</id>
+		<title></title>
+		<placeholder>Zrušiť</placeholder>
+	</data>
+	<data type="button">
+		<id>btn_notification</id>
+		<title>Notifikácie</title>
+		<placeholder>Spustiť</placeholder>
+	</data>
+	<data type="button">
+		<id>btn_notification_settings</id>
+		<title>Notifikácie - nastavenia</title>
+		<placeholder>Spustiť</placeholder>
+	</data>
+	<data type="button">
+		<id>btn_create_car</id>
+		<title>Auto</title>
+		<placeholder>Vytvoriť</placeholder>
+	</data>
+	<data type="button">
+		<id>btn_create_service</id>
+		<title>Servisný záznam</title>
+		<placeholder>Vytvoriť</placeholder>
+	</data>
+	<data type="button">
+		<id>btn_create_task</id>
+		<title>Úloha</title>
+		<placeholder>Vytvoriť</placeholder>
+	</data>
+	<data type="button">
+		<id>btn_task_overview</id>
+		<title>Úloha - prehľad</title>
+		<placeholder>Spustiť</placeholder>
+	</data>
+	<data type="text">
+		<id>view_title</id>
+		<title>Aktuálne zobrazenie</title>
+		<init>Žiadne</init>
+	</data>
+	<!-- I18NS -->
+	<!-- TRANSITIONS -->
+	<transition>
+		<id>3</id>
+		<x>380</x>
+		<y>260</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>initialize</label>
+		<trigger type="auto"/>
+		<event type="assign">
+			<id>3_assign</id>
+			<actions phase="pre">
+				<action>
+					//only one instance per user, otherwise delete created case
+					if(findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(useCase.processIdentifier)).and(it._id.ne(useCase._id))} )) {
+						async.run {
+							workflowService.deleteCase(useCase._id.toString())
+						}
+						throw new Exception("Instance of this process already exists for the author")		
+					}
+				</action>
+			</actions>
+		</event>
+		<event type="finish">
+			<id>2_finish</id>
+			<actions phase="pre">
+				<action>
+					def carControllerProcessId = "5faffef90a975a1b77c9b54a_car_controller"
+					def serviceControllerProcessId = "5faffef90a975a1b77c9b54a_service_controller"
+					def taskControllerProcessId = "5faffef90a975a1b77c9b54a_task_controller"
+					def notificationProcessId = "5faffef90a975a1b77c9b54a_notification"
+				
+					def carController = findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(carControllerProcessId))} )
+					def serviceController = findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(serviceControllerProcessId))} )
+					def taskController = findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(taskControllerProcessId))} )
+					def notification = findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(notificationProcessId))} )
+					
+					if(carController == null){
+						createCase(carControllerProcessId)
+					}
+					
+					if(serviceController == null){
+						createCase(serviceControllerProcessId)
+					}
+					
+					if(taskController == null){
+						createCase(taskControllerProcessId)
+					}
+					
+					if(notification == null){
+						createCase(notificationProcessId)
+					}
+				</action>
+			</actions>
+			<actions phase="post">
+				<action>
+					def title = "Domov"
+					def name = userService.getLoggedOrSystem().name + " " + userService.getLoggedOrSystem().surname
+					changeCaseProperty "title" about {
+						title + " - " + name
+					}	
+				</action>
+			</actions>
+		</event>
+	</transition>
+	<transition>
+		<id>4</id>
+		<x>620</x>
+		<y>260</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>Domov</label>
+		<assignPolicy>auto</assignPolicy>
+		<dataGroup>
+			<layout>grid</layout>
+			<id>DataGroup_2</id>
+			<dataRef>
+				<id>btn_create_car</id>
+				<logic>
+					<behavior>editable</behavior>
+					<action trigger="set">
+						viewTitle: f.view_title,
+						home: f.home_taskref;
+						
+						change home value { [] }
+						
+						def carController = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_car_controller").and(it.author.email.eq(useCase.author.email))} )
+						
+						if(carController != null){
+							assignTask("checker")
+							finishTask("checker")
+						
+							def assigned = assignTask("4", carController)							
+							
+							change viewTitle value { assigned.title.defaultValue }
+							change home value { [assigned.stringId] }	
+						}
+					</action>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>btn_create_service</id>
+				<logic>
+					<behavior>editable</behavior>
+					<action trigger="set">
+						viewTitle: f.view_title,
+						home: f.home_taskref;
+						
+						def serviceController = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_service_controller").and(it.author.email.eq(useCase.author.email))} )
+						
+						if(serviceController != null){							
+							assignTask("checker")
+							finishTask("checker")		
+
+							def assigned = assignTask("2", serviceController)
+							
+							change viewTitle value { assigned.title.defaultValue }
+							change home value { [assigned.stringId] }
+						}
+					</action>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>btn_create_task</id>
+				<logic>
+					<behavior>editable</behavior>
+					<action trigger="set">
+						viewTitle: f.view_title,
+						home: f.home_taskref;
+						
+						def taskController = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_task_controller").and(it.author.email.eq(useCase.author.email))} )
+						
+						if(taskController != null){
+							assignTask("checker")
+							finishTask("checker")
+							
+							def assigned = assignTask("4", taskController)
+							
+							change viewTitle value { assigned.title.defaultValue }
+							change home value { [assigned.stringId] }							
+						}
+					</action>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>btn_notification</id>
+				<logic>
+					<behavior>editable</behavior>
+					<action trigger="set">
+						viewTitle: f.view_title,
+						home: f.home_taskref;
+						
+						def notification = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_notification").and(it.author.email.eq(useCase.author.email))} )
+						
+						if(notification != null){
+							assignTask("checker")
+							finishTask("checker")
+							
+							def assigned = assignTask("41", notification)
+							
+							change viewTitle value { assigned.title.defaultValue }
+							change home value { [assigned.stringId] }							
+						}
+					</action>
+				</logic>
+				<layout>
+					<x>3</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>view_title</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>btn_task_overview</id>
+				<logic>
+					<behavior>editable</behavior>
+					<action trigger="set">
+						viewTitle: f.view_title,
+						home: f.home_taskref;
+						
+						def taskController = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_task_controller").and(it.author.email.eq(useCase.author.email))} )
+						
+						if(taskController != null){
+							assignTask("checker")
+							finishTask("checker")
+							
+							def assigned = assignTask("9", taskController)
+							
+							change viewTitle value { assigned.title.defaultValue }
+							change home value { [assigned.stringId] }							
+						}
+					</action>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>btn_notification_settings</id>
+				<logic>
+					<behavior>editable</behavior>
+					<action trigger="set">
+						viewTitle: f.view_title,
+						home: f.home_taskref;
+						
+						def notification = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_notification").and(it.author.email.eq(useCase.author.email))} )
+						
+						if(notification != null){
+							assignTask("checker")
+							finishTask("checker")
+							
+							def assigned = assignTask("19", notification)
+							
+							change viewTitle value { assigned.title.defaultValue }
+							change home value { [assigned.stringId] }							
+						}
+					</action>
+				</logic>
+				<layout>
+					<x>3</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<dataGroup>
+			<id>DataGroup_1</id>
+			<dataRef>
+				<id>home_taskref</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<dataGroup>
+			<layout>grid</layout>
+			<id>DataGroup_0</id>
+			<dataRef>
+				<id>btn_reset</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>btn_cancel</id>
+				<logic>
+					<behavior>editable</behavior>
+					<action trigger="set">
+						viewTitle: f.view_title,
+						home: f.home_taskref;
+						
+						assignTask("checker")
+						finishTask("checker")
+						
+						change viewTitle value { "Žiadne" }
+						change home value { [] }
+					</action>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>btn_finish</id>
+				<logic>
+					<behavior>editable</behavior>
+					<action trigger="set">
+						viewTitle: f.view_title,
+						home: f.home_taskref;
+						
+						if( (home.value != null).and(home.value != []) ){
+							def toFinish = findTask( {it._id.eq(home.value[0])} )
+							if(toFinish != null){
+								finishTask(toFinish)
+							}
+						}
+						
+						change viewTitle value { "Žiadne" }
+						change home value { [] }
+					</action>
+				</logic>
+				<layout>
+					<x>3</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="assign">
+			<id>4_assign</id>
+			<actions phase="pre">
+				<action>
+				</action>
+			</actions>
+		</event>
+		<event type="cancel">
+			<id>4_cancel</id>
+			<actions phase="post">
+				<action>
+					home: f.home_taskref;
+					
+					if( (home.value != null).and(home.value != []) ){
+						def toCancel = findTask( {it._id.eq(home.value[0])} )
+						if(toCancel != null){
+							cancelTask(toCancel)
+						}
+					}
+					
+					change home value { [] }
+				</action>
+			</actions>
+		</event>
+		<event type="finish">			
+			<title/> 
+		</event>
+	</transition>
+	<transition>
+		<id>checker</id>
+		<x>300</x>
+		<y>260</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>check_home_taskref</label>
+		<event type="finish">
+			<id>checker_finish</id>
+			<actions phase="pre">
+				<action>
+					home: f.home_taskref;
+					
+					if( (home.value != null).and(home.value != []) ){
+						def toCancel = findTask( {it._id.eq(home.value[0])} )
+						if(toCancel != null){
+							cancelTask(toCancel)
+						}
+					}
+					
+					change home value { [] }
+				</action>
+			</actions>
+		</event>
+	</transition>
+	<!-- PLACES -->
+	<place>
+		<id>2</id>
+		<x>260</x>
+		<y>260</y>
+		<label>uninitialized</label>
+		<tokens>1</tokens>
+		<static>false</static>
+	</place>
+	<place>
+		<id>5</id>
+		<x>500</x>
+		<y>260</y>
+		<label>initialized</label>
+		<tokens>0</tokens>
+		<static>false</static>
+	</place>
+	<!-- ARCS -->
+	<arc>
+		<id>6</id>
+		<type>regular</type>
+		<sourceId>2</sourceId>
+		<destinationId>3</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>7</id>
+		<type>regular</type>
+		<sourceId>3</sourceId>
+		<destinationId>5</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>8</id>
+		<type>read</type>
+		<sourceId>5</sourceId>
+		<destinationId>4</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+</document>
