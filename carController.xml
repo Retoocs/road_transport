@@ -23,22 +23,19 @@
 		</layout>
 		<label>init</label>
 		<trigger type="auto"/>
-		<event type="assign">
-			<id>2_assign</id>
+		<event type="finish">
+			<id>2_finish</id>
 			<actions phase="pre">
 				<action>
 					//only one instance per user, otherwise delete created case
 					if(findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(useCase.processIdentifier)).and(it._id.ne(useCase._id))} )) {
 						async.run {
 							workflowService.deleteCase(useCase._id.toString())
-						}
-						throw new Exception("Instance of this process already exists for the author")		
+						}	
+						throw new Exception("Instance of this process already exists for the author")
 					}
 				</action>
 			</actions>
-		</event>
-		<event type="finish">
-			<id>2_finish</id>
 			<actions phase="post">
 				<action>
 					def title = "Ovládač auta"

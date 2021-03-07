@@ -51,11 +51,6 @@
 		<title>Informácie o úlohe</title>
 		<placeholder>Zobraziť</placeholder>
 	</data>
-	<data type="button">
-		<id>refresh_notifications</id>
-		<title>Notifikácie</title>
-		<placeholder>Obnoviť</placeholder>
-	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
@@ -570,6 +565,18 @@
 						  finishTask(enableServices.value ? "12" : "14")
 						}
 					</action>
+					<action trigger="get">
+						enableServices: f.this;
+						
+						def turningOff = findTask( {it.caseId.eq(useCase.stringId).and(it.transitionId.eq("14"))} )
+						
+						// if true, means service notifications are off
+						if(turningOff == null){
+							change enableServices value { false }
+						}else{
+							change enableServices value { true }
+						}
+					</action>
 				</logic>
 				<layout>
 					<x>0</x>
@@ -591,6 +598,18 @@
 						async.run {
 						  assignTask(enableVehicles.value ? "10" : "11")
 						  finishTask(enableVehicles.value ? "10" : "11")
+						}
+					</action>
+					<action trigger="get">
+						enableVehicles: f.this;
+						
+						def turningOff = findTask( {it.caseId.eq(useCase.stringId).and(it.transitionId.eq("11"))} )
+						
+						// if true, means vehicle notifications are off
+						if(turningOff == null){
+							change enableVehicles value { false }
+						}else{
+							change enableVehicles value { true }
 						}
 					</action>
 				</logic>
@@ -616,6 +635,18 @@
 						  finishTask(enableTasks.value ? "15" : "17")
 						}
 					</action>
+					<action trigger="get">
+						enableTasks: f.this;
+						
+						def turningOff = findTask( {it.caseId.eq(useCase.stringId).and(it.transitionId.eq("17"))} )
+						
+						// if true, means vehicle notifications are off
+						if(turningOff == null){
+							change enableTasks value { false }
+						}else{
+							change enableTasks value { true }
+						}
+					</action>
 				</logic>
 				<layout>
 					<x>2</x>
@@ -638,25 +669,6 @@
 		</layout>
 		<label>Pracovná plocha</label>
 		<assignPolicy>auto</assignPolicy>
-		<dataGroup>
-			<id>DataGroup_1</id>
-			<layout>grid</layout>
-			<dataRef>
-				<id>refresh_notifications</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-		</dataGroup>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -700,9 +712,7 @@
 		<event type="cancel">
 			<id>41_cancel</id>
 			<actions phase="pre">
-				<action>
-					//todo iterate through taskRef values, each(findTask on value and cancel it)
-				
+				<action>					
 					def notificationTasks = findTasks({ it.caseId.eq(useCase.stringId).and(
 						it.transitionId.eq("9") // vehicle check
 						.or(it.transitionId.eq("13")) // service check
@@ -711,7 +721,7 @@
 					
 					async.run{
 						cancelTasks(notificationTasks)
-					}
+					}					
 				</action>
 			</actions>
 		</event>

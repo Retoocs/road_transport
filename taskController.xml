@@ -269,7 +269,7 @@
 								if( (tmpDate != null).and(taskInstance != null) ){
 									def sheduleDate = tmpDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
 									
-									if( (sheduleDate.isAfter(fromDate.value).and(sheduleDate.isBefore(toDate.value)) )){
+									if( sheduleDate.isAfter(fromDate.value.minusDays(1)).and(sheduleDate.isBefore(toDate.value.plusDays(1))) ){
 										def task = findTask( {it.caseId.eq(taskInstance.stringId).and(it.transitionId.eq("75"))} )
 										if(task != null){
 											idsWithinWeek.add(task.stringId)
@@ -329,8 +329,8 @@
 								def tmpDate = taskInstance.getFieldValue("shedule_date")
 								if( (tmpDate != null).and(taskInstance != null) ){
 									def sheduleDate = tmpDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
-									
-									if( (sheduleDate.isAfter(fromDate.value).and(sheduleDate.isBefore(toDate.value)) )){
+									if( sheduleDate.isAfter(fromDate.value.minusDays(1)).and(sheduleDate.isBefore(toDate.value.plusDays(1))) ){
+
 										def task = findTask( {it.caseId.eq(taskInstance.stringId).and(it.transitionId.eq("75"))} )
 										if(task != null){
 											idsWithinWeek.add(task.stringId)
@@ -359,6 +359,11 @@
 				<id>tasks_no_shedule</id>
 				<logic>
 					<behavior>editable</behavior>
+					<action trigger="get">
+						dis: f.this;
+						
+						dis.name.defaultValue = "Nenaplánované úlohy (${dis.choices.size()})"
+					</action>
 				</logic>
 				<layout>
 					<x>2</x>
@@ -443,7 +448,7 @@
 							if( (tmpDate != null).and(taskInstance != null) ){
 								def sheduleDate = tmpDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
 								
-								if( (sheduleDate.isAfter(fromDate.value).and(sheduleDate.isBefore(toDate.value)) )){
+								if( sheduleDate.isAfter(fromDate.value.minusDays(1)).and(sheduleDate.isBefore(toDate.value.plusDays(1))) ){
 									def task = findTask( {it.caseId.eq(taskInstance.stringId).and(it.transitionId.eq("75"))} )
 									if(task != null){
 										idsWithinWeek.add(task.stringId)

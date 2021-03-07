@@ -955,6 +955,16 @@
 				</layout>
 			</dataRef>
 		</dataGroup>
+		<event type="assign">
+			<id>13_assign</id>
+			<actions phase="pre">
+				<action>
+					statusHistory: f.status_history;
+					
+					change statusHistory value { null }
+				</action>
+			</actions>
+		</event>
 	</transition>
 	<transition>
 		<id>18</id>
