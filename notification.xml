@@ -127,7 +127,7 @@
 					<x>0</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>1</cols>
+					<cols>4</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>fill</appearance>
@@ -321,7 +321,7 @@
 					<x>0</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>1</cols>
+					<cols>4</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>fill</appearance>
@@ -449,7 +449,7 @@
 					<x>0</x>
 					<y>0</y>
 					<rows>1</rows>
-					<cols>1</cols>
+					<cols>4</cols>
 					<offset>0</offset>
 					<template>material</template>
 					<appearance>fill</appearance>

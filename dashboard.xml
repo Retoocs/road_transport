@@ -34,23 +34,6 @@
 		<id>btn_reset</id>
 		<title>Domov</title>
 		<placeholder>Obnoviť</placeholder>
-		<action trigger="set">
-			home: f.home_taskref;
-		
-			def carController = createCase("5faffef90a975a1b77c9b54a_car_controller")
-			def serviceController = createCase("5faffef90a975a1b77c9b54a_service_controller")
-			def taskController = createCase("5faffef90a975a1b77c9b54a_task_controller")
-			def notification = createCase("5faffef90a975a1b77c9b54a_notification")
-			
-			/*if( (home.value != null).and(home.value != []) ){
-				def toCancel = findTask( {it._id.eq(home.value[0])} )
-				if(toCancel != null){
-					cancelTask(toCancel)
-				}
-			}
-			
-			change home value { [] }*/
-		</action>
 	</data>
 	<data type="button">
 		<id>btn_finish</id>
@@ -131,31 +114,8 @@
 			<id>2_finish</id>
 			<actions phase="pre">
 				<action>
-					def carControllerProcessId = "5faffef90a975a1b77c9b54a_car_controller"
-					def serviceControllerProcessId = "5faffef90a975a1b77c9b54a_service_controller"
-					def taskControllerProcessId = "5faffef90a975a1b77c9b54a_task_controller"
-					def notificationProcessId = "5faffef90a975a1b77c9b54a_notification"
-				
-					def carController = findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(carControllerProcessId))} )
-					def serviceController = findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(serviceControllerProcessId))} )
-					def taskController = findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(taskControllerProcessId))} )
-					def notification = findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(notificationProcessId))} )
-					
-					if(carController == null){
-						createCase(carControllerProcessId)
-					}
-					
-					if(serviceController == null){
-						createCase(serviceControllerProcessId)
-					}
-					
-					if(taskController == null){
-						createCase(taskControllerProcessId)
-					}
-					
-					if(notification == null){
-						createCase(notificationProcessId)
-					}
+					assignTask("creator")
+					finishTask("creator")
 				</action>
 			</actions>
 			<actions phase="post">
@@ -408,6 +368,19 @@
 				<id>btn_reset</id>
 				<logic>
 					<behavior>editable</behavior>
+					<action trigger="set">
+						thisTask: t.4,
+						show: f.btn_show_info,
+						title: f.view_title,
+						home: f.home_taskref;
+						
+						assignTask("creator")
+						finishTask("creator")
+						
+						make show, visible on thisTask when { true }
+						change title value { "Žiadne" }
+						change home value { [] }
+					</action>
 				</logic>
 				<layout>
 					<x>0</x>
@@ -449,8 +422,9 @@
 				<logic>
 					<behavior>visible</behavior>
 					<action trigger="set">
-						home: f.home_taskref;
-						
+						thisTask: t.4,
+						show: f.btn_show_info,
+						home: f.home_taskref;						
 						
 						if( (home.value != null).and(home.value != []) ){
 							def taskInHome = findTask( {it._id.eq(home.value[0])} )
@@ -467,6 +441,7 @@
 										if(showTask != null){
 											assignTask(showTask)
 											change home value { [showTask.stringId] }
+											make show, visible on thisTask when { true }
 										}
 									}
 								}								
@@ -557,6 +532,47 @@
 						if(toCancel != null){
 							cancelTask(toCancel)
 						}
+					}
+				</action>
+			</actions>
+		</event>
+	</transition>
+	<transition>
+		<id>creator</id>
+		<x>300</x>
+		<y>160</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>instance_creator</label>
+		<event type="finish">
+			<id>creator_finish</id>
+			<actions phase="pre">
+				<action>
+					def carControllerProcessId = "5faffef90a975a1b77c9b54a_car_controller"
+					def serviceControllerProcessId = "5faffef90a975a1b77c9b54a_service_controller"
+					def taskControllerProcessId = "5faffef90a975a1b77c9b54a_task_controller"
+					def notificationProcessId = "5faffef90a975a1b77c9b54a_notification"
+				
+					def carController = findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(carControllerProcessId))} )
+					def serviceController = findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(serviceControllerProcessId))} )
+					def taskController = findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(taskControllerProcessId))} )
+					def notification = findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(notificationProcessId))} )
+					
+					if(carController == null){
+						createCase(carControllerProcessId)
+					}
+					
+					if(serviceController == null){
+						createCase(serviceControllerProcessId)
+					}
+					
+					if(taskController == null){
+						createCase(taskControllerProcessId)
+					}
+					
+					if(notification == null){
+						createCase(notificationProcessId)
 					}
 				</action>
 			</actions>
