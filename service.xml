@@ -570,7 +570,7 @@
 		</event>
 	</transition>
 	<transition>
-		<id>10</id>
+		<id>show</id>
 		<x>420</x>
 		<y>100</y>
 		<layout>
@@ -587,7 +587,7 @@
 					<action trigger="get">
 						taskRef: f.car_taskRef,
 						parentId: f.parent_id,
-						thisTask: t.10;		
+						thisTask: t.show;		
 
 						if(parentId.value == null){
 							make taskRef, forbidden on thisTask when{ true }
@@ -691,7 +691,7 @@
 				<logic>
 					<behavior>editable</behavior>
 					<action trigger="get">
-						thisTask: t.10,
+						thisTask: t.show,
 						btn: f.this,
 						id: f.visual_id,
 						statusHistory: f.status_history,
@@ -708,7 +708,7 @@
 						make changeDate, hidden on thisTask when { !btn.value }
 					</action>
 					<action trigger="set">
-						thisTask: t.10,
+						thisTask: t.show,
 						btn: f.this,
 						id: f.visual_id,
 						statusHistory: f.status_history,
@@ -1766,7 +1766,7 @@ change status value{
 		<id>40</id>
 		<type>read</type>
 		<sourceId>3</sourceId>
-		<destinationId>10</destinationId>
+		<destinationId>show</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 	<arc>

@@ -47,9 +47,13 @@
 		<id>week</id>
 		<title></title>
 	</data>
-	<data type="enumeration">
+	<data type="enumeration_map">
 		<id>tasks_no_shedule</id>
 		<title>Nenaplánované úlohy</title>
+	</data>
+	<data type="text">
+		<id>selected</id>
+		<title>Selected unsheduled task</title>
 	</data>
 	<data type="button">
 		<id>show_more</id>
@@ -362,26 +366,17 @@
 					<action trigger="get">
 						dis: f.this;
 						
-						dis.name.defaultValue = "Nenaplánované úlohy (${dis.choices.size()})"
+						dis.name.defaultValue = "Nenaplánované úlohy (${dis.options.size()})"
+					</action>
+					<action trigger="set">
+						selected: f.selected,
+						dis: f.this;
+						
+						change selected value { dis.value }
 					</action>
 				</logic>
 				<layout>
 					<x>2</x>
-					<y>1</y>
-					<rows>1</rows>
-					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
-			<dataRef>
-				<id>show_more</id>
-				<logic>
-					<behavior>editable</behavior>
-				</logic>
-				<layout>
-					<x>3</x>
 					<y>1</y>
 					<rows>1</rows>
 					<cols>1</cols>
@@ -413,12 +408,16 @@
 			<id>9_assign</id>
 			<actions phase="pre">
 				<action>
+					selected: f.selected,
 					fromDate: f.from_date,
 					toDate: f.to_date,
 					today: f.today,
 					week: f.week,
 					tasksNoShedule: f.tasks_no_shedule,
 					overview: f.overview_tasks_taskref;
+					
+					change selected value { null }
+					change tasksNoShedule value { null }
 					
 					def tmpToday = java.time.LocalDate.now()
 					def mondayOfCurrentWeek = tmpToday.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY))
@@ -458,8 +457,8 @@
 							else if(taskInstance != null){
 								def str = taskInstance.visualId.split("-")[1] + " - " + taskInstance.getFieldValue("title")
 							
-								change tasksNoShedule choices {
-									tasksNoShedule.choices + [str]
+								change tasksNoShedule options {
+									tasksNoShedule.options + [(taskInstance.stringId): str]
 								}
 							}
 						}					
@@ -487,7 +486,7 @@
 					change toDate value{ null }
 					change weekOffset value { 0 }
 					change overview value { [] }
-					change tasksNoShedule choices { [] }					
+					change tasksNoShedule options { [:] }					
 				</action>
 			</actions>
 		</event>
@@ -507,7 +506,7 @@
 					change toDate value{ null }
 					change weekOffset value { 0 }
 					change overview value { [] }
-					change tasksNoShedule choices { [] }	
+					change tasksNoShedule options { [:] }	
 				</action>
 			</actions>
 		</event>

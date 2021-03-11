@@ -291,7 +291,7 @@
 
 					def thisUser = userService.getLoggedOrSystem();					
 					/*change creator value {
-						thisUser
+						loggedUser()
 					}*/				
 				</action>
 			</actions>
@@ -339,7 +339,7 @@
 		</event>
 	</transition>
 	<transition>
-		<id>8</id>
+		<id>show</id>
 		<x>460</x>
 		<y>100</y>
 		<layout>
@@ -430,7 +430,7 @@
 				<logic>
 					<behavior>editable</behavior>
 					<action trigger="get">
-						thisTask: t.8,
+						thisTask: t.show,
 						btn: f.this,
 						id: f.visual_id,
 						creationDate: f.creation_date,
@@ -453,7 +453,7 @@
 						make closedBy, hidden on thisTask when { !btn.value }
 					</action>
 					<action trigger="set">
-						thisTask: t.8,
+						thisTask: t.show,
 						btn: f.this,
 						id: f.visual_id,
 						creationDate: f.creation_date,
@@ -1830,7 +1830,7 @@
 		<id>15</id>
 		<type>read</type>
 		<sourceId>3</sourceId>
-		<destinationId>8</destinationId>
+		<destinationId>show</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 	<arc>

@@ -11,6 +11,24 @@
 	<data type="taskRef">
 		<id>home_taskref</id>
 		<title>Pracovná plocha</title>
+		<action trigger="set">
+			previous: f.previous_value_in_home,
+			home: f.this;
+			
+			if(previous.value != null){
+				if(findTask( {it._id.eq(previous.value)} ))
+				assignTask("checker")
+				finishTask("checker")
+			}
+			
+			change previous value{
+				home.value[0]
+			}
+		</action>
+	</data>
+	<data type="text">
+		<id>previous_value_in_home</id>
+		<title>Previous value in home taskref</title>
 	</data>
 	<data type="button">
 		<id>btn_reset</id>
@@ -37,12 +55,17 @@
 	<data type="button">
 		<id>btn_finish</id>
 		<title></title>
-		<placeholder>Dokončiť</placeholder>
+		<placeholder>Potvrdiť</placeholder>
 	</data>
 	<data type="button">
 		<id>btn_cancel</id>
 		<title></title>
 		<placeholder>Zrušiť</placeholder>
+	</data>
+	<data type="button">
+		<id>btn_show_info</id>
+		<title></title>
+		<placeholder>Zobraziť</placeholder>
 	</data>
 	<data type="button">
 		<id>btn_notification</id>
@@ -163,19 +186,17 @@
 				<logic>
 					<behavior>editable</behavior>
 					<action trigger="set">
+						show: f.btn_show_info,
 						viewTitle: f.view_title,
-						home: f.home_taskref;
-						
-						change home value { [] }
+						home: f.home_taskref,
+						thisTask: t.4;
 						
 						def carController = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_car_controller").and(it.author.email.eq(useCase.author.email))} )
 						
-						if(carController != null){
-							assignTask("checker")
-							finishTask("checker")
-						
+						if(carController != null){						
 							def assigned = assignTask("4", carController)							
 							
+							make show, visible on thisTask when {true}
 							change viewTitle value { assigned.title.defaultValue }
 							change home value { [assigned.stringId] }	
 						}
@@ -196,17 +217,17 @@
 				<logic>
 					<behavior>editable</behavior>
 					<action trigger="set">
+						show: f.btn_show_info,
 						viewTitle: f.view_title,
-						home: f.home_taskref;
+						home: f.home_taskref,
+						thisTask: t.4;
 						
 						def serviceController = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_service_controller").and(it.author.email.eq(useCase.author.email))} )
 						
 						if(serviceController != null){							
-							assignTask("checker")
-							finishTask("checker")		
-
 							def assigned = assignTask("2", serviceController)
 							
+							make show, visible on thisTask when {true}
 							change viewTitle value { assigned.title.defaultValue }
 							change home value { [assigned.stringId] }
 						}
@@ -227,17 +248,17 @@
 				<logic>
 					<behavior>editable</behavior>
 					<action trigger="set">
+						show: f.btn_show_info,
 						viewTitle: f.view_title,
-						home: f.home_taskref;
+						home: f.home_taskref,
+						thisTask: t.4;
 						
 						def taskController = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_task_controller").and(it.author.email.eq(useCase.author.email))} )
 						
 						if(taskController != null){
-							assignTask("checker")
-							finishTask("checker")
-							
 							def assigned = assignTask("4", taskController)
 							
+							make show, visible on thisTask when {true}
 							change viewTitle value { assigned.title.defaultValue }
 							change home value { [assigned.stringId] }							
 						}
@@ -258,17 +279,17 @@
 				<logic>
 					<behavior>editable</behavior>
 					<action trigger="set">
+						show: f.btn_show_info,
 						viewTitle: f.view_title,
-						home: f.home_taskref;
+						home: f.home_taskref,
+						thisTask: t.4;
 						
 						def notification = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_notification").and(it.author.email.eq(useCase.author.email))} )
 						
 						if(notification != null){
-							assignTask("checker")
-							finishTask("checker")
-							
 							def assigned = assignTask("41", notification)
 							
+							make show, editable on thisTask when {true}
 							change viewTitle value { assigned.title.defaultValue }
 							change home value { [assigned.stringId] }							
 						}
@@ -304,17 +325,17 @@
 				<logic>
 					<behavior>editable</behavior>
 					<action trigger="set">
+						show: f.btn_show_info,
 						viewTitle: f.view_title,
-						home: f.home_taskref;
+						home: f.home_taskref,
+						thisTask: t.4;
 						
 						def taskController = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_task_controller").and(it.author.email.eq(useCase.author.email))} )
 						
 						if(taskController != null){
-							assignTask("checker")
-							finishTask("checker")
-							
 							def assigned = assignTask("9", taskController)
 							
+							make show, editable on thisTask when {true}
 							change viewTitle value { assigned.title.defaultValue }
 							change home value { [assigned.stringId] }							
 						}
@@ -335,17 +356,17 @@
 				<logic>
 					<behavior>editable</behavior>
 					<action trigger="set">
+						show: f.btn_show_info,
 						viewTitle: f.view_title,
-						home: f.home_taskref;
+						home: f.home_taskref,
+						thisTask: t.4;
 						
 						def notification = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_notification").and(it.author.email.eq(useCase.author.email))} )
 						
 						if(notification != null){
-							assignTask("checker")
-							finishTask("checker")
-							
 							def assigned = assignTask("19", notification)
 							
+							make show, visible on thisTask when {true}
 							change viewTitle value { assigned.title.defaultValue }
 							change home value { [assigned.stringId] }							
 						}
@@ -403,14 +424,54 @@
 				<logic>
 					<behavior>editable</behavior>
 					<action trigger="set">
+						show: f.btn_show_info,
 						viewTitle: f.view_title,
-						home: f.home_taskref;
+						home: f.home_taskref,
+						thisTask: t.4;
 						
-						assignTask("checker")
-						finishTask("checker")
-						
+						make show, visible on thisTask when {true}
 						change viewTitle value { "Žiadne" }
 						change home value { [] }
+					</action>
+				</logic>
+				<layout>
+					<x>1</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>fill</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>btn_show_info</id>
+				<logic>
+					<behavior>visible</behavior>
+					<action trigger="set">
+						home: f.home_taskref;
+						
+						
+						if( (home.value != null).and(home.value != []) ){
+							def taskInHome = findTask( {it._id.eq(home.value[0])} )
+
+							if(taskInHome != null){
+								def foundCase = findCase( {it._id.eq(taskInHome.caseId)} )
+
+								if(foundCase != null){
+									def selectedId = foundCase.getFieldValue("selected")
+
+									if(selectedId != null){
+										def showTask = findTask( {it.caseId.eq(selectedId).and(it.transitionId.eq("show"))} )
+
+										if(showTask != null){
+											assignTask(showTask)
+											change home value { [showTask.stringId] }
+										}
+									}
+								}								
+							}
+						}
 					</action>
 				</logic>
 				<layout>
@@ -428,8 +489,11 @@
 				<logic>
 					<behavior>editable</behavior>
 					<action trigger="set">
+						show: f.btn_show_info,
+						previous: f.previous_value_in_home,
 						viewTitle: f.view_title,
-						home: f.home_taskref;
+						home: f.home_taskref,
+						thisTask: t.4;
 						
 						if( (home.value != null).and(home.value != []) ){
 							def toFinish = findTask( {it._id.eq(home.value[0])} )
@@ -438,7 +502,9 @@
 							}
 						}
 						
+						make show, visible on thisTask when {true}
 						change viewTitle value { "Žiadne" }
+						change previous value { null }
 						change home value { [] }
 					</action>
 				</logic>
@@ -455,29 +521,20 @@
 		</dataGroup>
 		<event type="assign">
 			<id>4_assign</id>
-			<actions phase="pre">
-				<action>
-				</action>
-			</actions>
+			<title/>
 		</event>
 		<event type="cancel">
 			<id>4_cancel</id>
 			<actions phase="post">
 				<action>
 					home: f.home_taskref;
-					
-					if( (home.value != null).and(home.value != []) ){
-						def toCancel = findTask( {it._id.eq(home.value[0])} )
-						if(toCancel != null){
-							cancelTask(toCancel)
-						}
-					}
-					
+
 					change home value { [] }
 				</action>
 			</actions>
 		</event>
-		<event type="finish">			
+		<event type="finish">	
+			<id>4_finish</id>
 			<title/> 
 		</event>
 	</transition>
@@ -501,8 +558,6 @@
 							cancelTask(toCancel)
 						}
 					}
-					
-					change home value { [] }
 				</action>
 			</actions>
 		</event>

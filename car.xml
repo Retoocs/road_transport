@@ -511,7 +511,7 @@
 		</event>
 	</transition>
 	<transition>
-		<id>13</id>
+		<id>show</id>
 		<x>433</x>
 		<y>421</y>
 		<layout>
@@ -677,7 +677,7 @@
 				<logic>
 					<behavior>editable</behavior>
 					<action trigger="get">
-						thisTask: t.13,
+						thisTask: t.show,
 						btn: f.this,
 						id: f.visual_id,
 						creationDate: f.creation_date,
@@ -708,7 +708,7 @@
 						make countServices, hidden on thisTask when { !btn.value }
 					</action>
 					<action trigger="set">
-						thisTask: t.13,
+						thisTask: t.show,
 						btn: f.this,
 						id: f.visual_id,
 						creationDate: f.creation_date,
@@ -956,7 +956,7 @@
 			</dataRef>
 		</dataGroup>
 		<event type="assign">
-			<id>13_assign</id>
+			<id>show_assign</id>
 			<actions phase="pre">
 				<action>
 					statusHistory: f.status_history;
@@ -1826,7 +1826,7 @@
 		<id>62</id>
 		<type>read</type>
 		<sourceId>44</sourceId>
-		<destinationId>13</destinationId>
+		<destinationId>show</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 	<arc>
