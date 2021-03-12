@@ -7,6 +7,30 @@
 	<transitionRole>false</transitionRole>
 	<!-- TRANSACTIONS -->
 	<!-- ROLES -->
+	<role>
+		<id>system</id>
+		<title>System</title>
+	</role>
+	<role>
+		<id>director</id>
+		<title>Riaditeľ</title>
+	</role>
+	<role>
+		<id>dispatcher</id>
+		<title>Dispečer</title>
+	</role>
+	<role>
+		<id>mechanic</id>
+		<title>Mechanik</title>
+	</role>
+	<role>
+		<id>driver</id>
+		<title>Vodič</title>
+	</role>
+	<role>
+		<id>customer</id>
+		<title>Zákaznik</title>
+	</role>
 	<!-- DATA -->
 	<data type="taskRef">
 		<id>home_taskref</id>
@@ -138,6 +162,42 @@
 		</layout>
 		<label>Domov</label>
 		<assignPolicy>auto</assignPolicy>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>director</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>dispatcher</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>mechanic</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>driver</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
 		<dataGroup>
 			<layout>grid</layout>
 			<id>DataGroup_2</id>
@@ -521,6 +581,14 @@
 			<offset>0</offset>
 		</layout>
 		<label>check_home_taskref</label>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
 		<event type="finish">
 			<id>checker_finish</id>
 			<actions phase="pre">
@@ -545,6 +613,14 @@
 			<offset>0</offset>
 		</layout>
 		<label>instance_creator</label>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
 		<event type="finish">
 			<id>creator_finish</id>
 			<actions phase="pre">

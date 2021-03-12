@@ -7,6 +7,30 @@
 	<transitionRole>false</transitionRole>
 	<!-- TRANSACTIONS -->
 	<!-- ROLES -->
+	<role>
+		<id>system</id>
+		<title>System</title>
+	</role>
+	<role>
+		<id>director</id>
+		<title>Riaditeľ</title>
+	</role>
+	<role>
+		<id>dispatcher</id>
+		<title>Dispečer</title>
+	</role>
+	<role>
+		<id>mechanic</id>
+		<title>Mechanik</title>
+	</role>
+	<role>
+		<id>driver</id>
+		<title>Vodič</title>
+	</role>
+	<role>
+		<id>customer</id>
+		<title>Zákaznik</title>
+	</role>
 	<!-- DATA -->
 	<data type="taskRef">
 		<id>create_car_taskref</id>
@@ -55,6 +79,14 @@
 			<offset>0</offset>
 		</layout>
 		<label>Vytvorenie záznamu auta</label>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>

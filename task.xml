@@ -7,6 +7,30 @@
 	<transitionRole>false</transitionRole>
 	<!-- TRANSACTIONS -->
 	<!-- ROLES -->
+	<role>
+		<id>system</id>
+		<title>System</title>
+	</role>
+	<role>
+		<id>director</id>
+		<title>Riaditeľ</title>
+	</role>
+	<role>
+		<id>dispatcher</id>
+		<title>Dispečer</title>
+	</role>
+	<role>
+		<id>mechanic</id>
+		<title>Mechanik</title>
+	</role>
+	<role>
+		<id>driver</id>
+		<title>Vodič</title>
+	</role>
+	<role>
+		<id>customer</id>
+		<title>Zákaznik</title>
+	</role>
 	<!-- DATA -->
 	<data type="user">
 		<id>creator</id>
@@ -201,6 +225,14 @@
 			<offset>0</offset>
 		</layout>
 		<label>Vytvorenie úlohy</label>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
 		<dataGroup>
 			<layout>grid</layout>
 			<id>DataGroup_0</id>
@@ -287,12 +319,8 @@
 			<id>2_assign</id>
 			<actions phase="pre">
 				<action>
-					creator: f.creator;
-
-					def thisUser = userService.getLoggedOrSystem();					
-					/*change creator value {
-						loggedUser()
-					}*/				
+					creator: f.creator;					
+					//change creator value { loggedUser() }			
 				</action>
 			</actions>
 		</event>
@@ -347,6 +375,42 @@
 		</layout>
 		<label>Zobrazenie informácií</label>
 		<assignPolicy>auto</assignPolicy>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>director</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>dispatcher</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>mechanic</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>driver</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
 		<dataGroup>
 			<layout>grid</layout>
 			<id>DataGroup_1</id>
@@ -652,6 +716,28 @@
 			<offset>0</offset>
 		</layout>
 		<label>Upravenie informácií</label>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>director</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>dispatcher</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
 		<dataGroup>
 			<layout>grid</layout>
 			<id>DataGroup_0</id>
@@ -755,6 +841,28 @@
 		</layout>
 		<label>Vymazanie úlohy</label>
 		<assignPolicy>auto</assignPolicy>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>director</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>dispatcher</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
 		<dataGroup>
 			<layout>grid</layout>
 			<id>DataGroup_0</id>
@@ -860,6 +968,35 @@
 		</layout>
 		<label>Uzavretie úlohy</label>
 		<assignPolicy>auto</assignPolicy>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>director</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>dispatcher</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>mechanic</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
 		<dataGroup>
 			<layout>grid</layout>
 			<id>DataGroup_0</id>
@@ -969,6 +1106,35 @@
 		</layout>
 		<label>Znovuotvorenie úlohy</label>
 		<assignPolicy>auto</assignPolicy>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>director</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>dispatcher</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>mechanic</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
 		<event type="finish">
 			<id>18_finish</id>
 			<actions phase="pre">
@@ -1004,6 +1170,28 @@
 		</layout>
 		<label>Vytvorenie servisného záznamu</label>
 		<assignPolicy>auto</assignPolicy>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>director</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>mechanic</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
 		<dataGroup>
 			<layout>grid</layout>
 			<id>DataGroup_2</id>
@@ -1664,6 +1852,28 @@
 		</layout>
 		<label>Nastavenie notifikácií</label>
 		<assignPolicy>auto</assignPolicy>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>director</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>dispatcher</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
@@ -1691,6 +1901,14 @@
 			<offset>0</offset>
 		</layout>
 		<label>short_overview</label>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<layout>grid</layout>

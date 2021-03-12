@@ -7,6 +7,30 @@
 	<transitionRole>false</transitionRole>
 	<!-- TRANSACTIONS -->
 	<!-- ROLES -->
+	<role>
+		<id>system</id>
+		<title>System</title>
+	</role>
+	<role>
+		<id>director</id>
+		<title>Riaditeľ</title>
+	</role>
+	<role>
+		<id>dispatcher</id>
+		<title>Dispečer</title>
+	</role>
+	<role>
+		<id>mechanic</id>
+		<title>Mechanik</title>
+	</role>
+	<role>
+		<id>driver</id>
+		<title>Vodič</title>
+	</role>
+	<role>
+		<id>customer</id>
+		<title>Zákaznik</title>
+	</role>
 	<!-- DATA -->
 	<data type="enumeration_map">
 		<id>car_list_notify</id>
@@ -104,6 +128,14 @@
 		</layout>
 		<label>Skontrolovanie vozidiel</label>
 		<assignPolicy>auto</assignPolicy>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
 		<dataGroup>
 			<layout>grid</layout>
 			<id>DataGroup_0</id>
@@ -270,6 +302,14 @@
 			<offset>0</offset>
 		</layout>
 		<label>Zapnutie notikácií vozidiel</label>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
 	</transition>
 	<transition>
 		<id>11</id>
@@ -279,6 +319,14 @@
 			<offset>0</offset>
 		</layout>
 		<label>Vypnutie notikácií vozidiel</label>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
 	</transition>
 	<transition>
 		<id>12</id>
@@ -288,6 +336,14 @@
 			<offset>0</offset>
 		</layout>
 		<label>Zapnutie notikácií serv. záznamov</label>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
 	</transition>
 	<transition>
 		<id>13</id>
@@ -298,6 +354,14 @@
 		</layout>
 		<label>Skontrolovanie serv. záznamov</label>
 		<assignPolicy>auto</assignPolicy>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
 		<dataGroup>
 			<layout>grid</layout>
 			<id>DataGroup_0</id>
@@ -407,6 +471,14 @@
 			<offset>0</offset>
 		</layout>
 		<label>Vypnutie notikácií serv. záznamov</label>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
 	</transition>
 	<transition>
 		<id>15</id>
@@ -416,6 +488,14 @@
 			<offset>0</offset>
 		</layout>
 		<label>Zapnutie notikácií úloh</label>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
 	</transition>
 	<transition>
 		<id>16</id>
@@ -426,6 +506,14 @@
 		</layout>
 		<label>Skontrolovanie úloh</label>
 		<assignPolicy>auto</assignPolicy>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
 		<dataGroup>
 			<layout>grid</layout>
 			<id>DataGroup_0</id>
@@ -526,6 +614,14 @@
 			<offset>0</offset>
 		</layout>
 		<label>Vypnutie notikácií úloh</label>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
 	</transition>
 	<transition>
 		<id>19</id>
@@ -536,6 +632,14 @@
 		</layout>
 		<label>Nastavenie notifikácií</label>
 		<assignPolicy>auto</assignPolicy>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
 		<dataGroup>
 			<layout>grid</layout>
 			<id>DataGroup_0</id>
@@ -655,6 +759,14 @@
 		</layout>
 		<label>Pracovná plocha</label>
 		<assignPolicy>auto</assignPolicy>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
 		<dataGroup>
 			<id>DataGroup_0</id>
 			<dataRef>
