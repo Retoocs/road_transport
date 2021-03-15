@@ -205,6 +205,39 @@
 				<id>btn_create_car</id>
 				<logic>
 					<behavior>editable</behavior>
+					<action trigger="get">
+						btnCreateCar: f.this,
+						thisTask: t.4;
+
+						def allowed = ["system", "director", "dispatcher", "mechanic"]
+						def userProcessRoles = loggedUser().userProcessRoles
+
+						if(userProcessRoles != null){
+							userProcessRoles.each{ userProcessRole ->
+								def tmpNetId = userProcessRole.netId
+								
+								if(tmpNetId != null){
+									def petriNet = petriNetService.getPetriNet(tmpNetId)
+									
+									if(petriNet != null){
+										def toCompareProcessIdentifier = petriNet.importId
+
+										if(toCompareProcessIdentifier == useCase.processIdentifier){
+											def roleId = userProcessRole.roleId
+											def importId = petriNet.roles[roleId].importId
+											
+											if(allowed.contains(importId)){
+												make btnCreateCar, editable on thisTask when {true}
+											}
+											else{
+												make btnCreateCar, visible on thisTask when {true}
+											}
+										}
+									}
+								}								
+							}
+						}
+					</action>
 					<action trigger="set">
 						show: f.btn_show_info,
 						viewTitle: f.view_title,
@@ -236,6 +269,39 @@
 				<id>btn_create_service</id>
 				<logic>
 					<behavior>editable</behavior>
+					<action trigger="get">
+						btnCreateService: f.this,
+						thisTask: t.4;
+
+						def allowed = ["system", "director", "mechanic"]
+						def userProcessRoles = loggedUser().userProcessRoles
+
+						if(userProcessRoles != null){
+							userProcessRoles.each{ userProcessRole ->
+								def tmpNetId = userProcessRole.netId
+								
+								if(tmpNetId != null){
+									def petriNet = petriNetService.getPetriNet(tmpNetId)
+									
+									if(petriNet != null){
+										def toCompareProcessIdentifier = petriNet.importId
+
+										if(toCompareProcessIdentifier == useCase.processIdentifier){
+											def roleId = userProcessRole.roleId
+											def importId = petriNet.roles[roleId].importId
+											
+											if(allowed.contains(importId)){
+												make btnCreateService, editable on thisTask when {true}
+											}
+											else{
+												make btnCreateService, visible on thisTask when {true}
+											}
+										}
+									}
+								}								
+							}
+						}
+					</action>
 					<action trigger="set">
 						show: f.btn_show_info,
 						viewTitle: f.view_title,
@@ -267,6 +333,39 @@
 				<id>btn_create_task</id>
 				<logic>
 					<behavior>editable</behavior>
+					<action trigger="get">
+						btnCreateTask: f.this,
+						thisTask: t.4;
+
+						def allowed = ["system", "director", "dispatcher"]
+						def userProcessRoles = loggedUser().userProcessRoles
+
+						if(userProcessRoles != null){
+							userProcessRoles.each{ userProcessRole ->
+								def tmpNetId = userProcessRole.netId
+								
+								if(tmpNetId != null){
+									def petriNet = petriNetService.getPetriNet(tmpNetId)
+									
+									if(petriNet != null){
+										def toCompareProcessIdentifier = petriNet.importId
+
+										if(toCompareProcessIdentifier == useCase.processIdentifier){
+											def roleId = userProcessRole.roleId
+											def importId = petriNet.roles[roleId].importId
+											
+											if(allowed.contains(importId)){
+												make btnCreateTask, editable on thisTask when {true}
+											}
+											else{
+												make btnCreateTask, visible on thisTask when {true}
+											}
+										}
+									}
+								}								
+							}
+						}
+					</action>
 					<action trigger="set">
 						show: f.btn_show_info,
 						viewTitle: f.view_title,
@@ -298,6 +397,39 @@
 				<id>btn_notification</id>
 				<logic>
 					<behavior>editable</behavior>
+					<action trigger="get">
+						btnNotification: f.this,
+						thisTask: t.4;
+
+						def allowed = ["system", "director", "dispatcher", "mechanic", "driver"]
+						def userProcessRoles = loggedUser().userProcessRoles
+
+						if(userProcessRoles != null){
+							userProcessRoles.each{ userProcessRole ->
+								def tmpNetId = userProcessRole.netId
+								
+								if(tmpNetId != null){
+									def petriNet = petriNetService.getPetriNet(tmpNetId)
+									
+									if(petriNet != null){
+										def toCompareProcessIdentifier = petriNet.importId
+
+										if(toCompareProcessIdentifier == useCase.processIdentifier){
+											def roleId = userProcessRole.roleId
+											def importId = petriNet.roles[roleId].importId
+											
+											if(allowed.contains(importId)){
+												make btnNotification, editable on thisTask when {true}
+											}
+											else{
+												make btnNotification, visible on thisTask when {true}
+											}
+										}
+									}
+								}								
+							}
+						}
+					</action>
 					<action trigger="set">
 						show: f.btn_show_info,
 						viewTitle: f.view_title,
@@ -344,6 +476,39 @@
 				<id>btn_task_overview</id>
 				<logic>
 					<behavior>editable</behavior>
+					<action trigger="get">
+						btnTaskOverview: f.this,
+						thisTask: t.4;
+
+						def allowed = ["system", "director", "dispatcher", "mechanic", "driver"]
+						def userProcessRoles = loggedUser().userProcessRoles
+
+						if(userProcessRoles != null){
+							userProcessRoles.each{ userProcessRole ->
+								def tmpNetId = userProcessRole.netId
+								
+								if(tmpNetId != null){
+									def petriNet = petriNetService.getPetriNet(tmpNetId)
+									
+									if(petriNet != null){
+										def toCompareProcessIdentifier = petriNet.importId
+
+										if(toCompareProcessIdentifier == useCase.processIdentifier){
+											def roleId = userProcessRole.roleId
+											def importId = petriNet.roles[roleId].importId
+											
+											if(allowed.contains(importId)){
+												make btnTaskOverview, editable on thisTask when {true}
+											}
+											else{
+												make btnTaskOverview, visible on thisTask when {true}
+											}
+										}
+									}
+								}								
+							}
+						}
+					</action>
 					<action trigger="set">
 						show: f.btn_show_info,
 						viewTitle: f.view_title,
@@ -375,6 +540,39 @@
 				<id>btn_notification_settings</id>
 				<logic>
 					<behavior>editable</behavior>
+					<action trigger="get">
+						btnNotificationSettings: f.this,
+						thisTask: t.4;
+
+						def allowed = ["system", "director", "dispatcher", "mechanic", "driver"]
+						def userProcessRoles = loggedUser().userProcessRoles
+
+						if(userProcessRoles != null){
+							userProcessRoles.each{ userProcessRole ->
+								def tmpNetId = userProcessRole.netId
+								
+								if(tmpNetId != null){
+									def petriNet = petriNetService.getPetriNet(tmpNetId)
+									
+									if(petriNet != null){
+										def toCompareProcessIdentifier = petriNet.importId
+
+										if(toCompareProcessIdentifier == useCase.processIdentifier){
+											def roleId = userProcessRole.roleId
+											def importId = petriNet.roles[roleId].importId
+											
+											if(allowed.contains(importId)){
+												make btnNotificationSettings, editable on thisTask when {true}
+											}
+											else{
+												make btnNotificationSettings, visible on thisTask when {true}
+											}
+										}
+									}
+								}								
+							}
+						}
+					</action>
 					<action trigger="set">
 						show: f.btn_show_info,
 						viewTitle: f.view_title,
@@ -409,6 +607,21 @@
 				<id>home_taskref</id>
 				<logic>
 					<behavior>editable</behavior>
+					<action trigger="set">
+						thisTask: t.4,
+						btnFinish: f.btn_finish,
+						btnCancel: f.btn_cancel,
+						home: f.this;
+						
+						if( (home.value != null).and(home.value != []) ){
+							make btnFinish, editable on thisTask when { true }
+							make btnCancel, editable on thisTask when { true }
+						}
+						else{
+							make btnFinish, visible on thisTask when { true }
+							make btnCancel, visible on thisTask when { true }
+						}
+					</action>
 				</logic>
 				<layout>
 					<x>0</x>
@@ -556,6 +769,16 @@
 		</dataGroup>
 		<event type="assign">
 			<id>4_assign</id>
+			<actions phase="post">
+				<action>
+					thisTask: t.4,
+					btnFinish: f.btn_finish,
+					btnCancel: f.btn_cancel;
+					
+					make btnFinish, visible on thisTask when { true }
+					make btnCancel, visible on thisTask when { true }
+				</action>
+			</actions>
 			<title/>
 		</event>
 		<event type="cancel">
