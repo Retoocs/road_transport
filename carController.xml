@@ -27,10 +27,6 @@
 		<id>driver</id>
 		<title>Vodič</title>
 	</role>
-	<role>
-		<id>customer</id>
-		<title>Zákaznik</title>
-	</role>
 	<!-- DATA -->
 	<data type="taskRef">
 		<id>create_car_taskref</id>

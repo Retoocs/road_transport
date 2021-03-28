@@ -27,10 +27,6 @@
 		<id>driver</id>
 		<title>Vodič</title>
 	</role>
-	<role>
-		<id>customer</id>
-		<title>Zákaznik</title>
-	</role>
 	<!-- DATA -->
 	<data type="text">
 		<id>brand</id>
@@ -123,7 +119,7 @@
 			}
 		</action>
 	</data>
-	<data type="user">
+	<data type="text">
 		<id>car_owner</id>
 		<title>Majiteľ</title>
 	</data>
@@ -1974,13 +1970,6 @@
 		<multiplicity>1</multiplicity>
 	</arc>
 	<arc>
-		<id>24</id>
-		<type>read</type>
-		<sourceId>22</sourceId>
-		<destinationId>18</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
 		<id>25</id>
 		<type>regular</type>
 		<sourceId>7</sourceId>
@@ -2069,6 +2058,20 @@
 		<type>read</type>
 		<sourceId>22</sourceId>
 		<destinationId>63</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>65</id>
+		<type>regular</type>
+		<sourceId>22</sourceId>
+		<destinationId>18</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>66</id>
+		<type>regular</type>
+		<sourceId>18</sourceId>
+		<destinationId>22</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 </document>

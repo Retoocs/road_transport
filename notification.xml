@@ -27,10 +27,6 @@
 		<id>driver</id>
 		<title>Vodič</title>
 	</role>
-	<role>
-		<id>customer</id>
-		<title>Zákaznik</title>
-	</role>
 	<!-- DATA -->
 	<data type="enumeration_map">
 		<id>car_list_notify</id>
@@ -757,7 +753,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>Pracovná plocha</label>
+		<label>Kontrolný panel</label>
 		<assignPolicy>auto</assignPolicy>
 		<roleRef>
 			<id>system</id>

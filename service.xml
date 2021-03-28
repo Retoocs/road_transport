@@ -27,10 +27,6 @@
 		<id>driver</id>
 		<title>Vodič</title>
 	</role>
-	<role>
-		<id>customer</id>
-		<title>Zákaznik</title>
-	</role>
 	<!-- DATA -->
 	<data type="text">
 		<id>car_vin</id>
@@ -644,14 +640,6 @@
 			<logic>
 				<perform>true</perform>
 				<view>true</view>
-			</logic>
-		</roleRef>
-		<roleRef>
-			<id>customer</id>
-			<logic>
-				<perform>true</perform>
-				<view>true</view>
-				
 			</logic>
 		</roleRef>
 		<dataGroup>
@@ -2088,13 +2076,6 @@ change status value{
 		<multiplicity>1</multiplicity>
 	</arc>
 	<arc>
-		<id>41</id>
-		<type>read</type>
-		<sourceId>3</sourceId>
-		<destinationId>11</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
 		<id>43</id>
 		<type>regular</type>
 		<sourceId>3</sourceId>
@@ -2141,6 +2122,20 @@ change status value{
 		<type>read</type>
 		<sourceId>3</sourceId>
 		<destinationId>73</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>75</id>
+		<type>regular</type>
+		<sourceId>11</sourceId>
+		<destinationId>3</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>76</id>
+		<type>regular</type>
+		<sourceId>3</sourceId>
+		<destinationId>11</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 </document>

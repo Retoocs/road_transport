@@ -27,10 +27,6 @@
 		<id>driver</id>
 		<title>Vodič</title>
 	</role>
-	<role>
-		<id>customer</id>
-		<title>Zákaznik</title>
-	</role>
 	<!-- DATA -->
 	<data type="user">
 		<id>creator</id>
@@ -206,6 +202,10 @@
 	<data type="text">
 		<id>visual_id</id>
 		<title>ID</title>
+	</data>
+	<data type="text">
+		<id>service_visualId</id>
+		<title>Číslo servisného záznamu</title>
 	</data>
 	<data type="enumeration" immediate="true">
 		<id>priority</id> 
@@ -504,7 +504,8 @@
 						changeDate: f.change_date,
 						closureState: f.closure_state,
 						closeDate: f.close_date,
-						closedBy: f.closed_by;
+						closedBy: f.closed_by,
+						serviceId: f.service_visualId;
 
 						make id, hidden on thisTask when { !btn.value }	
 						make creationDate, hidden on thisTask when { !btn.value }
@@ -515,6 +516,7 @@
 						make closureState, hidden on thisTask when { !btn.value }
 						make closeDate, hidden on thisTask when { !btn.value }
 						make closedBy, hidden on thisTask when { !btn.value }
+						make serviceId, hidden on thisTask when { !btn.value }
 					</action>
 					<action trigger="set">
 						thisTask: t.show,
@@ -527,7 +529,8 @@
 						changeDate: f.change_date,
 						closureState: f.closure_state,
 						closeDate: f.close_date,
-						closedBy: f.closed_by;
+						closedBy: f.closed_by,
+						serviceId: f.service_visualId;
 						
 						make id, visible on thisTask when { btn.value }
 						make id, hidden on thisTask when { !btn.value }	
@@ -555,6 +558,9 @@
 						
 						make closedBy, visible on thisTask when { (btn.value).and(closedBy.value != null) }
 						make closedBy, hidden on thisTask when { !btn.value }
+						
+						make serviceId, visible on thisTask when { (btn.value).and(serviceId.value != null) }
+						make serviceId, hidden on thisTask when { !btn.value }
 					</action>
 				</logic>
 				<layout>
@@ -698,6 +704,21 @@
 				</logic>
 				<layout>
 					<x>2</x>
+					<y>2</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<offset>0</offset>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>service_visualId</id>
+				<logic>
+					<behavior>hidden</behavior>
+				</logic>
+				<layout>
+					<x>3</x>
 					<y>2</y>
 					<rows>1</rows>
 					<cols>1</cols>
@@ -1142,12 +1163,14 @@
 					closureState: f.closure_state,	
 					closeDate: f.close_date,
 					closureDesc: f.desc,
-					closedBy: f.closed_by;					
+					closedBy: f.closed_by,
+					serviceId: f.service_visualId;
 					
 					change closureState value {	null }	
 					change closeDate value { null }
 					change closureDesc value { null }		
-					change closedBy value {	null }				
+					change closedBy value {	null }	
+					change serviceId value { null }
 				</action>
 			</actions>
 			<actions phase="post">
@@ -1807,13 +1830,20 @@
 					closureState: f.closure_state,
 					taskRef: f.service_creation,
 					carList: f.car_list,
-					lastId: f.last_car_select;
+					lastId: f.last_car_select,
+					serviceId: f.service_visualId;
 					
 					if((taskRef.value != null).and(taskRef.value != [])){
 						def toFinish = findTask( {it._id.eq(taskRef.value[0])} );	
 						
 						if(toFinish != null){
-							finishTask(toFinish);
+							finishTask(toFinish)
+							
+							def service = findCase( {it._id.eq(toFinish.caseId)} )
+							if(service != null){
+								def visualId = service.visualId.split("-")[1]
+								change serviceId value{ visualId }
+							}
 							
 							change lastId value {
 								null
@@ -1836,7 +1866,7 @@
 							
 							change status value{
 								"Uzavretá"
-							}
+							}							
 						}
 					}						
 				</action>
@@ -2066,13 +2096,6 @@
 		<multiplicity>1</multiplicity>
 	</arc>
 	<arc>
-		<id>23</id>
-		<type>read</type>
-		<sourceId>4</sourceId>
-		<destinationId>9</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
 		<id>25</id>
 		<type>regular</type>
 		<sourceId>4</sourceId>
@@ -2127,6 +2150,20 @@
 		<type>read</type>
 		<sourceId>3</sourceId>
 		<destinationId>75</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>77</id>
+		<type>regular</type>
+		<sourceId>9</sourceId>
+		<destinationId>4</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>78</id>
+		<type>regular</type>
+		<sourceId>4</sourceId>
+		<destinationId>9</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 </document>
