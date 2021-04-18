@@ -865,7 +865,7 @@
 		<id>7</id>
 		<x>971</x>
 		<y>137</y>
-		<label>Notifikácie servisných záznamov zakázane</label>
+		<label>Notifikácie servisných záznamov zakázané</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>

@@ -944,7 +944,7 @@
 		</event>
 		<event type="finish">
 			<id>10_finish</id>
-			<actions phase="post">
+			<actions phase="post">.
 				<action>		
 					serviceTaskRef: f.service_creation,
 					deleteService: f.delete_service;
@@ -1423,8 +1423,7 @@
 									}								
 								}						
 							}
-						}	
-						
+						}							
 						
 						//update carList
 						if(carListNoFilter.options != [:]){
@@ -1831,19 +1830,28 @@
 					taskRef: f.service_creation,
 					carList: f.car_list,
 					lastId: f.last_car_select,
-					serviceId: f.service_visualId;
+					serviceVisualId: f.service_visualId;
 					
 					if((taskRef.value != null).and(taskRef.value != [])){
 						def toFinish = findTask( {it._id.eq(taskRef.value[0])} );	
 						
 						if(toFinish != null){
+							def car = findCase( {it._id.eq(toFinish.caseId)} )
+							if(car != null){
+								serviceId = car.getFieldValue("servis_creation")[0]
+								if(serviceId != null){
+									def serviceTask = findTask( {it._id.eq(serviceId)} )
+									if(serviceTask != null){
+										def service = findCase( {it._id.eq(serviceTask.caseId)} )
+										if(service != null){
+											def visualId = service.visualId.split("-")[1]
+											change serviceVisualId value{ visualId }
+										}
+									}
+								}
+							}				
+
 							finishTask(toFinish)
-							
-							def service = findCase( {it._id.eq(toFinish.caseId)} )
-							if(service != null){
-								def visualId = service.visualId.split("-")[1]
-								change serviceId value{ visualId }
-							}
 							
 							change lastId value {
 								null
@@ -1994,7 +2002,7 @@
 		<id>1</id>
 		<x>380</x>
 		<y>300</y>
-		<label>init</label>
+		<label>uninitialized</label>
 		<tokens>1</tokens>
 		<static>false</static>
 	</place>
@@ -2018,7 +2026,7 @@
 		<id>11</id>
 		<x>740</x>
 		<y>100</y>
-		<label></label>
+		<label>Vymazaná</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>

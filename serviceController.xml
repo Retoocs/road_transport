@@ -90,7 +90,7 @@
 		<layout>
 			<offset>0</offset>
 		</layout>
-		<label>init</label>
+		<label>initialize</label>
 		<trigger type="auto"/>
 		<event type="assign">
 			<id>1_assign</id>

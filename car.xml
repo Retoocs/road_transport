@@ -32,46 +32,16 @@
 		<id>brand</id>
 		<title>Značka</title>
 		<action trigger="set">
-			plateNumber: f.plate_number,
-			name: f.car_name,
-			brand: f.this,
-			model: f.model;
-			
-			def resultStr;
-			
-			if(name.value == null){
-				resultStr = plateNumber.value + " - " + brand.value + " " + model.value
-			}
-			else{
-				resultStr = plateNumber.value + " - " + name.value + " - " + brand.value + " " + model.value
-			}
-			
-			changeCaseProperty "title" about {
-				resultStr
-			}
+			assignTask("update_case_title")
+			finishTask("update_case_title")			
 		</action>
 	</data>
 	<data type="text">
 		<id>model</id>
 		<title>Model</title>
 		<action trigger="set">
-			plateNumber: f.plate_number,
-			name: f.car_name,
-			brand: f.brand,
-			model: f.this;
-			
-			def resultStr;
-			
-			if(name.value == null){
-				resultStr = plateNumber.value + " - " + brand.value + " " + model.value
-			}
-			else{
-				resultStr = plateNumber.value + " - " + name.value + " - " + brand.value + " " + model.value
-			}
-			
-			changeCaseProperty "title" about {
-				resultStr
-			}
+			assignTask("update_case_title")
+			finishTask("update_case_title")
 		</action>
 	</data>
 	<data type="text">
@@ -88,11 +58,7 @@
 		<title>EČV</title>
 		<action trigger="set">
 			history: f.history_plate_number,
-			plateNumber: f.this,
-			name: f.car_name,
-			brand: f.brand,
-			model: f.model;
-			
+			plateNumber: f.this;			
 			
 			if((plateNumber.value != null).and(plateNumber.value.isEmpty() == false) ){
 			
@@ -104,19 +70,9 @@
 					history.choices + [formatedDateTime + " -- " + plateNumber.value]
 				}
 			}
-		
-			def resultStr;
 			
-			if(name.value == null){
-				resultStr = plateNumber.value + " - " + brand.value + " " + model.value
-			}
-			else{
-				resultStr = plateNumber.value + " - " + name.value + " - " + brand.value + " " + model.value
-			}
-			
-			changeCaseProperty "title" about {
-				resultStr
-			}
+			assignTask("update_case_title")
+			finishTask("update_case_title")
 		</action>
 	</data>
 	<data type="text">
@@ -131,23 +87,8 @@
 		<id>car_name</id>
 		<title>Názov auta</title>
 		<action trigger="set">
-			plateNumber: f.plate_number,
-			name: f.this,
-			brand: f.brand,
-			model: f.model;
-			
-			def resultStr;
-			
-			if(name.value == null || name.value.isEmpty()){
-				resultStr = plateNumber.value + " - " + brand.value + " " + model.value
-			}
-			else{
-				resultStr = plateNumber.value + " - " + name.value + " - " + brand.value + " " + model.value
-			}
-			
-			changeCaseProperty "title" about {
-				resultStr
-			}
+			assignTask("update_case_title")
+			finishTask("update_case_title")
 		</action>
 	</data>
 	<data type="number">
@@ -497,23 +438,8 @@
 			<id>7_finish</id>
 			<actions phase="pre">
 				<action>
-					plateNumber: f.plate_number,
-					name: f.car_name,
-					brand: f.brand,
-					model: f.model;
-					
-					def resultStr;
-					
-					if(name.value == null){
-						resultStr = plateNumber.value + " - " + brand.value + " " + model.value
-					}
-					else{
-						resultStr = plateNumber.value + " - " + name.value + " - " + brand.value + " " + model.value
-					}
-					
-					changeCaseProperty "title" about {
-						resultStr
-					}
+					assignTask("update_case_title")
+					finishTask("update_case_title")
 				</action>
 			</actions>
 			<actions phase="post">
@@ -1912,12 +1838,53 @@
 			</dataRef>
 		</dataGroup>
 	</transition>
+	<transition>
+		<id>update_case_title</id>
+		<x>0</x>
+		<y>0</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>update_case_title</label>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<event type="assign">
+			<id>update_case_title_assign</id>
+			<actions phase="post">
+				<action>
+					plateNumber: f.plate_number,
+					name: f.car_name,
+					brand: f.brand,
+					model: f.model;
+					
+					def resultStr;
+					
+					if(name.value == null || name.value.isEmpty()){
+						resultStr = plateNumber.value + " - " + brand.value + " " + model.value
+					}
+					else{
+						resultStr = plateNumber.value + " - " + name.value + " - " + brand.value + " " + model.value
+					}
+					
+					changeCaseProperty "title" about {
+						resultStr
+					}			
+				</action>
+			</actions>
+		</event>
+	</transition>
 	<!-- PLACES -->
 	<place>
 		<id>3</id>
 		<x>348</x>
 		<y>543</y>
-		<label>start</label>
+		<label>uninitialized</label>
 		<tokens>1</tokens>
 		<static>false</static>
 	</place>
@@ -1933,7 +1900,7 @@
 		<id>27</id>
 		<x>1291</x>
 		<y>626</y>
-		<label>Servisné úkony</label>
+		<label>Servisné záznamy</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
@@ -2016,13 +1983,6 @@
 		<type>regular</type>
 		<sourceId>35</sourceId>
 		<destinationId>22</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>40</id>
-		<type>reset</type>
-		<sourceId>27</sourceId>
-		<destinationId>33</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 	<arc>

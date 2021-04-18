@@ -1931,7 +1931,7 @@ change status value{
 		<id>1</id>
 		<x>300</x>
 		<y>340</y>
-		<label>init</label>
+		<label>uninitialized</label>
 		<tokens>1</tokens>
 		<static>false</static>
 	</place>
@@ -1939,7 +1939,7 @@ change status value{
 		<id>2</id>
 		<x>620</x>
 		<y>340</y>
-		<label>v ocakavani</label>
+		<label>v očakávaní</label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
