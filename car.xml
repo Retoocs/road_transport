@@ -5,6 +5,30 @@
 	<title>Auto</title>
 	<defaultRole>true</defaultRole>
 	<transitionRole>false</transitionRole>
+	<caseEvents>
+        <event type="delete">
+            <id>pdf</id>
+            <actions phase="pre">
+                <action>
+                    taskref: f.servis_creation;
+					
+					if(taskref.value != null){ //mb this if is redundant
+						if(taskref.value != []){
+							def tmpTask = findTask({it._id.eq(new org.bson.types.ObjectId(taskref.value[0] as String))});
+							if(tmpTask != null){
+								def toRemoveService = findCase( { it._id.eq(tmpTask.caseId) } );
+								if(toRemoveService != null){
+									async.run{
+										workflowService.deleteCase(toRemoveService._id.toString());
+									}
+								}							
+							}
+						}												
+					}
+                </action>
+            </actions>
+        </event>
+    </caseEvents>
 	<!-- TRANSACTIONS -->
 	<!-- ROLES -->
 	<role>
@@ -26,7 +50,32 @@
 	<role>
 		<id>driver</id>
 		<title>Vodič</title>
-	</role>
+	</role>	
+	<roleRef>
+        <id>system</id>
+        <caseLogic>
+			<create>true</create>
+            <delete>true</delete>
+        </caseLogic>
+    </roleRef>
+	<roleRef>
+        <id>director</id>
+        <caseLogic>
+            <delete>true</delete>
+        </caseLogic>
+    </roleRef>
+	<roleRef>
+        <id>dispatcher</id>
+        <caseLogic>
+            <delete>true</delete>
+        </caseLogic>
+    </roleRef>
+	<roleRef>
+        <id>mechanic</id>
+        <caseLogic>
+            <delete>true</delete>
+        </caseLogic>
+    </roleRef>
 	<!-- DATA -->
 	<data type="text">
 		<id>brand</id>
@@ -99,6 +148,7 @@
 			
 			change mileageDateChange value{ java.time.LocalDate.now() }			
 		</action>
+		<init>0</init>
 	</data>
 	<data type="date">
 		<id>creation_date</id>
@@ -448,7 +498,7 @@
 					creationDate: f.creation_date,
 					id: f.visual_id,
 					mileageDateChange: f.mileage_date_change;
-			
+					
 					change mileageDateChange value{ null }	
 					
 					change creationDate value{ java.time.LocalDate.now() }	

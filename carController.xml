@@ -27,6 +27,13 @@
 		<id>driver</id>
 		<title>Vodič</title>
 	</role>
+	<roleRef>
+        <id>system</id>
+        <caseLogic>
+			<create>true</create>
+            <delete>true</delete>
+        </caseLogic>
+    </roleRef>
 	<!-- DATA -->
 	<data type="taskRef">
 		<id>create_car_taskref</id>
@@ -89,6 +96,7 @@
 				<id>create_car_taskref</id>
 				<logic>
 					<behavior>editable</behavior>
+					<behavior>required</behavior>
 				</logic>
 				<layout>
 					<x>0</x>

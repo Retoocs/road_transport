@@ -27,6 +27,13 @@
 		<id>driver</id>
 		<title>Vodič</title>
 	</role>
+	<roleRef>
+        <id>system</id>
+        <caseLogic>
+			<create>true</create>
+            <delete>true</delete>
+        </caseLogic>
+    </roleRef>
 	<!-- DATA -->
 	<data type="enumeration_map">
 		<id>car_list_notify</id>

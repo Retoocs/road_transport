@@ -5,6 +5,24 @@
 	<title>Uloha</title>
 	<defaultRole>true</defaultRole>
 	<transitionRole>false</transitionRole>
+	<caseEvents>
+        <event type="delete">
+            <id>pdf</id>
+            <actions phase="pre">
+                <action>
+                    serviceTaskRef: f.service_creation;
+					
+					if( (serviceTaskRef.value != []).and(serviceTaskRef.value != null) ){
+						def toCancel = findTask({it._id.eq(serviceTaskRef.value[0])});		
+							
+						if(toCancel != null){
+							cancelTask(toCancel);
+						}				
+					}
+                </action>
+            </actions>
+        </event>
+    </caseEvents>
 	<!-- TRANSACTIONS -->
 	<!-- ROLES -->
 	<role>
@@ -27,6 +45,25 @@
 		<id>driver</id>
 		<title>Vodič</title>
 	</role>
+	<roleRef>
+        <id>system</id>
+        <caseLogic>
+			<create>true</create>
+            <delete>true</delete>
+        </caseLogic>
+    </roleRef>
+	<roleRef>
+        <id>director</id>
+        <caseLogic>
+            <delete>true</delete>
+        </caseLogic>
+    </roleRef>
+	<roleRef>
+        <id>dispatcher</id>
+        <caseLogic>
+            <delete>true</delete>
+        </caseLogic>
+    </roleRef>
 	<!-- DATA -->
 	<data type="user">
 		<id>creator</id>

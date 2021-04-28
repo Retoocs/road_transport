@@ -27,6 +27,13 @@
 		<id>driver</id>
 		<title>Vodič</title>
 	</role>
+	<roleRef>
+        <id>system</id>
+        <caseLogic>
+			<create>true</create>
+            <delete>true</delete>
+        </caseLogic>
+    </roleRef>
 	<!-- DATA -->
 	<data type="taskRef">
 		<id>create_task_taskref</id>
@@ -60,7 +67,7 @@
 	</data>	
 	<data type="number">
 		<id>week_offset</id>
-		<title>Číslo týždňa</title>
+		<title>Odchýlka týždňa</title>
 		<init>0</init>
 	</data>
 	<data type="text">

@@ -5,6 +5,17 @@
 	<title>Domov</title>
 	<defaultRole>true</defaultRole>
 	<transitionRole>false</transitionRole>
+	<caseEvents>
+        <event type="delete">
+            <id>pdf</id>
+            <actions phase="pre">
+                <action>
+                    assignTask("checker")
+					finishTask("checker")
+                </action>
+            </actions>
+        </event>
+    </caseEvents>
 	<!-- TRANSACTIONS -->
 	<!-- ROLES -->
 	<role>
@@ -27,6 +38,37 @@
 		<id>driver</id>
 		<title>Vodič</title>
 	</role>
+	<roleRef>
+        <id>system</id>
+        <caseLogic>
+			<create>true</create>
+            <delete>true</delete>
+        </caseLogic>
+    </roleRef>
+	<roleRef>
+        <id>director</id>
+        <caseLogic>
+			<create>true</create>
+        </caseLogic>
+    </roleRef>
+	<roleRef>
+        <id>dispatcher</id>
+        <caseLogic>
+            <create>true</create>
+        </caseLogic>
+    </roleRef>
+	<roleRef>
+        <id>mechanic</id>
+        <caseLogic>
+            <create>true</create>
+        </caseLogic>
+    </roleRef>
+	<roleRef>
+        <id>driver</id>
+        <caseLogic>
+            <create>true</create>
+        </caseLogic>
+    </roleRef>
 	<!-- DATA -->
 	<data type="taskRef">
 		<id>home_taskref</id>
@@ -172,8 +214,13 @@
 			<id>allowed_dashboard_userlist</id>
 			<logic>
 				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
 			</logic>
 		</usersRef>
+		<assignedUser>
+            <reassign>false</reassign>
+		</assignedUser>
 		<dataGroup>
 			<layout>grid</layout>
 			<id>DataGroup_2</id>
@@ -385,6 +432,7 @@
 				<id>home_taskref</id>
 				<logic>
 					<behavior>editable</behavior>
+					<behavior>required</behavior>
 					<action trigger="set">
 						thisTask: t.4,
 						btnFinish: f.btn_finish,
