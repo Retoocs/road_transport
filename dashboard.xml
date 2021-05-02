@@ -74,23 +74,16 @@
 		<id>home_taskref</id>
 		<title>Pracovná plocha</title>
 		<action trigger="set">
-			previous: f.previous_value_in_home,
-			home: f.this;
+			home: f.home_taskref,
+			pressed: f.pressed_btn;
 			
-			if(previous.value != null){
-				if(findTask( {it._id.eq(previous.value)} ))
-				assignTask("checker")
-				finishTask("checker")
-			}
+			assignTask("checker")
+			finishTask("checker")
 			
-			change previous value{
-				home.value[0]
+			if(home.value == null || home.value == []){
+				change pressed value{ null }
 			}
 		</action>
-	</data>
-	<data type="text">
-		<id>previous_value_in_home</id>
-		<title>Previous value in home taskref</title>
 	</data>
 	<data type="button">
 		<id>btn_reset</id>
@@ -150,6 +143,10 @@
 	<data type="userList">
 		<id>allowed_dashboard_userlist</id>
 		<title>Allowed users to dashboard</title>
+	</data>
+	<data type="text">
+		<id>pressed_btn</id>
+		<title>pressed_btn</title>
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
@@ -232,16 +229,18 @@
 						show: f.btn_show_info,
 						viewTitle: f.view_title,
 						home: f.home_taskref,
+						pressed: f.pressed_btn,
 						thisTask: t.4;
 						
 						def carController = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_car_controller").and(it.author.email.eq(useCase.author.email))} )
 						
-						if(carController != null){						
+						if( (carController != null).and(pressed.value == null || pressed.value != "btn_create_car") ){
 							def assigned = assignTask("4", carController)							
 							
 							make show, visible on thisTask when {true}
 							change viewTitle value { assigned.title.defaultValue }
 							change home value { [assigned.stringId] }	
+							change pressed value { "btn_create_car" }
 						}
 					</action>
 				</logic>
@@ -263,16 +262,18 @@
 						show: f.btn_show_info,
 						viewTitle: f.view_title,
 						home: f.home_taskref,
+						pressed: f.pressed_btn,
 						thisTask: t.4;
 						
 						def serviceController = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_service_controller").and(it.author.email.eq(useCase.author.email))} )
 						
-						if(serviceController != null){							
+						if( (serviceController != null).and(pressed.value == null || pressed.value != "btn_create_service") ){							
 							def assigned = assignTask("2", serviceController)
 							
 							make show, visible on thisTask when {true}
 							change viewTitle value { assigned.title.defaultValue }
 							change home value { [assigned.stringId] }
+							change pressed value { "btn_create_service" }
 						}
 					</action>
 				</logic>
@@ -294,16 +295,18 @@
 						show: f.btn_show_info,
 						viewTitle: f.view_title,
 						home: f.home_taskref,
+						pressed: f.pressed_btn,
 						thisTask: t.4;
 						
 						def taskController = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_task_controller").and(it.author.email.eq(useCase.author.email))} )
 						
-						if(taskController != null){
+						if( (taskController != null).and(pressed.value == null || pressed.value != "btn_create_task") ){
 							def assigned = assignTask("4", taskController)
 							
 							make show, visible on thisTask when {true}
 							change viewTitle value { assigned.title.defaultValue }
-							change home value { [assigned.stringId] }							
+							change home value { [assigned.stringId] }	
+							change pressed value { "btn_create_task" }
 						}
 					</action>
 				</logic>
@@ -325,16 +328,18 @@
 						show: f.btn_show_info,
 						viewTitle: f.view_title,
 						home: f.home_taskref,
+						pressed: f.pressed_btn,
 						thisTask: t.4;
 						
 						def notification = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_notification").and(it.author.email.eq(useCase.author.email))} )
 						
-						if(notification != null){
+						if( (notification != null).and(pressed.value == null || pressed.value != "btn_notification") ){
 							def assigned = assignTask("41", notification)
 							
 							make show, editable on thisTask when {true}
 							change viewTitle value { assigned.title.defaultValue }
-							change home value { [assigned.stringId] }							
+							change home value { [assigned.stringId] }		
+							change pressed value { "btn_notification" }							
 						}
 					</action>
 				</logic>
@@ -371,16 +376,18 @@
 						show: f.btn_show_info,
 						viewTitle: f.view_title,
 						home: f.home_taskref,
+						pressed: f.pressed_btn,
 						thisTask: t.4;
 						
 						def taskController = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_task_controller").and(it.author.email.eq(useCase.author.email))} )
 						
-						if(taskController != null){
+						if( (taskController != null).and(pressed.value == null || pressed.value != "btn_task_overview") ){
 							def assigned = assignTask("9", taskController)
 							
 							make show, editable on thisTask when {true}
 							change viewTitle value { assigned.title.defaultValue }
-							change home value { [assigned.stringId] }							
+							change home value { [assigned.stringId] }	
+							change pressed value { "btn_task_overview" }								
 						}
 					</action>
 				</logic>
@@ -402,16 +409,18 @@
 						show: f.btn_show_info,
 						viewTitle: f.view_title,
 						home: f.home_taskref,
+						pressed: f.pressed_btn,
 						thisTask: t.4;
 						
 						def notification = findCase( {it.processIdentifier.eq("5faffef90a975a1b77c9b54a_notification").and(it.author.email.eq(useCase.author.email))} )
 						
-						if(notification != null){
+						if( (notification != null).and(pressed.value == null || pressed.value != "btn_notification_settings") ){
 							def assigned = assignTask("19", notification)
 							
 							make show, visible on thisTask when {true}
 							change viewTitle value { assigned.title.defaultValue }
-							change home value { [assigned.stringId] }							
+							change home value { [assigned.stringId] }		
+							change pressed value { "btn_notification_settings" }
 						}
 					</action>
 				</logic>
@@ -523,6 +532,7 @@
 					<action trigger="set">
 						thisTask: t.4,
 						show: f.btn_show_info,
+						pressed: f.pressed_btn,
 						home: f.home_taskref;						
 						
 						if( (home.value != null).and(home.value != []) ){
@@ -541,6 +551,7 @@
 											assignTask(showTask)
 											change home value { [showTask.stringId] }
 											make show, visible on thisTask when { true }
+											change pressed value { "btn_show_info" }
 										}
 									}
 								}								
@@ -564,7 +575,6 @@
 					<behavior>editable</behavior>
 					<action trigger="set">
 						show: f.btn_show_info,
-						previous: f.previous_value_in_home,
 						viewTitle: f.view_title,
 						home: f.home_taskref,
 						thisTask: t.4;
@@ -578,7 +588,6 @@
 						
 						make show, visible on thisTask when {true}
 						change viewTitle value { "Žiadne" }
-						change previous value { null }
 						change home value { [] }
 					</action>
 				</logic>
