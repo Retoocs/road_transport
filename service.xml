@@ -259,7 +259,7 @@
 			}
 		</action>
 	</data>
-	<data type="user">
+	<data type="text">
 		<id>mechanic</id>
 		<title>Mechanik</title>
 	</data>
@@ -573,6 +573,7 @@
 					carId: f.parent_id,
 					taskId: f.parent_task_id,
 					id: f.visual_id,
+					mechanic: f.mechanic,
 					start_date: f.start_date;
 					
 					//finish carTask as well (if exists)
@@ -611,6 +612,10 @@
 					
 					change status value{
 						"V očakávaní";
+					}
+					
+					change mechanic value {
+						loggedUser().name + " " + loggedUser().surname
 					}
 				</action>
 			</actions>
@@ -1129,6 +1134,7 @@
 		</event>
 		<event type="finish">
 			<id>12_finish</id>
+			<title>Potvrdiť vymazanie</title>
 			<actions phase="post">
 				<action>				
 					deleteTask: f.delete_task,
@@ -1781,6 +1787,7 @@ change status value{
 		</event>
 		<event type="finish">
 			<id>47_finish</id>
+			<title>Znovuotvoriť</title>
 			<actions phase="post">
 				<action>
 					status: f.status,
@@ -2002,6 +2009,14 @@ change status value{
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
+	<place>
+		<id>100</id>
+		<x>680</x>
+		<y>220</y>
+		<label>Vymazane</label>
+		<tokens>0</tokens>
+		<static>false</static>
+	</place>
 	<!-- ARCS -->
 	<arc>
 		<id>21</id>
@@ -2155,6 +2170,13 @@ change status value{
 		<type>regular</type>
 		<sourceId>3</sourceId>
 		<destinationId>11</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>77</id>
+		<type>regular</type>
+		<sourceId>12</sourceId>
+		<destinationId>100</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 </document>

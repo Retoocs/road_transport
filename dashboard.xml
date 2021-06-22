@@ -3,7 +3,7 @@
 	<id>dashboard</id>
 	<initials>dashboard</initials>
 	<title>Domov</title>
-	<defaultRole>true</defaultRole>
+	<defaultRole>false</defaultRole>
 	<transitionRole>false</transitionRole>
 	<caseEvents>
         <event type="delete">
@@ -12,6 +12,35 @@
                 <action>
                     assignTask("checker")
 					finishTask("checker")
+                </action>
+            </actions>
+        </event>
+		<event type="create">
+            <id>crt</id>
+            <actions phase="post">
+                <action>
+					allowedUsers: f.allowed_dashboard_userlist;
+				
+                    //only one instance per user, otherwise delete created case
+					if(findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(useCase.processIdentifier)).and(it._id.ne(useCase._id))} )) {
+						async.run {
+							workflowService.deleteCase(useCase._id.toString())
+						}
+						throw new Exception("Instance of this process already exists for the author")		
+					}
+					
+					assignTask("creator")
+					finishTask("creator")
+					
+					change allowedUsers value {
+						[userService.getLoggedOrSystem().id]
+					}
+				
+					def title = "Domov"
+					def name = userService.getLoggedOrSystem().name + " " + userService.getLoggedOrSystem().surname
+					changeCaseProperty "title" about {
+						title + " - " + name
+					}
                 </action>
             </actions>
         </event>
@@ -151,54 +180,6 @@
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
-		<id>3</id>
-		<x>380</x>
-		<y>260</y>
-		<layout>
-			<offset>0</offset>
-		</layout>
-		<label>initialize</label>
-		<trigger type="auto"/>
-		<event type="assign">
-			<id>3_assign</id>
-			<actions phase="pre">
-				<action>
-					//only one instance per user, otherwise delete created case
-					if(findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(useCase.processIdentifier)).and(it._id.ne(useCase._id))} )) {
-						async.run {
-							workflowService.deleteCase(useCase._id.toString())
-						}
-						throw new Exception("Instance of this process already exists for the author")		
-					}
-				</action>
-			</actions>
-		</event>
-		<event type="finish">
-			<id>2_finish</id>
-			<actions phase="pre">
-				<action>
-					assignTask("creator")
-					finishTask("creator")
-				</action>
-			</actions>
-			<actions phase="post">
-				<action>
-					allowedUsers: f.allowed_dashboard_userlist;
-					
-					change allowedUsers value {
-						[userService.getLoggedOrSystem().id]
-					}
-				
-					def title = "Domov"
-					def name = userService.getLoggedOrSystem().name + " " + userService.getLoggedOrSystem().surname
-					changeCaseProperty "title" about {
-						title + " - " + name
-					}	
-				</action>
-			</actions>
-		</event>
-	</transition>
-	<transition>
 		<id>4</id>
 		<x>620</x>
 		<y>260</y>
@@ -206,18 +187,13 @@
 			<offset>0</offset>
 		</layout>
 		<label>Domov</label>
-		<assignPolicy>auto</assignPolicy>
 		<usersRef>
 			<id>allowed_dashboard_userlist</id>
 			<logic>
 				<perform>true</perform>
-				<delegate>true</delegate>
-				<view>true</view>
 			</logic>
 		</usersRef>
-		<assignedUser>
-            <reassign>false</reassign>
-		</assignedUser>
+		<assignPolicy>auto</assignPolicy>
 		<dataGroup>
 			<layout>grid</layout>
 			<id>DataGroup_2</id>
@@ -604,6 +580,7 @@
 		</dataGroup>
 		<event type="assign">
 			<id>4_assign</id>
+			<title> </title>
 			<actions phase="pre">
 				<action>
 					btnCreateCar: f.btn_create_car,
@@ -699,10 +676,10 @@
 					make btnCancel, visible on thisTask when { true }
 				</action>
 			</actions>
-			<title/>
 		</event>
 		<event type="cancel">
 			<id>4_cancel</id>
+			<title> </title>
 			<actions phase="post">
 				<action>
 					home: f.home_taskref;
@@ -713,7 +690,7 @@
 		</event>
 		<event type="finish">	
 			<id>4_finish</id>
-			<title/> 
+			<title> </title>
 		</event>
 	</transition>
 	<transition>
@@ -797,42 +774,89 @@
 			</actions>
 		</event>
 	</transition>
+	<transition>
+		<id>first_start</id>
+		<x>100</x>
+		<y>160</y>
+		<layout>
+			<offset>0</offset>
+		</layout>
+		<label>Prve spustenie</label>
+		<assignPolicy>auto</assignPolicy>
+		<finishPolicy>auto_no_data</finishPolicy>
+		<roleRef>
+			<id>system</id>
+			<logic>
+				<perform>true</perform>
+				<delegate>true</delegate>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>director</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>dispatcher</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>mechanic</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>driver</id>
+			<logic>
+				<perform>true</perform>
+				<view>true</view>
+			</logic>
+		</roleRef>
+	</transition>
 	<!-- PLACES -->
 	<place>
-		<id>2</id>
-		<x>260</x>
-		<y>260</y>
-		<label>uninitialized</label>
+		<id>p1</id>
+		<x>339</x>
+		<y>409</y>
+		<label></label>
 		<tokens>1</tokens>
 		<static>false</static>
 	</place>
 	<place>
-		<id>5</id>
-		<x>500</x>
-		<y>260</y>
-		<label>initialized</label>
+		<id>p2</id>
+		<x>575</x>
+		<y>414</y>
+		<label></label>
 		<tokens>0</tokens>
 		<static>false</static>
 	</place>
 	<!-- ARCS -->
 	<arc>
-		<id>6</id>
+		<id>3</id>
 		<type>regular</type>
-		<sourceId>2</sourceId>
-		<destinationId>3</destinationId>
+		<sourceId>p1</sourceId>
+		<destinationId>first_start</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 	<arc>
-		<id>7</id>
+		<id>4</id>
 		<type>regular</type>
-		<sourceId>3</sourceId>
-		<destinationId>5</destinationId>
+		<sourceId>first_start</sourceId>
+		<destinationId>p2</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>
 	<arc>
-		<id>8</id>
+		<id>a3</id>
 		<type>read</type>
-		<sourceId>5</sourceId>
+		<sourceId>p2</sourceId>
 		<destinationId>4</destinationId>
 		<multiplicity>1</multiplicity>
 	</arc>

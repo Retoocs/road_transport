@@ -81,16 +81,52 @@
 		<id>brand</id>
 		<title>Značka</title>
 		<action trigger="set">
-			assignTask("update_case_title")
-			finishTask("update_case_title")			
+			plateNumber: f.plate_number,
+			name: f.car_name,
+			brand: f.brand,
+			model: f.model;	
+			
+			//assignTask("update_case_title")
+			//finishTask("update_case_title")
+					
+			def resultStr
+			
+			if(name.value == null || name.value.isEmpty()){
+				resultStr = plateNumber.value + " - " + brand.value + " " + model.value
+			}
+			else{
+				resultStr = plateNumber.value + " - " + name.value + " - " + brand.value + " " + model.value
+			}
+			
+			changeCaseProperty "title" about {
+				resultStr
+			}		
 		</action>
 	</data>
 	<data type="text">
 		<id>model</id>
 		<title>Model</title>
 		<action trigger="set">
-			assignTask("update_case_title")
-			finishTask("update_case_title")
+			plateNumber: f.plate_number,
+			name: f.car_name,
+			brand: f.brand,
+			model: f.model;
+			
+			//assignTask("update_case_title")
+			//finishTask("update_case_title")
+			
+			def resultStr
+			
+			if(name.value == null || name.value.isEmpty()){
+				resultStr = plateNumber.value + " - " + brand.value + " " + model.value
+			}
+			else{
+				resultStr = plateNumber.value + " - " + name.value + " - " + brand.value + " " + model.value
+			}
+			
+			changeCaseProperty "title" about {
+				resultStr
+			}		
 		</action>
 	</data>
 	<data type="text">
@@ -106,6 +142,9 @@
 		<id>plate_number</id>
 		<title>EČV</title>
 		<action trigger="set">
+			name: f.car_name,
+			brand: f.brand,
+			model: f.model,
 			history: f.history_plate_number,
 			plateNumber: f.this;			
 			
@@ -120,8 +159,21 @@
 				}
 			}
 			
-			assignTask("update_case_title")
-			finishTask("update_case_title")
+			//assignTask("update_case_title")
+			//finishTask("update_case_title")
+			
+			def resultStr;
+			
+			if(name.value == null || name.value.isEmpty()){
+				resultStr = plateNumber.value + " - " + brand.value + " " + model.value
+			}
+			else{
+				resultStr = plateNumber.value + " - " + name.value + " - " + brand.value + " " + model.value
+			}
+			
+			changeCaseProperty "title" about {
+				resultStr
+			}	
 		</action>
 	</data>
 	<data type="text">
@@ -136,8 +188,26 @@
 		<id>car_name</id>
 		<title>Názov auta</title>
 		<action trigger="set">
-			assignTask("update_case_title")
-			finishTask("update_case_title")
+			plateNumber: f.plate_number,
+			name: f.car_name,
+			brand: f.brand,
+			model: f.model;
+			
+			//assignTask("update_case_title")
+			//finishTask("update_case_title")
+			
+			def resultStr;
+			
+			if(name.value == null || name.value.isEmpty()){
+				resultStr = plateNumber.value + " - " + brand.value + " " + model.value
+			}
+			else{
+				resultStr = plateNumber.value + " - " + name.value + " - " + brand.value + " " + model.value
+			}
+			
+			changeCaseProperty "title" about {
+				resultStr
+			}	
 		</action>
 	</data>
 	<data type="number">
@@ -488,8 +558,26 @@
 			<id>7_finish</id>
 			<actions phase="pre">
 				<action>
-					assignTask("update_case_title")
-					finishTask("update_case_title")
+					plateNumber: f.plate_number,
+					name: f.car_name,
+					brand: f.brand,
+					model: f.model;
+					
+					//assignTask("update_case_title")
+					//finishTask("update_case_title")
+					
+					def resultStr;
+					
+					if(name.value == null || name.value.isEmpty()){
+						resultStr = plateNumber.value + " - " + brand.value + " " + model.value
+					}
+					else{
+						resultStr = plateNumber.value + " - " + name.value + " - " + brand.value + " " + model.value
+					}
+					
+					changeCaseProperty "title" about {
+						resultStr
+					}
 				</action>
 			</actions>
 			<actions phase="post">
@@ -1202,44 +1290,9 @@
 				</layout>
 			</dataRef>
 			<dataRef>
-				<id>show_more_info</id>
+				<id>car_owner</id>
 				<logic>
 					<behavior>editable</behavior>
-					<action trigger="get">
-						thisTask: t.18,
-						btn: f.this,
-						stkExpirationDate: f.stk_expiration_date,
-						lastOilChangeDate: f.last_oil_change_date,
-						lastOilChangeMileage: f.last_oil_change_mileage,
-						carOwner: f.car_owner;
-						
-						change btn value { false }
-						
-						make stkExpirationDate, hidden on thisTask when { !btn.value }
-						make lastOilChangeDate, hidden on thisTask when { !btn.value }
-						make lastOilChangeMileage, hidden on thisTask when { !btn.value }
-						make carOwner, hidden on thisTask when { !btn.value }
-					</action>
-					<action trigger="set">
-						thisTask: t.18,
-						btn: f.this,
-						stkExpirationDate: f.stk_expiration_date,
-						lastOilChangeDate: f.last_oil_change_date,
-						lastOilChangeMileage: f.last_oil_change_mileage,
-						carOwner: f.car_owner;
-						
-						make stkExpirationDate, editable on thisTask when { btn.value }
-						make stkExpirationDate, hidden on thisTask when { !btn.value }
-						
-						make lastOilChangeDate, editable on thisTask when { btn.value }
-						make lastOilChangeDate, hidden on thisTask when { !btn.value }
-						
-						make lastOilChangeMileage, editable on thisTask when { btn.value }
-						make lastOilChangeMileage, hidden on thisTask when { !btn.value }
-						
-						make carOwner, editable on thisTask when { btn.value }
-						make carOwner, hidden on thisTask when { !btn.value }
-					</action>
 				</logic>
 				<layout>
 					<x>2</x>
@@ -1251,33 +1304,14 @@
 					<appearance>outline</appearance>
 				</layout>
 			</dataRef>
-		</dataGroup>
-		<dataGroup>
-			<layout>grid</layout>
-			<id>DataGroup_0</id>
-			<dataRef>
-				<id>car_owner</id>
-				<logic>
-					<behavior>hidden</behavior>
-				</logic>
-				<layout>
-					<x>0</x>
-					<y>0</y>
-					<rows>1</rows>
-					<cols>1</cols>
-					<offset>0</offset>
-					<template>material</template>
-					<appearance>outline</appearance>
-				</layout>
-			</dataRef>
 			<dataRef>
 				<id>stk_expiration_date</id>
 				<logic>
-					<behavior>hidden</behavior>
+					<behavior>editable</behavior>
 				</logic>
 				<layout>
-					<x>1</x>
-					<y>0</y>
+					<x>3</x>
+					<y>2</y>
 					<rows>1</rows>
 					<cols>1</cols>
 					<offset>0</offset>
@@ -1288,11 +1322,11 @@
 			<dataRef>
 				<id>last_oil_change_date</id>
 				<logic>
-					<behavior>hidden</behavior>
+					<behavior>editable</behavior>
 				</logic>
 				<layout>
-					<x>2</x>
-					<y>0</y>
+					<x>0</x>
+					<y>3</y>
 					<rows>1</rows>
 					<cols>1</cols>
 					<offset>0</offset>
@@ -1303,11 +1337,11 @@
 			<dataRef>
 				<id>last_oil_change_mileage</id>
 				<logic>
-					<behavior>hidden</behavior>
+					<behavior>editable</behavior>
 				</logic>
 				<layout>
-					<x>3</x>
-					<y>0</y>
+					<x>1</x>
+					<y>3</y>
 					<rows>1</rows>
 					<cols>1</cols>
 					<offset>0</offset>
@@ -1568,6 +1602,7 @@
 		</roleRef>
 		<event type="finish">
 			<id>33_finish</id>
+			<title>Deaktivovať</title>
 			<actions phase="post">
 				<action>
 					status: f.status;
@@ -1618,6 +1653,7 @@
 		</roleRef>
 		<event type="finish">
 			<id>35_finish</id>
+			<title>Aktivovať</title>
 			<actions phase="post">
 				<action>
 					status: f.status;
@@ -1726,6 +1762,7 @@
 		</event>
 		<event type="finish">
 			<id>46_finish</id>
+			<title>Potvrdiť vymazanie</title>
 			<actions phase="post">
 				<action>
 					taskref: f.servis_creation,
@@ -1752,10 +1789,8 @@
 							def toRemoveService = cases.get(i++)
 							
 							if(toRemoveService != null || toRemoveService.stringId != null){
-								def removeTrans = findTask( {it.caseId.eq(toRemoveService.stringId).and(it.transitionId.eq("12"))} )
-								if(removeTrans != null){
-									assignTask(removeTrans)
-									finishTask(removeTrans)
+								async.run{
+									workflowService.deleteCase(toRemoveService._id.toString());
 								}
 							}					
 						}						

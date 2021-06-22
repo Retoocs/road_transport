@@ -5,6 +5,28 @@
 	<title>Ovládač servisného záznamu</title>
 	<defaultRole>true</defaultRole>
 	<transitionRole>false</transitionRole>
+	<caseEvents>
+		<event type="create">
+            <id>crt</id>
+            <actions phase="post">
+                <action>				
+                    //only one instance per user, otherwise delete created case
+					if(findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(useCase.processIdentifier)).and(it._id.ne(useCase._id))} )) {
+						async.run {
+							workflowService.deleteCase(useCase._id.toString())
+						}	
+						throw new Exception("Instance of this process already exists for the author")
+					}
+					
+					def title = "Ovládač servisného záznamu"
+					def name = userService.getLoggedOrSystem().name + " " + userService.getLoggedOrSystem().surname
+					changeCaseProperty "title" about {
+						title + " - " + name
+					}
+                </action>
+            </actions>
+        </event>
+    </caseEvents>
 	<!-- TRANSACTIONS -->
 	<!-- ROLES -->
 	<role>
@@ -90,42 +112,6 @@
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
-	<transition>
-		<id>1</id>
-		<x>500</x>
-		<y>620</y>
-		<layout>
-			<offset>0</offset>
-		</layout>
-		<label>initialize</label>
-		<trigger type="auto"/>
-		<event type="assign">
-			<id>1_assign</id>
-			<actions phase="pre">
-				<action>
-					//only one instance per user, otherwise delete created case
-					if(findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(useCase.processIdentifier)).and(it._id.ne(useCase._id))} )) {
-						async.run {
-							workflowService.deleteCase(useCase._id.toString())
-						}
-						throw new Exception("Instance of this process already exists for the author")		
-					}
-				</action>
-			</actions>
-		</event>
-		<event type="finish">
-			<id>2_finish</id>
-			<actions phase="post">
-				<action>
-					def title = "Ovládač servisného záznamu"
-					def name = userService.getLoggedOrSystem().name + " " + userService.getLoggedOrSystem().surname
-					changeCaseProperty "title" about {
-						title + " - " + name
-					}
-				</action>
-			</actions>
-		</event>
-	</transition>
 	<transition>
 		<id>2</id>
 		<x>620</x>
@@ -796,36 +782,14 @@
 	</transition>
 	<!-- PLACES -->
 	<place>
-		<id>3</id>
-		<x>380</x>
-		<y>620</y>
-		<label>uninitialized</label>
-		<tokens>1</tokens>
-		<static>false</static>
-	</place>
-	<place>
 		<id>4</id>
 		<x>620</x>
 		<y>620</y>
 		<label>initialized</label>
-		<tokens>0</tokens>
+		<tokens>1</tokens>
 		<static>false</static>
 	</place>
 	<!-- ARCS -->
-	<arc>
-		<id>5</id>
-		<type>regular</type>
-		<sourceId>3</sourceId>
-		<destinationId>1</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>6</id>
-		<type>regular</type>
-		<sourceId>1</sourceId>
-		<destinationId>4</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
 	<arc>
 		<id>7</id>
 		<type>read</type>

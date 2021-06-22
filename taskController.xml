@@ -5,6 +5,28 @@
 	<title>Ovládač úlohy</title>
 	<defaultRole>true</defaultRole>
 	<transitionRole>false</transitionRole>
+	<caseEvents>
+		<event type="create">
+            <id>crt</id>
+            <actions phase="post">
+                <action>				
+                    //only one instance per user, otherwise delete created case
+					if(findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(useCase.processIdentifier)).and(it._id.ne(useCase._id))} )) {
+						async.run {
+							workflowService.deleteCase(useCase._id.toString())
+						}	
+						throw new Exception("Instance of this process already exists for the author")
+					}
+					
+					def title = "Ovládač úlohy"
+					def name = userService.getLoggedOrSystem().name + " " + userService.getLoggedOrSystem().surname
+					changeCaseProperty "title" about {
+						title + " - " + name
+					}
+                </action>
+            </actions>
+        </event>
+    </caseEvents>
 	<!-- TRANSACTIONS -->
 	<!-- ROLES -->
 	<role>
@@ -90,42 +112,6 @@
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
 	<transition>
-		<id>3</id>
-		<x>500</x>
-		<y>460</y>
-		<layout>
-			<offset>0</offset>
-		</layout>
-		<label>initialize</label>
-		<trigger type="auto"/>
-		<event type="assign">
-			<id>3_assign</id>
-			<actions phase="pre">
-				<action>
-					//only one instance per user, otherwise delete created case
-					if(findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(useCase.processIdentifier)).and(it._id.ne(useCase._id))} )) {
-						async.run {
-							workflowService.deleteCase(useCase._id.toString())
-						}
-						throw new Exception("Instance of this process already exists for the author")		
-					}
-				</action>
-			</actions>
-		</event>
-		<event type="finish">
-			<id>2_finish</id>
-			<actions phase="post">
-				<action>
-					def title = "Ovládač úlohy"
-					def name = userService.getLoggedOrSystem().name + " " + userService.getLoggedOrSystem().surname
-					changeCaseProperty "title" about {
-						title + " - " + name
-					}
-				</action>
-			</actions>
-		</event>
-	</transition>
-	<transition>
 		<id>4</id>
 		<x>620</x>
 		<y>300</y>
@@ -180,7 +166,7 @@
 			</actions>
 		</event>
 		<event type="cancel">
-			<id>4_assign</id>
+			<id>4_cancel</id>
 			<actions phase="pre">
 				<action>
 					createTask: f.create_task_taskref;
@@ -199,7 +185,7 @@
 			</actions>
 		</event>
 		<event type="finish">
-			<id>4_assign</id>
+			<id>4_finish</id>
 			<actions phase="pre">
 				<action>
 					createTask: f.create_task_taskref;
@@ -557,36 +543,14 @@
 	
 	<!-- PLACES -->
 	<place>
-		<id>1</id>
-		<x>380</x>
-		<y>460</y>
-		<label>uninitialized</label>
-		<tokens>1</tokens>
-		<static>false</static>
-	</place>
-	<place>
 		<id>2</id>
 		<x>620</x>
 		<y>460</y>
 		<label>initialized</label>
-		<tokens>0</tokens>
+		<tokens>1</tokens>
 		<static>false</static>
 	</place>
 	<!-- ARCS -->
-	<arc>
-		<id>6</id>
-		<type>regular</type>
-		<sourceId>1</sourceId>
-		<destinationId>3</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>7</id>
-		<type>regular</type>
-		<sourceId>3</sourceId>
-		<destinationId>2</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
 	<arc>
 		<id>8</id>
 		<type>read</type>

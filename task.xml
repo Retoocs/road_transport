@@ -65,7 +65,7 @@
         </caseLogic>
     </roleRef>
 	<!-- DATA -->
-	<data type="user">
+	<data type="text">
 		<id>creator</id>
 		<title>Zadávateľ</title>
 	</data>
@@ -93,7 +93,7 @@
 		<title>Úloha</title>
 		<values>area</values>
 	</data>
-	<data type="user">
+	<data type="text">
 		<id>closed_by</id>
 		<title>Uzavrel</title>
 	</data>
@@ -357,7 +357,7 @@
 			<actions phase="pre">
 				<action>
 					creator: f.creator;					
-					//change creator value { loggedUser() }			
+					change creator value { loggedUser().name + " " +  loggedUser().surname}			
 				</action>
 			</actions>
 		</event>
@@ -373,11 +373,19 @@
 		</event>
 		<event type="finish">
 			<id>2_finish</id>
+			<actions phase="pre">
+				<action>
+					title: f.title;
+					
+					changeCaseProperty "title" about {
+						title.value + " {}"
+					}
+				</action>
+			</actions>
 			<actions phase="post">
 				<action>
 					status: f.status,
 					user: f.assignee,
-					title: f.title,
 					id: f.visual_id,
 					creationDate: f.creation_date;
 
@@ -387,9 +395,10 @@
 							"Nepridelená"
 						}
 					}
-					
-					changeCaseProperty "title" about {
-						title.value + " {}"
+					else{
+						change status value{
+							"Pridelená -> " + user.value.surname
+						}
 					}
 					
 					change id value {
@@ -981,6 +990,7 @@
 		</event>
 		<event type="finish">
 			<id>10_finish</id>
+			<title>Potvrdiť vymazanie</title>
 			<actions phase="post">.
 				<action>		
 					serviceTaskRef: f.service_creation,
@@ -1139,9 +1149,11 @@
 		</event>
 		<event type="finish">
 			<id>17_finish</id>
+			<title>Uzavrieť</title>
 			<actions phase="post">
 				<action>
 					status: f.status,
+					closedBy: f.closed_by,
 					closeDate: f.close_date;
 					
 					change closeDate value {
@@ -1150,6 +1162,10 @@
 
 					change status value{
 						"Uzavretá"
+					}
+					
+					change closedBy value{
+						loggedUser().name + " " + loggedUser().surname
 					}
 				</action>
 			</actions>
@@ -1195,6 +1211,7 @@
 		</roleRef>
 		<event type="finish">
 			<id>18_finish</id>
+			<title>Znovuotvoriť</title>
 			<actions phase="pre">
 				<action>
 					closureState: f.closure_state,	
@@ -1867,6 +1884,7 @@
 					taskRef: f.service_creation,
 					carList: f.car_list,
 					lastId: f.last_car_select,
+					closedBy: f.closed_by,
 					serviceVisualId: f.service_visualId;
 					
 					if((taskRef.value != null).and(taskRef.value != [])){
@@ -1911,7 +1929,11 @@
 							
 							change status value{
 								"Uzavretá"
-							}							
+							}	
+
+							change closedBy value{
+								loggedUser().name + " " + loggedUser().surname
+							}
 						}
 					}						
 				</action>

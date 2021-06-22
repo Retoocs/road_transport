@@ -5,6 +5,36 @@
 	<title>Notifikácia</title>
 	<defaultRole>true</defaultRole>
 	<transitionRole>false</transitionRole>
+	<caseEvents>
+		<event type="create">
+            <id>crt</id>
+            <actions phase="post">
+                <action>			
+					enableVehicles: f.notify_vehicles,
+					enableServices: f.notify_services,
+					enableTasks: f.notify_tasks;
+					
+                    //only one instance per user, otherwise delete created case
+					if(findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(useCase.processIdentifier)).and(it._id.ne(useCase._id))} )) {
+						async.run {
+							workflowService.deleteCase(useCase._id.toString())
+						}	
+						throw new Exception("Instance of this process already exists for the author")
+					}
+					
+					change enableVehicles value { true }
+					change enableServices value { true }
+					change enableTasks value { true }
+					
+					def title = "Notifikácie"
+					def name = userService.getLoggedOrSystem().name + " " + userService.getLoggedOrSystem().surname
+					changeCaseProperty "title" about {
+						title + " - " + name
+					}
+                </action>
+            </actions>
+        </event>
+    </caseEvents>
 	<!-- TRANSACTIONS -->
 	<!-- ROLES -->
 	<role>
@@ -78,50 +108,6 @@
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
-	<transition>
-		<id>5</id>
-		<x>970</x>
-		<y>610</y>
-		<layout>
-			<offset>0</offset>
-		</layout>
-		<label>initialize</label>		
-		<trigger type="auto"/>
-		<event type="assign">
-			<id>5_assign</id>
-			<actions phase="pre">
-				<action>
-					//only one instance per user, otherwise delete created case
-					if(findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(useCase.processIdentifier)).and(it._id.ne(useCase._id))} )) {
-						async.run {
-							workflowService.deleteCase(useCase._id.toString())
-						}
-						throw new Exception("Instance of this process already exists for the author")		
-					}
-				</action>
-			</actions>
-		</event>
-		<event type="finish">
-			<id>5_finish</id>
-			<actions phase="pre">
-				<action>
-					enableVehicles: f.notify_vehicles,
-					enableServices: f.notify_services,
-					enableTasks: f.notify_tasks;
-					
-					change enableVehicles value { true }
-					change enableServices value { true }
-					change enableTasks value { true }
-					
-					def title = "Notifikácie"
-					def name = userService.getLoggedOrSystem().name + " " + userService.getLoggedOrSystem().surname
-					changeCaseProperty "title" about {
-						title + " - " + name
-					}
-				</action>
-			</actions>
-		</event>
-	</transition>
 	<transition>
 		<id>9</id>
 		<x>514</x>
@@ -833,7 +819,7 @@
 		<x>518</x>
 		<y>397</y>
 		<label>Notifikácie vozidiel povolené</label>
-		<tokens>0</tokens>
+		<tokens>1</tokens>
 		<static>false</static>
 	</place>
 	<place>
@@ -841,7 +827,7 @@
 		<x>973</x>
 		<y>413</y>
 		<label>Notifikácie servisných záznamov povolené</label>
-		<tokens>0</tokens>
+		<tokens>1</tokens>
 		<static>false</static>
 	</place>
 	<place>
@@ -849,14 +835,6 @@
 		<x>1494</x>
 		<y>474</y>
 		<label>Notifikácie úloh povolené</label>
-		<tokens>0</tokens>
-		<static>false</static>
-	</place>
-	<place>
-		<id>4</id>
-		<x>519</x>
-		<y>612</y>
-		<label>uninitialized</label>
 		<tokens>1</tokens>
 		<static>false</static>
 	</place>
@@ -889,45 +867,10 @@
 		<x>1274</x>
 		<y>612</y>
 		<label>initialized</label>
-		<tokens>0</tokens>
+		<tokens>1</tokens>
 		<static>false</static>
 	</place>
 	<!-- ARCS -->
-	<arc>
-		<id>20</id>
-		<type>regular</type>
-		<sourceId>4</sourceId>
-		<destinationId>5</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>21</id>
-		<type>regular</type>
-		<sourceId>5</sourceId>
-		<destinationId>18</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>22</id>
-		<type>regular</type>
-		<sourceId>5</sourceId>
-		<destinationId>1</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>23</id>
-		<type>regular</type>
-		<sourceId>5</sourceId>
-		<destinationId>2</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>24</id>
-		<type>regular</type>
-		<sourceId>5</sourceId>
-		<destinationId>3</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
 	<arc>
 		<id>25</id>
 		<type>read</type>

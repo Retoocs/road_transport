@@ -5,6 +5,28 @@
 	<title>Ovládač auta</title>
 	<defaultRole>true</defaultRole>
 	<transitionRole>false</transitionRole>
+	<caseEvents>
+		<event type="create">
+            <id>crt</id>
+            <actions phase="post">
+                <action>				
+                    //only one instance per user, otherwise delete created case
+					if(findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(useCase.processIdentifier)).and(it._id.ne(useCase._id))} )) {
+						async.run {
+							workflowService.deleteCase(useCase._id.toString())
+						}	
+						throw new Exception("Instance of this process already exists for the author")
+					}
+					
+					def title = "Ovládač auta"
+					def name = userService.getLoggedOrSystem().name + " " + userService.getLoggedOrSystem().surname
+					changeCaseProperty "title" about {
+						title + " - " + name
+					}
+                </action>
+            </actions>
+        </event>
+    </caseEvents>
 	<!-- TRANSACTIONS -->
 	<!-- ROLES -->
 	<role>
@@ -41,39 +63,6 @@
 	</data>
 	<!-- I18NS -->
 	<!-- TRANSITIONS -->
-	<transition>
-		<id>2</id>
-		<x>599</x>
-		<y>489</y>
-		<layout>
-			<offset>0</offset>
-		</layout>
-		<label>initialize</label>
-		<trigger type="auto"/>
-		<event type="finish">
-			<id>2_finish</id>
-			<actions phase="pre">
-				<action>
-					//only one instance per user, otherwise delete created case
-					if(findCase( {it.author.email.eq(useCase.author.email).and(it.processIdentifier.eq(useCase.processIdentifier)).and(it._id.ne(useCase._id))} )) {
-						async.run {
-							workflowService.deleteCase(useCase._id.toString())
-						}	
-						throw new Exception("Instance of this process already exists for the author")
-					}
-				</action>
-			</actions>
-			<actions phase="post">
-				<action>
-					def title = "Ovládač auta"
-					def name = userService.getLoggedOrSystem().name + " " + userService.getLoggedOrSystem().surname
-					changeCaseProperty "title" about {
-						title + " - " + name
-					}
-				</action>
-			</actions>
-		</event>
-	</transition>
 	<transition>
 		<id>4</id>
 		<x>729</x>
@@ -168,36 +157,14 @@
 	</transition>
 	<!-- PLACES -->
 	<place>
-		<id>1</id>
-		<x>443</x>
-		<y>491</y>
-		<label>uninitialized</label>
-		<tokens>1</tokens>
-		<static>false</static>
-	</place>
-	<place>
 		<id>3</id>
 		<x>734</x>
 		<y>488</y>
 		<label>initialized</label>
-		<tokens>0</tokens>
+		<tokens>1</tokens>
 		<static>false</static>
 	</place>
 	<!-- ARCS -->
-	<arc>
-		<id>5</id>
-		<type>regular</type>
-		<sourceId>1</sourceId>
-		<destinationId>2</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
-	<arc>
-		<id>6</id>
-		<type>regular</type>
-		<sourceId>2</sourceId>
-		<destinationId>3</destinationId>
-		<multiplicity>1</multiplicity>
-	</arc>
 	<arc>
 		<id>7</id>
 		<type>read</type>
