@@ -25,7 +25,7 @@ For example in [serviceConroller.xml](https://github.com/Retoocs/road_transport/
 ## Usage
 Public Netgrif Application Engine documentation can be found [here](https://netgrif.atlassian.net/wiki/spaces/NAE).
 ##### New user
-1. Add dashboard by clicking on plus icon on upper right corner.
+1. Add dashboard by clicking on the plus icon in upper right corner.
 2. Start working
 
 ## Development
