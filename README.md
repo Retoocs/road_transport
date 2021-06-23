@@ -11,7 +11,7 @@ The application purpose is to simplify company inter-processes and new inter-pro
 
 
 ## Installation
-Assume you have an instance of Netgrif Application Engine (NAE) running. A free instance can be found on demo.netgrif.com.
+Assume you have an instance of Netgrif Application Engine (NAE) running. A free instance can be found on [demo.netgrif.com](https://demo.netgrif.com/).
 
 1. Replace group id with your group id in every process file. Search and replace `5faffef90a975a1b77c9b54a`. 
 For example in [serviceConroller.xml](https://github.com/Retoocs/road_transport/blob/develop/processes/serviceController.xml):
